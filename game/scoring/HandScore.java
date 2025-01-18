@@ -5,7 +5,6 @@ import java.util.Vector;
 import data.card.Card;
 import data.deck.DeckUtils;
 import data.pokerHand.PokerHand;
-import data.pokerHand.PokerHandTable;
 import game.HandUtils;
 
 public class HandScore implements HandUtils{
@@ -15,7 +14,10 @@ public class HandScore implements HandUtils{
 	
 	int score;
 	
+	public boolean counted = false;
+	
 	public HandScore() {
+		
 	}
 	
 	public void setPokerHand(PokerHand pokerHand) {
@@ -51,5 +53,9 @@ public class HandScore implements HandUtils{
 		result += "Score: " + Integer.toString(score) + "\n";
 		
 		return result;
+	}
+	
+	public int getScore() {
+		return score;
 	}
 }
