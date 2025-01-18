@@ -18,13 +18,6 @@ public class HandScore implements HandUtils{
 	
 	public HandScore() {
 		
-<<<<<<< Updated upstream
-=======
-	}
-	
-	public HandScore(Vector<Card> cards) {
-		this.cards = cards;
->>>>>>> Stashed changes
 	}
 	
 	public void setPokerHand(PokerHand pokerHand) {
@@ -60,10 +53,6 @@ public class HandScore implements HandUtils{
 		result += "Score: " + Integer.toString(score) + "\n";
 		
 		return result;
-	}
-	
-	public int getScore() {
-		return score;
 	}
 	
 	public int getScore() {

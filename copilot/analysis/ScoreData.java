@@ -2,10 +2,7 @@ package copilot.analysis;
 
 import java.util.Vector;
 
-<<<<<<< Updated upstream
 import data.pokerHand.PokerHand;
-=======
->>>>>>> Stashed changes
 import game.scoring.HandScore;
 
 public class ScoreData {
