@@ -2,8 +2,8 @@ package game;
 
 import java.util.Vector;
 import data.card.Card;
-import data.card.Deck;
-import data.card.DeckUtils;
+import data.deck.Deck;
+import data.deck.DeckUtils;
 import data.player.Player;
 
 public class GameState {

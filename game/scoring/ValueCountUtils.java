@@ -17,6 +17,7 @@ public interface ValueCountUtils {
 		for(int i = 0; i < valueCounts.size(); i++) {
 			if(valueCounts.get(i).getValue() == value) {
 				valueCounts.get(i).increment(1);
+				return;
 			}
 		}
 		valueCounts.add(new ValueCount(value, 1));
@@ -63,6 +64,10 @@ public interface ValueCountUtils {
 	
 	public static boolean hasStraight(Vector<ValueCount> valueCounts) {
 		sortByValue(valueCounts);
+		
+		if(valueCounts.size() < 5) {
+			return false;
+		}
 		
 		for(int i = 0; i < valueCounts.size() - 1; i++) {
 			if(valueCounts.get(0) != valueCounts.get(i + 1)) {

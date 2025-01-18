@@ -3,21 +3,27 @@ package game.scoring;
 import java.util.Vector;
 
 import data.card.Card;
-import data.player.HandInfo;
+import data.deck.DeckUtils;
+import data.pokerHand.PokerHand;
+import data.pokerHand.PokerHandTable;
+import game.HandUtils;
 
-public class HandScore {
-	HandInfo handType;
-	char flush;
+public class HandScore implements HandUtils{
+	PokerHand pokerHand;
+	private char flush;
 	Vector<Card> cards;
 	
 	int score;
 	
-	public HandScore(Vector<Card> cards) {
-		this.cards = cards;
+	public HandScore() {
 	}
 	
-	public void setHandType(HandInfo handType) {
-		this.handType = handType;
+	public void setPokerHand(PokerHand pokerHand) {
+		this.pokerHand = pokerHand;
+	}
+	
+	public void setHand(Vector<Card> cards) {
+		this.cards = cards;
 	}
 	
 	public void setScore(int score) {
@@ -29,10 +35,21 @@ public class HandScore {
 	}
 	
 	public String getHandType() {
-		return handType.getName();
+		return pokerHand.getName();
 	}
 	
-	public void score(HandInfo handInfo) {
-		score = handInfo.getChips() * handInfo.getMult();
+	public int score() {
+		score = pokerHand.getChips() * pokerHand.getMult();
+		return score;
+	}
+
+	public String print(String buffer) {
+		String result = "";
+		
+		result += "Cards: " + DeckUtils.printCardVector(cards, buffer + "   ");
+		result += "Hand Type: " + pokerHand.getName() + "\n";
+		result += "Score: " + Integer.toString(score) + "\n";
+		
+		return result;
 	}
 }

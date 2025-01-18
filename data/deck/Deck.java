@@ -1,7 +1,9 @@
-package data.card;
+package data.deck;
 
 import java.util.Random;
 import java.util.Vector;
+
+import data.card.Card;
 
 public class Deck implements DeckUtils {
 	Vector<Card> cards;

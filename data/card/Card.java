@@ -85,7 +85,11 @@ public class Card {
 	}
 	
 	public String printCard() {
-		return value + " of " + suit + " " + enhancement + " " + edition + " " + seal;
+		return Integer.toString(value) + " of " + suit + " " + enhancement + " " + edition + " " + seal;
+	}
+	
+	public String printValueAndSuit() {
+		return Integer.toString(value) + suit;
 	}
 	
 }

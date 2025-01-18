@@ -2,23 +2,24 @@ package data.player;
 
 import java.util.Vector;
 
-import data.card.Deck;
 import data.card.Joker;
+import data.deck.Deck;
+import data.pokerHand.PokerHandTable;
 
 public class Player {
-	public int numDiscards = 4;
+	public int numDiscards = 1;
 	
 	Deck deck;
-	Vector<HandInfo> handTable;
+	PokerHandTable pokerHandTable;
 	Vector<Joker> jokers;
 	
 	public Player() {
 		
 	}
 	
-	public Player(Deck deck, Vector<HandInfo> handTable, Vector<Joker> jokers) {
+	public Player(Deck deck, PokerHandTable pokerHandTable, Vector<Joker> jokers) {
 		this.deck = deck;
-		this.handTable = handTable;
+		this.pokerHandTable = pokerHandTable;
 		this.jokers = jokers;
 	}
 	

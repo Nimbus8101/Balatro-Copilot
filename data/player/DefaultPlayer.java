@@ -3,14 +3,16 @@ package data.player;
 import java.util.Vector;
 
 import data.card.Card;
-import data.card.Deck;
 import data.card.Joker;
+import data.deck.Deck;
+import data.pokerHand.PokerHand;
+import data.pokerHand.PokerHandTable;
 
 public interface DefaultPlayer {
 	public static final int MAX_DECK_VALUE = 7;
 	
 	public static Player createDefaultPlayer() {
-		return new Player(createDefaultDeck(), createDefaultHandInfoTable(), new Vector<Joker>(0));
+		return new Player(createDefaultDeck(), new PokerHandTable(createDefaultPokerHandVector()), new Vector<Joker>(0));
 	}
 	
 	public static Deck createDefaultDeck() {
@@ -24,22 +26,22 @@ public interface DefaultPlayer {
 		return new Deck(cards);
 	}
 	
-	public static Vector<HandInfo> createDefaultHandInfoTable(){
-		Vector<HandInfo> handInfo = new Vector(0);
-		handInfo.add(new HandInfo(HandInfo.FLUSH_FIVE, 160, 16));
-		handInfo.add(new HandInfo(HandInfo.FLUSH_HOUSE, 140, 14));
-		handInfo.add(new HandInfo(HandInfo.FIVE_OF_A_KIND, 120, 12));
-		handInfo.add(new HandInfo(HandInfo.ROYAL_FLUSH, 100, 8));
-		handInfo.add(new HandInfo(HandInfo.STRAIGHT_FLUSH, 100, 8));
-		handInfo.add(new HandInfo(HandInfo.FOUR_OF_A_KIND, 60, 7));
-		handInfo.add(new HandInfo(HandInfo.FULL_HOUSE, 40, 4));
-		handInfo.add(new HandInfo(HandInfo.FLUSH, 35, 4));
-		handInfo.add(new HandInfo(HandInfo.STRAIGHT, 30, 4));
-		handInfo.add(new HandInfo(HandInfo.THREE_OF_A_KIND, 30, 3));
-		handInfo.add(new HandInfo(HandInfo.TWO_PAIR, 20, 2));
-		handInfo.add(new HandInfo(HandInfo.PAIR, 10, 2));
-		handInfo.add(new HandInfo(HandInfo.HIGH_CARD, 5, 1));
+	public static Vector<PokerHand> createDefaultPokerHandVector(){
+		Vector<PokerHand> pokerHands = new Vector<PokerHand>(0);
+		pokerHands.add(new PokerHand(PokerHand.FLUSH_FIVE, 160, 16));
+		pokerHands.add(new PokerHand(PokerHand.FLUSH_HOUSE, 140, 14));
+		pokerHands.add(new PokerHand(PokerHand.FIVE_OF_A_KIND, 120, 12));
+		pokerHands.add(new PokerHand(PokerHand.ROYAL_FLUSH, 100, 8));
+		pokerHands.add(new PokerHand(PokerHand.STRAIGHT_FLUSH, 100, 8));
+		pokerHands.add(new PokerHand(PokerHand.FOUR_OF_A_KIND, 60, 7));
+		pokerHands.add(new PokerHand(PokerHand.FULL_HOUSE, 40, 4));
+		pokerHands.add(new PokerHand(PokerHand.FLUSH, 35, 4));
+		pokerHands.add(new PokerHand(PokerHand.STRAIGHT, 30, 4));
+		pokerHands.add(new PokerHand(PokerHand.THREE_OF_A_KIND, 30, 3));
+		pokerHands.add(new PokerHand(PokerHand.TWO_PAIR, 20, 2));
+		pokerHands.add(new PokerHand(PokerHand.PAIR, 10, 2));
+		pokerHands.add(new PokerHand(PokerHand.HIGH_CARD, 5, 1));
 		
-		return handInfo;
+		return pokerHands;
 	}
 }

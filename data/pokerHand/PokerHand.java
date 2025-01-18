@@ -1,6 +1,6 @@
-package data.player;
+package data.pokerHand;
 
-public class HandInfo{
+public class PokerHand{
 	public static final String HIGH_CARD = "HIGH_CARD";
 	public static final String PAIR = "PAIR";
 	public static final String TWO_PAIR = "TWO_PAIR";
@@ -20,7 +20,7 @@ public class HandInfo{
 	int chips;
 	int mult;
 	
-	public HandInfo(String handName, int chips, int mult) {
+	public PokerHand(String handName, int chips, int mult) {
 		this.handName = handName;
 		this.chips = chips;
 		this.mult = mult;

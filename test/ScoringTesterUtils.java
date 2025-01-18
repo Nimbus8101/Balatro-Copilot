@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.Vector;
 
 import data.card.Card;
+import data.deck.DeckUtils;
 
 public interface ScoringTesterUtils {
 	public static final int LOW_VALUE = 2;
@@ -14,9 +15,13 @@ public interface ScoringTesterUtils {
 		Vector<Card> cards = new Vector<Card>(0);
 		
 		Random rand = new Random();
-		int randInt;
 		
+		for(int i = 0; i < numCards; i++) {
+			cards.add(new Card(generateRandomValue(rand), generateRandomSuit(rand)));
+		}
+		DeckUtils.printCardVector(cards, "   ");
 		
+		return cards;
 	}
 	
 	public static int generateRandomValue(Random rand) {
@@ -24,7 +29,17 @@ public interface ScoringTesterUtils {
 	}
 	
 	public static char generateRandomSuit(Random rand) {
-		int suitValue = rand.nextInt(4);
-		
+		switch(rand.nextInt(4)) {
+		case 0:
+			return 'S';
+		case 1:
+			return 'H';
+		case 2:
+			return 'C';
+		case 3:
+			return 'D';
+		default:
+			return 'N';
+		}
 	}
 }

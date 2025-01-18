@@ -1,6 +1,6 @@
 package data;
 
-import data.card.Deck;
+import data.deck.Deck;
 
 public class ProbabilityCalculator {
 	Deck deck;

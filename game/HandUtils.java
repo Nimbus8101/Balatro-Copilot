@@ -4,9 +4,10 @@ import java.util.Random;
 import java.util.Vector;
 
 import data.card.Card;
-import data.card.Deck;
+import data.deck.Deck;
 import data.player.DefaultPlayer;
-import data.player.HandInfo;
+import data.pokerHand.PokerHand;
+import data.pokerHand.PokerHandTable;
 import game.scoring.HandScore;
 import game.scoring.ValueCount;
 import game.scoring.ValueCountUtils;
@@ -21,61 +22,99 @@ public interface HandUtils extends ValueCountUtils{
 		return hand;
 	}
 	
-	public static HandScore scoreHand(Vector<Card> cards, Vector<HandInfo> handTable) {
-		HandScore handScore = new HandScore(cards);
+	public static HandScore scoreHand(Vector<Card> cards, PokerHandTable pokerHandTable) {
+		HandScore handScore = new HandScore();
+		handScore.setHand(cards);
 		handScore.setFlush(determineFlush(cards));
-		handScore.score(getHandInfo(determineHandType(cards), handTable));
+		handScore.setPokerHand(pokerHandTable.getPokerHand(determineHandType(cards)));
+		handScore.score();
 		return handScore;
 	}
 	
 	public static String determineHandType(Vector<Card> cards) {
-		String handType = HandInfo.HIGH_CARD;
+		Boolean DEBUG = false;
+		
+		String pokerHand = PokerHand.HIGH_CARD;
 		
 		Vector<ValueCount> valueCounts = ValueCountUtils.countValues(cards);
 		
 		if(ValueCountUtils.hasMatches(valueCounts)) {
+			if(DEBUG) System.out.print("Has matches... ");
 			switch(ValueCountUtils.highestCount(valueCounts)) {
 				case 2:
+					if(DEBUG) System.out.print("Has a pair... ");
 					switch(ValueCountUtils.countPairs(valueCounts)) {
-						case 1: handType = HandInfo.PAIR;
-						case 2: handType = HandInfo.TWO_PAIR;
+						case 1: 
+							if(DEBUG) System.out.println("Has only one pair... Pair");
+							pokerHand = PokerHand.PAIR;
+							break;
+						case 2: 
+							if(DEBUG) System.out.println("Has two pairs... Two pair");
+							pokerHand = PokerHand.TWO_PAIR;
+							break;
 					}
+					break;
 				case 3:
+					if(DEBUG) System.out.print("Has 3 of a kind... ");
 					switch(ValueCountUtils.countPairs(valueCounts)) {
-						case 0: handType = HandInfo.THREE_OF_A_KIND;
-						case 1: handType = HandInfo.FULL_HOUSE;
+						case 0: 
+							if(DEBUG) System.out.println("Has only a three of a kind... Three of a kind");
+							pokerHand = PokerHand.THREE_OF_A_KIND;
+							break;
+						case 1: 
+							if(DEBUG) System.out.println("Has a pair too... Full House");
+							pokerHand = PokerHand.FULL_HOUSE;
+							break;
 					}
-				case 4:	handType = HandInfo.FOUR_OF_A_KIND;
-				case 5: handType = HandInfo.FIVE_OF_A_KIND;
+					break;
+				case 4:	
+					if(DEBUG) System.out.println("Has 4 of a kind.");
+					pokerHand = PokerHand.FOUR_OF_A_KIND;
+					break;
+				case 5: 
+					if(DEBUG) System.out.println("Has 5 of a kind.");
+					pokerHand = PokerHand.FIVE_OF_A_KIND;
+					break;
 			}
 		}else {
+			if(DEBUG) System.out.print("Has no matches... ");
 			if(ValueCountUtils.hasStraight(valueCounts)) {
-				handType = HandInfo.STRAIGHT;
+				if(DEBUG) System.out.println("Is a straight.");
+				pokerHand = PokerHand.STRAIGHT;
 			}else {
-				handType = HandInfo.HIGH_CARD;
+				if(DEBUG) System.out.println("isn't a straight... High Card");
+				pokerHand = PokerHand.HIGH_CARD;
 			}
 		}
 		
 		if(isFlush(cards)) {
-			if(handType.equals(HandInfo.STRAIGHT)) {
+			if(pokerHand.equals(PokerHand.STRAIGHT)) {
 				if(ValueCountUtils.highestValue(valueCounts) == DefaultPlayer.MAX_DECK_VALUE) {
-					handType = HandInfo.ROYAL_FLUSH;
+					pokerHand = PokerHand.ROYAL_FLUSH;
 				}else {
-					handType = HandInfo.STRAIGHT_FLUSH;
+					pokerHand = PokerHand.STRAIGHT_FLUSH;
 				}
-			}else if(handType.equals(HandInfo.FIVE_OF_A_KIND)) {
-				handType = HandInfo.FLUSH_FIVE;
-			}else if(handType.equals(HandInfo.FULL_HOUSE)) {
-				handType = HandInfo.FLUSH_HOUSE;
+			}else if(pokerHand.equals(PokerHand.FIVE_OF_A_KIND)) {
+				pokerHand = PokerHand.FLUSH_FIVE;
+			}else if(pokerHand.equals(PokerHand.FULL_HOUSE)) {
+				pokerHand = PokerHand.FLUSH_HOUSE;
+			}else {
+				pokerHand = PokerHand.FLUSH;
 			}
 		}
 		
-		return handType;
+		return pokerHand;
 	}
 	
 	public static boolean isFlush(Vector<Card> cards) {
+		if(cards.size() < 5) {
+			return false;
+		}
+		
 		char flushType = cards.get(0).getSuit();
+		//System.out.print(flushType + "...");
 		for(int i = 0; i < cards.size(); i++) {
+			//System.out.print(cards.get(i).getSuit() + ".");
 			if(!(cards.get(i).getSuit() == flushType)) {
 				return false;
 			}
@@ -90,9 +129,9 @@ public interface HandUtils extends ValueCountUtils{
 		return 'N';
 	}
 	
-	public static HandInfo getHandInfo(String handType, Vector<HandInfo> handInfo) {
+	public static PokerHand getPokerHand(String pokerHand, Vector<PokerHand> handInfo) {
 		for(int i = 0; i < handInfo.size(); i++) {
-			if(handInfo.get(i).getName().equals(handType)) {
+			if(handInfo.get(i).getName().equals(pokerHand)) {
 				return handInfo.get(i);
 			}
 		}

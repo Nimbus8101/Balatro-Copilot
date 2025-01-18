@@ -1,7 +1,9 @@
-package data.card;
+package data.deck;
 
 import java.util.Random;
 import java.util.Vector;
+
+import data.card.Card;
 
 public interface DeckUtils {
 	public static Vector<Card> shuffleCards(Vector<Card> cards){
@@ -21,8 +23,9 @@ public interface DeckUtils {
 	public static String printCardVector(Vector<Card> cards, String buffer) {
 		String result = "";
 		for(int i = 0; i < cards.size(); i++) {
-			result += buffer + cards.get(i).printCard() + "\n";
+			result += cards.get(i).printValueAndSuit() + " ";
 		}
+		result += "\n";
 		return result;
 	}
 }
