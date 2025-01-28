@@ -1,34 +1,19 @@
-package game;
+package data.pokerHand;
 
-import java.util.Random;
 import java.util.Vector;
 
 import data.card.Card;
-import data.deck.Deck;
-import data.player.DefaultPlayer;
-import data.pokerHand.PokerHand;
-import data.pokerHand.PokerHandTable;
-import game.scoring.HandScore;
+import game.scoring.PlayedHand;
 import game.scoring.ValueCount;
 import game.scoring.ValueCountUtils;
 
-public interface HandUtils extends ValueCountUtils{
-	public static Vector<Card> draw(int numDraw, Deck deck){
-		Vector<Card> hand = new Vector<Card>(0);
-		
-		for(int i = 0; i < numDraw && deck.hasNext(); i++) {
-			hand.add(deck.drawNext());
-		}
-		return hand;
-	}
-	
-	public static HandScore scoreHand(Vector<Card> cards, PokerHandTable pokerHandTable) {
-		HandScore handScore = new HandScore();
-		handScore.setHand(cards);
-		handScore.setFlush(determineFlush(cards));
-		handScore.setPokerHand(pokerHandTable.getPokerHand(determineHandType(cards)));
-		handScore.score();
-		return handScore;
+public interface PokerHandIdentifier {
+	public static PlayedHand identifyPlayedHand(Vector<Card> cards) {
+		PlayedHand playedHand = new PlayedHand();
+		playedHand.setPlayedCards(cards);
+		playedHand.setFlush(PokerHandIdentifier.determineFlush(cards));
+		playedHand.setPokerHand(PokerHandIdentifier.determineHandType(cards));
+		return playedHand;
 	}
 	
 	public static String determineHandType(Vector<Card> cards) {
@@ -37,6 +22,20 @@ public interface HandUtils extends ValueCountUtils{
 		String pokerHand = PokerHand.HIGH_CARD;
 		
 		Vector<ValueCount> valueCounts = ValueCountUtils.countValues(cards);
+		ValueCountUtils.sortByValue(valueCounts);
+		
+		if(DEBUG) {
+			System.out.print("\nCards: ");
+			for(int i = 0; i < cards.size(); i++) {
+				System.out.print(Integer.toString(cards.get(i).getValue()) + cards.get(i).getSuit() + " ");
+			}
+			System.out.println();
+			System.out.println("Value Counts: ");
+			for(int i = 0; i < valueCounts.size(); i++) {
+				System.out.print(valueCounts.get(i).getValue() + ", " + valueCounts.get(i).getCount() + "  ");
+			}
+			System.out.println();
+		}
 		
 		if(ValueCountUtils.hasMatches(valueCounts)) {
 			if(DEBUG) System.out.print("Has matches... ");
@@ -77,9 +76,9 @@ public interface HandUtils extends ValueCountUtils{
 					break;
 			}
 		}else {
-			if(DEBUG) System.out.print("Has no matches... ");
+			if(DEBUG) {System.out.print("Has no matches... ");}
 			if(ValueCountUtils.hasStraight(valueCounts)) {
-				if(DEBUG) System.out.println("Is a straight.");
+				if(DEBUG) {System.out.println("Is a straight.");}
 				pokerHand = PokerHand.STRAIGHT;
 			}else {
 				if(DEBUG) System.out.println("isn't a straight... High Card");
@@ -89,16 +88,16 @@ public interface HandUtils extends ValueCountUtils{
 		
 		if(isFlush(cards)) {
 			if(pokerHand.equals(PokerHand.STRAIGHT)) {
-				if(ValueCountUtils.highestValue(valueCounts) == DefaultPlayer.MAX_DECK_VALUE) {
-					pokerHand = PokerHand.ROYAL_FLUSH;
-				}else {
-					pokerHand = PokerHand.STRAIGHT_FLUSH;
-				}
+				if(DEBUG) System.out.println("Straight Flush!");
+				pokerHand = PokerHand.STRAIGHT_FLUSH;
 			}else if(pokerHand.equals(PokerHand.FIVE_OF_A_KIND)) {
+				if(DEBUG) System.out.println("Flush Five!");
 				pokerHand = PokerHand.FLUSH_FIVE;
 			}else if(pokerHand.equals(PokerHand.FULL_HOUSE)) {
+				if(DEBUG) System.out.println("Flush House!");
 				pokerHand = PokerHand.FLUSH_HOUSE;
 			}else {
+				if(DEBUG) System.out.println("Just a Flush!");
 				pokerHand = PokerHand.FLUSH;
 			}
 		}
@@ -108,6 +107,7 @@ public interface HandUtils extends ValueCountUtils{
 	
 	public static boolean isFlush(Vector<Card> cards) {
 		if(cards.size() < 5) {
+			System.out.println("Less than five cards");
 			return false;
 		}
 		
@@ -119,6 +119,7 @@ public interface HandUtils extends ValueCountUtils{
 				return false;
 			}
 		}
+		//System.out.println("Is a flush!");
 		return true;
 	}
 	
@@ -128,14 +129,4 @@ public interface HandUtils extends ValueCountUtils{
 		}
 		return 'N';
 	}
-	
-	public static PokerHand getPokerHand(String pokerHand, Vector<PokerHand> handInfo) {
-		for(int i = 0; i < handInfo.size(); i++) {
-			if(handInfo.get(i).getName().equals(pokerHand)) {
-				return handInfo.get(i);
-			}
-		}
-		return null;
-	}
-	
 }

@@ -1,6 +1,5 @@
 package data.deck;
 
-import java.util.Random;
 import java.util.Vector;
 
 import data.card.Card;
@@ -30,5 +29,13 @@ public class Deck implements DeckUtils {
 	
 	public String printDeck(String buffer) {
 		return DeckUtils.printCardVector(cards, buffer + "   ");
+	}
+
+	public int size() {
+		return cards.size();
+	}
+
+	public Vector<Card> cards() {
+		return cards;
 	}
 }

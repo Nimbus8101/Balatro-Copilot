@@ -3,3 +3,7 @@
 /ValueCountUtils.class
 /ValueCountTable.class
 /ScorePrinter.class
+/PlayedHand.class
+/Scorer.class
+/HandScorer.class
+/PlayedHandVectorUtils.class

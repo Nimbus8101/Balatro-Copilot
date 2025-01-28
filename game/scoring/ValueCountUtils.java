@@ -32,7 +32,7 @@ public interface ValueCountUtils {
 		return false;
 	}
 	
-	public static boolean hasMoreThanThreeMatch(Vector<ValueCount> valueCounts) {
+	public static boolean hasMoreThanThreeMatches(Vector<ValueCount> valueCounts) {
 		for(int i = 0; i < valueCounts.size(); i++) {
 			if(valueCounts.get(i).getCount() > 2) {
 				return true;
@@ -69,31 +69,59 @@ public interface ValueCountUtils {
 			return false;
 		}
 		
+		if(hasRoyalStraight(valueCounts)) {
+			return true;
+		}
+		
 		for(int i = 0; i < valueCounts.size() - 1; i++) {
-			if(valueCounts.get(0) != valueCounts.get(i + 1)) {
+			if(valueCounts.get(i + 1).getValue() != valueCounts.get(i).getValue() + 1) {
 				return false;
 			}
 		}
 		return true;
 	}
 	
+	public static boolean hasRoyalStraight(Vector<ValueCount> valueCounts) {
+		//FIXME might need to change this logic for the Shortcut Joker
+		if(valueCounts.get(0).getValue() == Card.ACE) {
+			//System.out.println("ACE!");
+			if(valueCounts.get(1).getValue() == 10 &&
+			   valueCounts.get(2).getValue() == 11 &&
+			   valueCounts.get(3).getValue() == 12 &&
+			   valueCounts.get(4).getValue() == 13) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public static void sortByValue(Vector<ValueCount> valueCounts) {
-		Vector<ValueCount> newValueCounts = new Vector<ValueCount>(0);
+		Vector<ValueCount> temp = new Vector<ValueCount>(0);
 		
-		while(valueCounts.size() > 0) {
+		//Copies the original array
+		for(int i = 0; i < valueCounts.size(); i++) {
+			temp.add(valueCounts.get(i));
+		}
+		
+		int currIndex = 0;
+		while(temp.size() > 0) {
 			int lowIndex = 0;
-			for(int i = 0; i < valueCounts.size(); i++) {
-				if(valueCounts.get(i).getValue() > valueCounts.get(lowIndex).getValue()) {
+			//Finds the smallest value in the array
+			for(int i = 0; i < temp.size(); i++) {
+				if(temp.get(i).getValue() < temp.get(lowIndex).getValue()) {
 					lowIndex = i;
 				}
 			}
-			newValueCounts.add(valueCounts.remove(lowIndex));
+			
+			//Sets the currIndex to the smallest value found, then moves to the next index
+			valueCounts.set(currIndex, temp.remove(lowIndex));
+			currIndex += 1;
 		}
-		
-		valueCounts = newValueCounts;
 	}
 	
 	public static int highestValue(Vector<ValueCount> valueCounts) {
+		//System.out.println("Size: " + valueCounts.size());
+		
 		return valueCounts.get(valueCounts.size() - 1).getValue();
 	}
 }

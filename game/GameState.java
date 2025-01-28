@@ -14,8 +14,14 @@ public class GameState {
 	
 	Player player;
 	Deck currDeck;
+	Deck discard;
 	Vector<Card> currHand;
 	
+	/**
+	 * Constructor to create a "default" game state (turn 1)
+	 * @param player The player data
+	 * @param minimumScore The minimum score of the round
+	 */
 	public GameState(Player player, int minimumScore) {
 		this.player = player;
 		this.minimumScore = minimumScore;
@@ -23,18 +29,29 @@ public class GameState {
 		numDiscards = player.getNumDiscards();
 		
 		currDeck = player.getDeck();
+		discard = new Deck(new Vector<Card>(0));
 		currDeck.shuffle();
-		currHand = HandUtils.draw(7, currDeck);
+		currHand = DeckUtils.draw(8, currDeck);
 	}
 	
+	public Vector<Card> getCurrHand() {
+		return currHand;
+	}
 	
+	public Player getPlayer() {
+		return player;
+	}
+	
+	public Deck getCurrDeck() {
+		return currDeck;
+	}
 	
 	public String printState() {
 		String result = "";
 		result += Integer.toString(currScore) + " / " + Integer.toString(minimumScore) + "\n";
-		result += "Hand: " + "\n";
-		result += DeckUtils.printCardVector(currHand, "   ");
-		result += "Deck: " + "\n";
+		result += "Hand:   ";
+		result += DeckUtils.printCardVector(currHand, "   ") + "\n";
+		result += "Deck:   ";
 		result += currDeck.printDeck("");
 		
 		return result;

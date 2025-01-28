@@ -23,4 +23,12 @@ public class PokerHandTable {
 		}
 		return null;
 	}
+	
+	public Vector<String> getPokerHandNames(){
+		Vector<String> names = new Vector<String>(0);
+		for(int i = 0; i < pokerHands.size(); i++) {
+			names.add(pokerHands.get(i).getName());
+		}
+		return names;
+	}
 }

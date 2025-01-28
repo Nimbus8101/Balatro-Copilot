@@ -1,6 +1,7 @@
 package data.pokerHand;
 
 public class PokerHand{
+	//All Poker Hand names
 	public static final String HIGH_CARD = "HIGH_CARD";
 	public static final String PAIR = "PAIR";
 	public static final String TWO_PAIR = "TWO_PAIR";
