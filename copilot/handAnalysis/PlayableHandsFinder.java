@@ -6,6 +6,7 @@ import copilot.utils.Combination;
 import data.card.Card;
 import data.deck.DeckUtils;
 import data.pokerHand.PokerHandIdentifier;
+import data.pokerHand.PokerHandTable;
 import game.GameState;
 import game.scoring.HandScorer;
 import game.scoring.PlayedHand;
@@ -17,6 +18,7 @@ public interface PlayableHandsFinder {
 	 * @return vector of PlayedHand representing all the possible playable hands
 	 */
 	public static Vector<PlayedHand> findPlayableHands(Vector<Card> cardsInHand){
+		//FIXME i would like a similar function which finds all the potential hands from a hand of HAND_SIZE but only counts the highest scoring hand
 		Combination combination = new Combination();
 		boolean DEBUG = false;
 		
@@ -51,6 +53,22 @@ public interface PlayableHandsFinder {
 		}
 		
 		return possibleHands;
+	}
+	
+	public static PlayedHand findHighestScoringPlayableHand(Vector<Card> cardsInHand, PokerHandTable pokerHandTable) {
+		Vector<PlayedHand> playableHands = findPlayableHands(cardsInHand);
+		double highScore = 0.0;
+		int highScoreIndex = 0;
+		for(int i = 0; i < playableHands.size(); i++) {
+			HandScorer.scoreHand(playableHands.get(i), pokerHandTable);
+			if(i == 0) {
+				highScore = playableHands.get(i).getScore();
+			}else if(playableHands.get(i).getScore() > highScore) {
+				highScore = playableHands.get(i).getScore();
+				highScoreIndex = i;
+			}
+		}
+		return playableHands.get(highScoreIndex);
 	}
 	
 	

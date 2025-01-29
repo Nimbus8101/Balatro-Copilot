@@ -17,7 +17,7 @@ public interface DefaultPlayer {
 	}
 	
 	public static Player createTestPlayer() {
-		int[] values = {2, 3, 4, 5, 6, 7};
+		int[] values = {2, 3, 4, 5, 6, 7, 8};
 		char[] suit = {'S', 'C'};
 		return new Player(DeckBuilder.generateDeck(values, suit), new PokerHandTable(createDefaultPokerHandVector()), new Vector<Joker>(0));
 	}
