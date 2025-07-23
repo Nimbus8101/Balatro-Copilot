@@ -20,13 +20,24 @@ public interface DeckUtils {
         return shuffledDeck;
 	}
 	
-	public static Vector<Card> draw(int numDraw, Deck deck){
-		Vector<Card> hand = new Vector<Card>(0);
-		
-		for(int i = 0; i < numDraw && deck.hasNext(); i++) {
-			hand.add(deck.drawNext());
+	/**
+	 * Draws up to numDraw cards from deck and adds those to currHand, if there are cards in the deck to draw
+	 * @param currHand
+	 * @param numDraw
+	 * @param deck
+	 * @return
+	 */
+	public static Vector<Card> draw(Vector<Card> currHand, int numDraw, Deck deck){
+		if(currHand == null) {
+			System.out.println("Given a null currHand in DeckUtils.draw");
+			currHand = new Vector<Card>(0);
 		}
-		return hand;
+		
+		while(currHand.size() < numDraw && deck.hasNext()) {
+			currHand.add(deck.drawNext());
+		}
+		
+		return currHand;
 	}
 	
 	/**

@@ -22,10 +22,14 @@ public class PotentialHandsFinder {
 	PokerHandTable pokerHandTable;
 	
 	public PotentialHandsFinder(GameState gameState) {
+		// Converts the deck and the current hand to arrays
 		currDeck = DeckUtils.convertCardVectorToArray(gameState.getCurrDeck().cards());
 		currHand = DeckUtils.convertCardVectorToArray(gameState.getCurrHand());	
 		
+		// Pulls the poker hand table from the player variables
 		pokerHandTable  = gameState.getPlayer().getPokerHandTable();
+		
+		// Creates a blank poker hand probability table from the pokerHandTable
 		probabilityTable = new PokerHandProbabilityTable(pokerHandTable.getPokerHandNames());
 	}
 	

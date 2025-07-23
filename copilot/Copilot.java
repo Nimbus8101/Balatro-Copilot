@@ -15,8 +15,6 @@ import game.GameState;
 import game.scoring.PlayedHand;
 
 public class Copilot implements PlayableHandsFinder{
-	
-	Combination combination = new Combination();
 	GameState gameState;
 
 	public Copilot() {}

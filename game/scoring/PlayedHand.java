@@ -5,8 +5,9 @@ import java.util.Vector;
 import data.card.Card;
 import data.deck.DeckUtils;
 import data.pokerHand.PokerHand;
+import data.pokerHand.PokerHandIdentifier;
 
-public class PlayedHand implements HandScorer{
+public class PlayedHand implements HandScorer, PokerHandIdentifier{
 	String pokerHand;
 	private char flush;
 	Vector<Card> playedCards;
@@ -17,6 +18,15 @@ public class PlayedHand implements HandScorer{
 	double finalScore;
 		
 	public PlayedHand() {
+		
+	}
+	
+	public PlayedHand(Vector<Card> playedCards, Vector<Card> heldCards) {
+		this.playedCards = playedCards;
+		flush = PokerHandIdentifier.determineFlush(playedCards);
+		pokerHand = PokerHandIdentifier.determineHandType(playedCards);
+		
+		this.heldCards = heldCards;
 		
 	}
 	
@@ -57,8 +67,16 @@ public class PlayedHand implements HandScorer{
 		this.chips += chips;
 	}
 	
+	public int getChips() {
+		return this.chips;
+	}
+	
 	public void addMult(int mult) {
 		this.mult += mult;
+	}
+	
+	public double getMult() {
+		return this.mult;
 	}
 	
 	public void multiplyMult(double multiplyer) {

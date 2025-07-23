@@ -13,21 +13,39 @@ public class DeckAnalysis {
 	PokerHandProbabilityTable probabilityTable;
 	PokerHandTable pokerHandTable;
 	
+	/**
+	 * Constructor which automatically does the analysis of the deck and poker hand table passed into it
+	 * @param deck
+	 * @param pokerHandTable
+	 */
 	public DeckAnalysis(Deck deck, PokerHandTable pokerHandTable) {
 		this.pokerHandTable = pokerHandTable;
 		probabilityTable = new PokerHandProbabilityTable(pokerHandTable.getPokerHandNames());
+		
+		// Calculates and stores the probabilities
 		storeProbabilities(DeckUtils.convertCardVectorToArray(deck.cards()), deck.size(), 5);
 	}
 	
-	public void calculatePokerHandProbabilities(Deck deck, PokerHandTable pokerHandTable) {
-		storeProbabilities(DeckUtils.convertCardVectorToArray(deck.cards()), deck.size(), 5);		
-	}
-	
+	/**
+	 * Runs the recursive combinationUtil function to reach a combination of cards
+	 * @param arr
+	 * @param n
+	 * @param r
+	 */
 	private void storeProbabilities(Card arr[], int n, int r) {
         Card data[] = new Card[r];
         combinationUtil(arr, data, 0, n-1, 0, r);
     }
 	
+	/**
+	 * REcursively finds and scores all hands of length r
+	 * @param arr
+	 * @param data
+	 * @param start
+	 * @param end
+	 * @param index
+	 * @param r
+	 */
 	private void combinationUtil(Card arr[], Card data[], int start, int end, int index, int r)
     {
         // Current combination is ready to be printed, print it

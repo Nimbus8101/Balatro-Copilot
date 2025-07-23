@@ -13,7 +13,7 @@ public interface CopilotMessage {
 		result += "[Copilot] - Given a hand of: " + DeckUtils.printCardVector(hand, "") + "\n";
 		result += "[Copilot] - You can play: \n";
 		for(int i = 0; i < playableHands.size(); i++) {
-			result += "   " + Integer.toString(i + 1)+ ". ";
+			result += "   " + padString(Integer.toString(i + 1) + ". ", 5);
 			result += padString(playableHands.get(i).getHandType(), 16);
 			result += " = " + padString(String.format("%.2f", playableHands.get(i).getScore()) + " pts. ", 10);
 			result += "[ " + DeckUtils.printCardVector(playableHands.get(i).getPlayedCards(), "") + "]";

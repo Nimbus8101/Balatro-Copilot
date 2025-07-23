@@ -31,7 +31,7 @@ public class GameState {
 		currDeck = player.getDeck();
 		discard = new Deck(new Vector<Card>(0));
 		currDeck.shuffle();
-		currHand = DeckUtils.draw(8, currDeck);
+		currHand = new Vector<Card>(0);
 	}
 	
 	public Vector<Card> getCurrHand() {
@@ -45,6 +45,15 @@ public class GameState {
 	public Deck getCurrDeck() {
 		return currDeck;
 	}
+	
+	
+	public void draw() {
+		currHand = DeckUtils.draw(currHand, 8, currDeck);
+		//FIXME the draw should change based on the player's hand size
+	}
+	
+	
+	
 	
 	public String printState() {
 		String result = "";

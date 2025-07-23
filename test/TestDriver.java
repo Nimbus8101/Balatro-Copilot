@@ -12,14 +12,14 @@ public class TestDriver {
 	public static void main(String[] args) {
 		//generateAndScoreHands(10);
 		//testScorePrinter();
-		PokerHandDeterminationTests.runTests();
+		//PokerHandDeterminationTests.runTests();
 	}
 	
 	public static void testScorePrinter() {
 		Vector<PlayedHand> scores = new Vector<PlayedHand>(0);
 		for(int i = 0; i < 100; i++) {
 			PlayedHand a = new PlayedHand();
-			a.setScore(i);
+			a.setFinalScore(i);
 			scores.add(a);
 		}
 		System.out.println(ScorePrinter.graphScores(scores));
@@ -27,11 +27,11 @@ public class TestDriver {
 		scores = new Vector<PlayedHand>(0);
 		for(int i = 0; i < 100; i++) {
 			PlayedHand a = new PlayedHand();
-			a.setScore(i);
+			a.setFinalScore(i);
 			scores.add(a);
 			for(int j = i / 10; j > 0; j--) {
 				a = new PlayedHand();
-				a.setScore(i);
+				a.setFinalScore(i);
 				scores.add(a);
 			}
 		}
