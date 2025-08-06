@@ -16,8 +16,9 @@ public class CopilotPanel extends JPanel{
 	
 	public static GridBagConstraints getGBC() {
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 3;
+        gbc.gridx = 6;
         gbc.gridy = 0;
+        gbc.gridwidth = 1;
         gbc.gridheight = 3; // Spans all vertical space
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;

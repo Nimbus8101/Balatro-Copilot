@@ -27,7 +27,7 @@ public class ButtonPanel extends JPanel{
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 1; 
         gbc.gridy = 2;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 4;
         gbc.weightx = 1.0;
         gbc.weighty = 0.25;
         gbc.fill = GridBagConstraints.BOTH;

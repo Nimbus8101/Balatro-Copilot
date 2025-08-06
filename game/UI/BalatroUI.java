@@ -1,8 +1,5 @@
 package game.UI;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
 import data.card.Card;
 import data.player.Player;
 import game.GameState;
@@ -22,7 +19,7 @@ public class BalatroUI extends JFrame implements AnteSelectListener, ButtonPanel
 	LeftPanel leftPanel;
 	JokerPanel jokerPanel;
 	ConsumablePanel consumablePanel;
-	HandPanel handPanel;
+	PlayArea playArea;
 	JPanel buttonPanel;
 	CopilotPanel copilotPanel;
 
@@ -33,9 +30,8 @@ public class BalatroUI extends JFrame implements AnteSelectListener, ButtonPanel
         setExtendedState(JFrame.MAXIMIZED_BOTH);  // Maximize window
         setUndecorated(false); // Set to true if you want fullscreen with no title bar
 
-        Container pane = getContentPane();
+        pane = getContentPane();
         pane.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
         
         // ==== LEFT PANEL (Game Stats) ====
         leftPanel = new LeftPanel();
@@ -53,13 +49,14 @@ public class BalatroUI extends JFrame implements AnteSelectListener, ButtonPanel
 
 
         // ==== CENTER PANEL (Hand Cards) ====
-        handPanel = new AnteSelect(this, ante);
-        pane.add(handPanel, HandPanel.getGBC());
+        playArea = new AnteSelect(this, ante);
+        playArea.setBorder(BorderFactory.createTitledBorder("Ante Select"));
+        pane.add(playArea, PlayArea.getGBC());
 
         
         // ==== BOTTOM PANEL (Action Buttons) ====
         buttonPanel = new ButtonPanel(this);
-        //pane.add(buttonPanel, gbc);
+        pane.add(buttonPanel, ButtonPanel.getGBC());
         
         
         // ==== RIGHT PANEL PLACEHOLDER (Future Content) ====
@@ -68,7 +65,6 @@ public class BalatroUI extends JFrame implements AnteSelectListener, ButtonPanel
 
         setVisible(true);
         
-        
         player = new Player();
     }
 
@@ -76,25 +72,22 @@ public class BalatroUI extends JFrame implements AnteSelectListener, ButtonPanel
 	public void onBlindSelected(String blindName) {
 		System.out.println("Blind selected: " + blindName);
 		
-		if (this.handPanel != null) {
-		    getContentPane().remove(this.handPanel);
-		}
+		pane.remove(playArea);
+		playArea = new HandPanel();
+		pane.add(playArea, PlayArea.getGBC());
 		
-		this.handPanel = new HandPanel();
 		startBlind();
 		
-		getContentPane().add(this.handPanel, HandPanel.getGBC());
-		getContentPane().add(this.buttonPanel, ButtonPanel.getGBC());
 		getContentPane().revalidate();
 		getContentPane().repaint();
-		
+		System.out.println("Hand updated");
 	}
 
 	public void startBlind() {
 		player.deck.shuffle();
 		player.deck.draw(8);
-		handPanel.deck = player.deck;
-		handPanel.updateHand();
+		playArea.deck = player.deck;
+		//playArea.handPanel.updateHand();
 	}
 
 	@Override

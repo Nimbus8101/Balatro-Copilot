@@ -20,7 +20,7 @@ public class ConsumablePanel extends JPanel{
 	
 	public static GridBagConstraints getGBC() {
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 2;
+        gbc.gridx = 4;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;

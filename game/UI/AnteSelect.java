@@ -4,7 +4,7 @@ import javax.swing.*;
 
 import java.awt.*;
 
-public class AnteSelect extends HandPanel {
+public class AnteSelect extends PlayArea {
 	private AnteSelectListener listener;
 	
     public AnteSelect(AnteSelectListener listener, int ante) {
@@ -86,15 +86,9 @@ public class AnteSelect extends HandPanel {
         return card;
     }
     
-    public static GridBagConstraints getGBC() {
-    	GridBagConstraints gbc = new GridBagConstraints();
-    	gbc.gridx = 1;
-    	gbc.gridy = 1;
-    	gbc.gridwidth = 2;
-    	gbc.fill = GridBagConstraints.BOTH;
-    	gbc.weightx = 1.0;
-    	gbc.weighty = 1.0;
-        return gbc;
-    }
+    @Override
+	public void doLayout() {
+	    super.doLayout();
+	}
 }
 

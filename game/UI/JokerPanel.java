@@ -21,7 +21,7 @@ public class JokerPanel extends JPanel{
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.gridwidth = 1;
+        gbc.gridwidth = 2;
         gbc.gridheight = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
@@ -33,7 +33,7 @@ public class JokerPanel extends JPanel{
         GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.gridwidth = 1;
+        gbc.gridwidth = 2;
         gbc.gridheight = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;

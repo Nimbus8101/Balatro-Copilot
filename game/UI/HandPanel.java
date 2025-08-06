@@ -1,61 +1,83 @@
 package game.UI;
 
-import java.awt.FlowLayout;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
-import java.net.URL;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.JLayeredPane;
+import javax.swing.border.LineBorder;
 
 import data.card.Card;
-import data.deck.Deck;
 
-public class HandPanel extends JPanel implements CardSelectionListener{
-	Deck deck;
+public class HandPanel extends PlayArea implements CardSelectionListener{
+	JLayeredPane layeredPane;
 	private final int MAX_SELECTION = 5;
 	int numSelected = 0;
 	Card[] selectedCards = new Card[5];
 	
+	private final int CARD_Y = 200;
+	private final int CARD_WIDTH = 150;
+    private final int CARD_HEIGHT = 210;
+    private final int OVERLAP = 50;
+	
 	public HandPanel() {
-		setLayout(new GridBagLayout());
-        setBorder(BorderFactory.createTitledBorder("Your Hand"));
+		setLayout(new BorderLayout());
+		layeredPane = new JLayeredPane();	
+		layeredPane.setPreferredSize(new Dimension(800, 300));
+        layeredPane.setBorder(BorderFactory.createTitledBorder("Your Hand"));
+        this.add(layeredPane, BorderLayout.CENTER);
 	}
 	
 	public void updateHand() {
-		this.removeAll();
-		
-		GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridy = 0;
-        gbc.insets = new Insets(400, 10, 0, 10); // top, left, bottom, right padding
-        gbc.anchor = GridBagConstraints.SOUTH;
-
-        for (int i = 0; i < deck.drawnCards.size(); i++) {
-        	String path = "/resources/Cards/" + deck.drawnCards.get(i).cardPathName();
-            ImageIcon icon = new ImageIcon(getClass().getResource(path));
-            Image scaledImage = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-            CardLabel card = new CardLabel(new ImageIcon(scaledImage), gbc.insets, this);
-            card.indexOfCard = i;
-            gbc.gridx = i;
-            add(card, (GridBagConstraints) gbc.clone());
-        }
-		this.revalidate();
-	    this.repaint(); 
+		rebuildLayeredPane();
 	}
 	
-	public static GridBagConstraints getGBC() {
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.gridwidth = 2;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        return gbc;
+	public void rebuildLayeredPane() {
+		layeredPane.removeAll();
+		
+        if(this.deck == null) return;
+        
+		int numCards = deck.drawnCards.size();
+		int panelWidth = getWidth();
+		// Compute maximum possible overlap so all cards fit
+	    int maxCardSpread = panelWidth - CARD_WIDTH;
+	    int overlap = (numCards > 1) ? CARD_WIDTH - (maxCardSpread / (numCards - 1)) : 0;
+	    
+		if(panelWidth == 0) return;
+		
+	    // Clamp overlap so it’s never negative or excessive
+	    overlap = Math.max(0, Math.min(CARD_WIDTH - 30, overlap));
+
+        for (int i = 0; i < numCards; i++) {
+        	String path = "/resources/Cards/" + deck.drawnCards.get(i).cardPathName();
+            ImageIcon icon = new ImageIcon(getClass().getResource(path));
+            Image scaledImage = icon.getImage().getScaledInstance(CARD_WIDTH, CARD_HEIGHT, Image.SCALE_SMOOTH);
+            
+            CardLabel card = new CardLabel(new ImageIcon(scaledImage), this);
+            card.indexOfCard = i;
+
+            // position cards so they overlap
+            int x = i * (CARD_WIDTH - overlap);
+            
+            card.setBounds(x, CARD_Y, CARD_WIDTH, CARD_HEIGHT);
+            card.setBorder(new LineBorder(Color.BLACK, 2));
+
+            layeredPane.add(card, Integer.valueOf(i));
+        }
+        
+        layeredPane.revalidate();
+        layeredPane.repaint();
+	}
+	
+	@Override
+	public void doLayout() {
+	    super.doLayout();
+	    updateHand();
 	}
 
 	 @Override
