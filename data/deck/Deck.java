@@ -1,18 +1,23 @@
 package data.deck;
 
+import java.util.Collections;
 import java.util.Vector;
 
 import data.card.Card;
 
 public class Deck implements DeckUtils {
-	Vector<Card> cards;
+	public Vector<Card> cards;
+	public Vector<Card> drawnCards;
+	public Vector<Card> discardedCards;
 	
 	public Deck(Vector<Card> cards) {
 		this.cards = cards;
+		drawnCards = new Vector<Card>(0);
+		discardedCards = new Vector<Card>(0);
 	}
 	
 	public void shuffle() {
-        cards = DeckUtils.shuffleCards(cards);
+		Collections.shuffle(cards);
 	}
 	
 	public boolean hasNext() {
@@ -25,6 +30,10 @@ public class Deck implements DeckUtils {
 	
 	public Card drawNext() {
 		return cards.remove(0);
+	}
+	
+	public void draw(int numDraw) {
+		for(int i = 0; i < numDraw; i++) drawnCards.add(cards.remove(0));
 	}
 	
 	public String printDeck(String buffer) {

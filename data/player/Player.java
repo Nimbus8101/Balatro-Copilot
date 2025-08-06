@@ -10,7 +10,7 @@ import data.pokerHand.PokerHandTable;
 public class Player {
 	public int numDiscards = 1;
 	
-	Deck deck;
+	public Deck deck;
 	PokerHandTable pokerHandTable;
 	Vector<Joker> jokers;
 	
@@ -36,4 +36,9 @@ public class Player {
 	public int getNumDiscards() {
 		return numDiscards;
 	}
+	
+	public void shuffleDeck() {
+		this.deck.shuffle();
+	}
+	
 }

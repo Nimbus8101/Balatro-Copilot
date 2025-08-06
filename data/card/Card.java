@@ -41,10 +41,11 @@ public class Card {
 	public static final String PURPLE_SEAL = "PURPLE_SEAL";
 	
 	public static final String NONE = "NONE";
-	
+	public static int id = 000;
 	
 	private int value;
 	private char suit;
+	private int cardID;
 	
 	private String enhancement;
 	private String edition;
@@ -52,12 +53,15 @@ public class Card {
 	
 	private int chips;
 	
+	public boolean isSelected = false;
+	
 	public Card(int value, char suit) {
 		this.value = value;
 		this.suit = suit;
 		enhancement = NONE;
 		edition = NONE;
 		seal = NONE;
+		cardID = id++;
 	}
 
 	public int getValue() {
@@ -108,4 +112,67 @@ public class Card {
 		return Integer.toString(value) + suit;
 	}
 	
+	public String cardPathName() {
+		String result = "";
+		switch(value) {
+			case ACE:
+				result += "ace_";
+				break;
+			case TWO:
+				result += "two_";
+				break;
+			case THREE:
+				result += "three_";
+				break;
+			case FOUR:
+				result += "four_";
+				break;
+			case FIVE:
+				result += "five_";
+				break;
+			case SIX:
+				result += "six_";
+				break;
+			case SEVEN:
+				result += "seven_";
+				break;
+			case EIGHT:
+				result += "eight_";
+				break;
+			case NINE:
+				result += "nine_";
+				break;
+			case TEN:
+				result += "ten_";
+				break;
+			case JACK:
+				result += "jack_";
+				break;
+			case QUEEN:
+				result += "queen_";
+				break;
+			case KING:
+				result += "king_";
+				break;
+		}
+		
+		switch(suit) {
+			case SPADES:
+				result += "spades";
+				break;
+			case HEARTS:
+				result += "hearts";
+				break;
+			case CLUBS:
+				result += "clubs";
+				break;
+			case DIAMONDS:
+				result += "diamonds";
+				break;
+		}
+		
+		result += ".png";
+		
+		return result;
+	}
 }

@@ -1,25 +1,12 @@
 package data.deck;
 
+import java.util.Collections;
 import java.util.Random;
 import java.util.Vector;
 
 import data.card.Card;
 
 public interface DeckUtils {
-	public static Vector<Card> shuffleCards(Vector<Card> cards){
-		Vector<Card> shuffledDeck = new Vector<Card>(0);
-		
-		Random rand = new Random();
-		int randInt;
-		
-		while(cards.size() > 0) {
-			randInt = rand.nextInt(cards.size());
-			shuffledDeck.add(cards.remove(randInt));
-		}
-		
-        return shuffledDeck;
-	}
-	
 	/**
 	 * Draws up to numDraw cards from deck and adds those to currHand, if there are cards in the deck to draw
 	 * @param currHand
