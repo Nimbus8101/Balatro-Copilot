@@ -102,9 +102,11 @@ public class BalatroUI extends JFrame implements AnteSelectListener, ButtonPanel
 
 	@Override
 	public void playHandPressed() {
+		System.out.println("Here");
 		Vector<Card> selectedCards = new Vector<Card>(0);
 		
 		for(int i = 0; i < player.deck.drawnCards.size(); i++) {
+			System.out.println(player.deck.drawnCards.get(i).printValueAndSuit() + " - " + player.deck.drawnCards.get(i).isSelected);
 			if(player.deck.drawnCards.get(i).isSelected) {
 				selectedCards.add(player.deck.drawnCards.get(i));
 				// FIXME When cards re selected they should go to discard pile and more should be drawn
