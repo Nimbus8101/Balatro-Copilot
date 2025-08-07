@@ -40,4 +40,19 @@ public interface DefaultPlayer {
 		
 		return pokerHands;
 	}
+	
+	public static int[] defaultChips() {
+		int[] chips = new int[9];
+		chips[0] = 100;
+		chips[1] = 300;
+		chips[2] = 800;
+		chips[3] = 2000;
+		chips[4] = 5000;
+		chips[5] = 11000;
+		chips[6] = 20000;
+		chips[7] = 35000;
+		chips[8] = 50000;
+		
+		return chips;
+	}
 }

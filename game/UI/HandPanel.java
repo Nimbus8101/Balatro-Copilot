@@ -29,16 +29,23 @@ public class HandPanel extends PlayArea implements CardSelectionListener{
 		setLayout(new BorderLayout());
 		layeredPane = new JLayeredPane();	
 		layeredPane.setPreferredSize(new Dimension(800, 300));
-        layeredPane.setBorder(BorderFactory.createTitledBorder("Your Hand"));
+        //layeredPane.setBorder(BorderFactory.createTitledBorder("Your Hand:"));
         this.add(layeredPane, BorderLayout.CENTER);
 	}
 	
-	public void updateHand() {
-		rebuildLayeredPane();
+	//public void updateHand() {
+		//rebuildLayeredPane();
+	//}
+	
+	@Override
+	public void setBorderTitle(String borderTitle) {
+		layeredPane.setBorder(BorderFactory.createTitledBorder(borderTitle));
 	}
 	
+	@Override
 	public void rebuildLayeredPane() {
 		layeredPane.removeAll();
+		numSelected = 0;
 		
         if(this.deck == null) return;
         
@@ -54,18 +61,19 @@ public class HandPanel extends PlayArea implements CardSelectionListener{
 	    overlap = Math.max(0, Math.min(CARD_WIDTH - 30, overlap));
 
         for (int i = 0; i < numCards; i++) {
-        	String path = "/resources/Cards/" + deck.drawnCards.get(i).cardPathName();
-            ImageIcon icon = new ImageIcon(getClass().getResource(path));
-            Image scaledImage = icon.getImage().getScaledInstance(CARD_WIDTH, CARD_HEIGHT, Image.SCALE_SMOOTH);
-            
-            CardLabel card = new CardLabel(new ImageIcon(scaledImage), this);
-            card.indexOfCard = i;
+            CardLabel card = loadCard(deck.drawnCards.get(i).cardPathName(), i);
 
             // position cards so they overlap
             int x = i * (CARD_WIDTH - overlap);
             
             card.setBounds(x, CARD_Y, CARD_WIDTH, CARD_HEIGHT);
             card.setBorder(new LineBorder(Color.BLACK, 2));
+            
+            if(deck.drawnCards.get(i).isSelected) {
+            	 card.liftCard();
+            	 numSelected++;
+            }
+            
 
             layeredPane.add(card, Integer.valueOf(i));
         }
@@ -74,17 +82,29 @@ public class HandPanel extends PlayArea implements CardSelectionListener{
         layeredPane.repaint();
 	}
 	
+	public CardLabel loadCard(String cardPathName, int index) {
+		String path = "/resources/Cards/" + cardPathName;
+        ImageIcon icon = new ImageIcon(getClass().getResource(path));
+        Image scaledImage = icon.getImage().getScaledInstance(CARD_WIDTH, CARD_HEIGHT, Image.SCALE_SMOOTH);
+        
+        CardLabel card = new CardLabel(new ImageIcon(scaledImage), this);
+        card.indexOfCard = index;
+        
+        return card;
+	}
+	
 	@Override
 	public void doLayout() {
 	    super.doLayout();
-	    updateHand();
+	    rebuildLayeredPane();
 	}
 
 	 @Override
 	    public boolean onCardSelected(CardLabel card) {
 	        if (numSelected < MAX_SELECTION) {
 	            numSelected++;
-	            deck.cards.get(card.indexOfCard).isSelected = true;
+	            deck.drawnCards.get(card.indexOfCard).isSelected = true;
+	            System.out.println(card.indexOfCard + " " + deck.drawnCards.get(card.indexOfCard).isSelected + " / " + numSelected);
 	            return true;
 	        } else {
 	            System.out.println("You can only select up to 5 cards.");
@@ -94,7 +114,8 @@ public class HandPanel extends PlayArea implements CardSelectionListener{
 
 	    @Override
 	    public void onCardDeselected(CardLabel card) {
-	        deck.cards.get(card.indexOfCard).isSelected = false;
+	        deck.drawnCards.get(card.indexOfCard).isSelected = false;
 	        numSelected--;
+	        System.out.println(card.indexOfCard + " " + deck.drawnCards.get(card.indexOfCard).isSelected + " / " + numSelected);
 	    }
 }

@@ -57,4 +57,21 @@ class CardLabel extends JLabel {
             }
         });
     }
+    
+    public void liftCard() {
+    	if(isLifted) {
+    		return;
+    	}
+    	else {
+    		int x = getX();
+            int y = getY();
+            
+            setLocation(x, y - LIFT_AMOUNT);
+            isLifted = true;
+    	}
+    }
+    
+    public boolean isLifted() {
+    	return isLifted;
+    }
 }

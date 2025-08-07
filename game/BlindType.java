@@ -1,0 +1,82 @@
+package game;
+
+public enum BlindType {
+    THE_HOOK(1, "The Hook", "Discards 2 random cards held in hand after every played hand", 2, 5),
+    THE_OX(2, "The Ox", "Playing your most played hand this run sets money to $0", 2, 5),
+    THE_HOUSE(3, "The House", "First hand is drawn face down", 2, 5),
+    THE_WALL(4, "The Wall", "Extra large blind", 4, 5),
+    THE_WHEEL(5, "The Wheel", "1 in 7 cards get drawn face down during the round", 2, 5),
+    THE_ARM(6, "The Arm", "Decrease level of played poker hand by 1", 2, 5),
+    THE_CLUB(7, "The Club", "All Club cards are debuffed", 2, 5),
+    THE_FISH(8, "The Fish", "Cards drawn face down after each hand played", 2, 5),
+    THE_PSYCHIC(9, "The Psychic", "Must play 5 cards (not all cards need to score)", 2, 5),
+    THE_GOAD(10, "The Goad", "All Spade cards are debuffed", 2, 5),
+    THE_WATER(11, "The Water", "Start with 0 discards", 2, 5),
+    THE_WINDOW(12, "The Window", "All Diamond cards are debuffed", 2, 5),
+    THE_MANACLE(13, "The Manacle", "-1 Hand Size", 2, 5),
+    THE_EYE(14, "The Eye", "No repeat hand types this round", 2, 5),
+    THE_MOUTH(15, "The Mouth", "Only one hand type can be played this round", 2, 5),
+    THE_PLANT(16, "The Plant", "All face cards are debuffed", 2, 5),
+    THE_SERPENT(17, "The Serpent", "After Play or Discard, always draw 3 cards", 2, 5),
+    THE_PILLAR(18, "The Pillar", "Cards played previously this Ante are debuffed", 2, 5),
+    THE_NEEDLE(19, "The Needle", "Play only 1 hand", 1, 5),
+    THE_HEAD(20, "The Head", "All Heart cards are debuffed", 2, 5),
+    THE_TOOTH(21, "The Tooth", "Lose $1 per card played", 2, 5),
+    THE_FLINT(22, "The Flint", "Base Chips and Mult for played poker hands are halved", 2, 5),
+    THE_MARK(23, "The Mark", "All face cards are drawn face down", 2, 5),
+
+    // Finisher Boss Blinds
+    AMBER_ACORN(24, "Amber Acorn", "Flips and shuffles all Joker cards", 2, 8),
+    VERDANT_LEAF(25, "Verdant Leaf", "All cards debuffed until 1 Joker sold", 2, 8),
+    VIOLET_VESSEL(26, "Violet Vessel", "Very large blind", 6, 8),
+    CRIMSON_HEART(27, "Crimson Heart", "One random Joker disabled every hand", 2, 8),
+    CERULEAN_BELL(28, "Cerulean Bell", "Forces 1 card to always be selected", 2, 8);
+
+    public static final int LAST_BOSS_BLIND = 23;
+    public static final int LAST_FINISHER_BLIND = 28;
+
+    private final int id;
+    private final String name;
+    private final String description;
+    private final double multiplier;
+    private final int cost;
+
+    BlindType(int id, String name, String description, double multiplier, int cost) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.multiplier = multiplier;
+        this.cost = cost;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getBlindName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public double getMultiplier() {
+        return multiplier;
+    }
+
+    public int getCost() {
+        return cost;
+    }
+    
+    public static double getMultiplierByName(String blindName) {
+        for (BlindType blind : BlindType.values()) {
+            if (blind.name.equalsIgnoreCase(blindName)) {
+                return blind.multiplier;
+            }
+        }
+        throw new IllegalArgumentException("No BlindType found with name: " + blindName);
+    }
+}
+
+

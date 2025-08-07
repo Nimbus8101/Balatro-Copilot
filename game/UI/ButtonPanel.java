@@ -4,8 +4,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -18,24 +16,15 @@ public class ButtonPanel extends JPanel{
 		this.listener = listener;
 		
 		this.setLayout(new FlowLayout());
-        setBorder(BorderFactory.createTitledBorder("Reserved"));
+        setBorder(BorderFactory.createTitledBorder("Buttons"));
         setPreferredSize(new Dimension(200, 0)); // You can adjust width
         
         JButton playHand = new JButton("Play Hand");
-        playHand.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            	listener.playHandPressed();
-            }
-        });
+        playHand.addActionListener(e -> listener.playHandPressed());
         
         JButton discardHand = new JButton("Discard Hand");
-        playHand.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            	listener.discardHandPressed();
-            }
-        });
+        discardHand.addActionListener(e -> listener.discardHandPressed());
+        
         add(playHand);
         add(discardHand);
 	}

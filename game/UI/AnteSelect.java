@@ -2,27 +2,42 @@ package game.UI;
 
 import javax.swing.*;
 
-import java.awt.*;
+import game.BlindType;
 
-public class AnteSelect extends PlayArea {
+import java.awt.*;
+import java.util.Random;
+
+public class AnteSelect extends PlayArea implements BlindCardListener{
 	private AnteSelectListener listener;
 	
-    public AnteSelect(AnteSelectListener listener, int ante) {
+	BlindCard[] blinds = new BlindCard[3];
+	int blindSelected;
+	
+    public AnteSelect(AnteSelectListener listener, int baseChips) {
     	this.listener = listener;
         setLayout(new FlowLayout(FlowLayout.CENTER, 30, 20));
         setBorder(BorderFactory.createTitledBorder("Choose Your Blind"));
+        
+        blindSelected = 0;
+        
+        blinds[0] = new BlindCard(this, "Small Blind", "Score at least " + baseChips, "$$$$", "selected", true);
+        
+        blinds[1] = new BlindCard(this, "Big Blind", "Score at least " + (int) (baseChips * 1.5), "$$$$", "upcoming", true);
+        
+        BlindType bossBlind = getRandomBlind();
+        blinds[2] = new BlindCard(this, bossBlind.getBlindName(), bossBlind.getDescription(), "$".repeat(bossBlind.getCost()), "upcoming", false);
 
         // Create each blind card as a JPanel
-        JPanel smallBlindCard = createBlindCard("Small Blind", "Score at least 800", "$$$$", true, true);
+        //JPanel smallBlindCard = createBlindCard("Small Blind", "Score at least " + baseChips, "$$$$", true, true);
 
-        JPanel bigBlindCard = createBlindCard("Big Blind", "Score at least 1200", "$$$$", false, false);
+        //JPanel bigBlindCard = createBlindCard("Big Blind", "Score at least " + (int) (baseChips * 1.5), "$$$$", false, false);
 
-        JPanel hookCard = createBlindCard("The Hook", "Discards 2 random cards per hand played\nScore at least 1600", "$$$$$", false, false);
+        //JPanel bossCard = createBlindCard("The Hook", "Discards 2 random cards per hand played\nScore at least 1600", "$$$$$", false, false);
 
         // Add cards to this panel
-        add(smallBlindCard);
-        add(bigBlindCard);
-        add(hookCard);
+        add(blinds[0]);
+        add(blinds[1]);
+        add(blinds[2]);
     }
 
     private JPanel createBlindCard(String title, String description, String reward, boolean isActive, boolean canSkip) {
@@ -68,7 +83,8 @@ public class AnteSelect extends PlayArea {
                 skipButton.setAlignmentX(Component.CENTER_ALIGNMENT);
                 skipButton.addActionListener(e -> {
                 	if(listener != null) {
-                		 listener.onBlindSkipped();
+                		card.setBackground(new Color(230, 230, 230));
+                		listener.onBlindSkipped();
                 	}
                 });
                 card.add(Box.createVerticalStrut(5));
@@ -86,9 +102,32 @@ public class AnteSelect extends PlayArea {
         return card;
     }
     
+    public static BlindType getRandomBlind() {
+    	Random random = new Random();
+        BlindType[] values = BlindType.values();
+        return values[random.nextInt(values.length)];
+    }
+    
     @Override
 	public void doLayout() {
 	    super.doLayout();
+	}
+
+	@Override
+	public void blindSelected() {
+		listener.onBlindSelected(blinds[blindSelected].titleLabel.getText());
+	}
+
+	@Override
+	public void blindSkipped() {
+		blindSelected++;
+		if(blindSelected >= 3) {
+			blindSelected = 0;
+		}else {
+			blinds[blindSelected].incrementState();
+			blinds[blindSelected - 1].incrementState();
+		}
+		listener.onBlindSkipped();
 	}
 }
 

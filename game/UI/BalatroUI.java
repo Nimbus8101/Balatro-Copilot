@@ -2,21 +2,25 @@ package game.UI;
 
 import data.card.Card;
 import data.player.Player;
-import game.GameState;
+import game.BlindType;
+import game.scoring.HandScorer;
+import game.scoring.PlayedHand;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Vector;
 
-public class BalatroUI extends JFrame implements AnteSelectListener, ButtonPanelListener{
-	
+public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener, ButtonPanelListener{
 	Player player;
+	
 	int ante = 1;
 	int round = 0;
+	String currBlind = "None";
 	
 	// The various panels that will be used
 	Container pane;
 	LeftPanel leftPanel;
+	ConsolePanel consolePanel;
 	JokerPanel jokerPanel;
 	ConsumablePanel consumablePanel;
 	PlayArea playArea;
@@ -24,17 +28,52 @@ public class BalatroUI extends JFrame implements AnteSelectListener, ButtonPanel
 	CopilotPanel copilotPanel;
 
     public BalatroUI() {
-        setTitle("Balatro Clone UI - GridBagLayout");
+    	// ===== Player Setup ===== //
+    	player = new Player();
+    	
+    	// ===== UI Setup ===== //
+        setTitle("Balatro Clone UI");
         setSize(1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);  // Maximize window
         setUndecorated(false); // Set to true if you want fullscreen with no title bar
 
         pane = getContentPane();
+        
+        homeScreen();
+
+        setVisible(true);
+    }
+    
+    public void homeScreen() {
+    	pane.removeAll();
         pane.setLayout(new GridBagLayout());
         
+        JButton startGame = new JButton("Start Game");
+        startGame.addActionListener(e -> startGame());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        pane.add(startGame, gbc);
+        
+        pane.revalidate();
+        pane.repaint();
+    }
+    
+    public void startGame() {
+    	pane.removeAll();
+        pane.setLayout(new GridBagLayout());
+        
+        // ==== TOP LEFT ABOVE Game Stats: Console Panel ====
+        consolePanel = new ConsolePanel();
+        pane.add(consolePanel, ConsolePanel.getGBC());
+        
         // ==== LEFT PANEL (Game Stats) ====
-        leftPanel = new LeftPanel();
+        leftPanel = new LeftPanel(currBlind, 0, player.getNumHands(), player.getNumDiscards(), player.money);
         pane.add(leftPanel, LeftPanel.getGBC());
 
         
@@ -49,7 +88,7 @@ public class BalatroUI extends JFrame implements AnteSelectListener, ButtonPanel
 
 
         // ==== CENTER PANEL (Hand Cards) ====
-        playArea = new AnteSelect(this, ante);
+        playArea = new AnteSelect(this, player.getBaseChips(ante));
         playArea.setBorder(BorderFactory.createTitledBorder("Ante Select"));
         pane.add(playArea, PlayArea.getGBC());
 
@@ -62,15 +101,25 @@ public class BalatroUI extends JFrame implements AnteSelectListener, ButtonPanel
         // ==== RIGHT PANEL PLACEHOLDER (Future Content) ====
         copilotPanel = new CopilotPanel();
         pane.add(copilotPanel, CopilotPanel.getGBC());
-
-        setVisible(true);
         
-        player = new Player();
+        pane.revalidate();
+        pane.repaint();
     }
 
 	@Override
 	public void onBlindSelected(String blindName) {
-		System.out.println("Blind selected: " + blindName);
+		consolePanel.appendText("Blind selected: " + blindName);
+		
+		leftPanel.currBlind = blindName;
+		if(blindName.equals("Small Blind")) {
+			leftPanel.scoreRequired = player.getBaseChips(ante);
+		}else if(blindName.equals("Big Blind")){
+			leftPanel.scoreRequired = (int) (player.getBaseChips(ante) * 1.5);
+		}else {
+			leftPanel.scoreRequired = (int) (player.getBaseChips(ante) * BlindType.getMultiplierByName(blindName));
+		}
+		
+		leftPanel.updateLabels();
 		
 		pane.remove(playArea);
 		playArea = new HandPanel();
@@ -78,22 +127,31 @@ public class BalatroUI extends JFrame implements AnteSelectListener, ButtonPanel
 		
 		startBlind();
 		
-		getContentPane().revalidate();
-		getContentPane().repaint();
-		System.out.println("Hand updated");
+		consolePanel.appendText("Hand updated");
+		
+		pane.revalidate();
+		pane.repaint();
 	}
 
 	public void startBlind() {
 		player.deck.shuffle();
 		player.deck.draw(8);
 		playArea.deck = player.deck;
-		//playArea.handPanel.updateHand();
+		
+		playArea.setBorderTitle("Your Hand: " + player.deck.size() + " / " + player.deck.totalCards());
+	}
+	
+	public void updateGameStatsPanel() {
+		leftPanel.currBlind = currBlind;
+		leftPanel.numHands = player.numHands;
+		leftPanel.numDiscards = player.numDiscards;
 	}
 
 	@Override
 	public void onBlindSkipped() {
 		System.out.println("Blind skipped.");
-		
+		pane.revalidate();
+		pane.repaint();
 	}
 	
 	public static void main(String[] args) {
@@ -102,38 +160,77 @@ public class BalatroUI extends JFrame implements AnteSelectListener, ButtonPanel
 
 	@Override
 	public void playHandPressed() {
-		System.out.println("Here");
+		if(leftPanel.currBlind.equals("None")) return;
+		
 		Vector<Card> selectedCards = new Vector<Card>(0);
+		Vector<Card> heldCards = new Vector<Card>(0);
 		
 		for(int i = 0; i < player.deck.drawnCards.size(); i++) {
-			System.out.println(player.deck.drawnCards.get(i).printValueAndSuit() + " - " + player.deck.drawnCards.get(i).isSelected);
 			if(player.deck.drawnCards.get(i).isSelected) {
 				selectedCards.add(player.deck.drawnCards.get(i));
-				// FIXME When cards re selected they should go to discard pile and more should be drawn
+				player.deck.drawnCards.remove(i);
+				i--;
+			}else {
+				heldCards.add(player.deck.drawnCards.get(i));
 			}
 		}
 		
-		System.out.println("Selected Cards:");
+		consolePanel.appendText("Playing Cards:");
 		for(int i = 0; i < selectedCards.size(); i++) {
-			System.out.println(selectedCards.get(i).printCard());
-		}		
+			consolePanel.appendText(" - " + selectedCards.get(i).printCard());
+		}
+		
+		double playedHand= HandScorer.scoreHand(new PlayedHand(selectedCards, heldCards), null)
+		
+		player.deck.discardedCards.addAll(selectedCards);
+		player.deck.drawTo(8);
+		
+		playArea.setBorderTitle("Your Hand: " + player.deck.size() + " / " + player.deck.totalCards());
+		playArea.rebuildLayeredPane();
+		leftPanel.useHand();
+		if(leftPanel.scoreReached()) {
+			consolePanel.appendText("Score Reached!");
+			leftPanel = new LeftPanel(currBlind, 0, player.getNumHands(), player.getNumDiscards(), player.money);
+		} else if(leftPanel.outOfHands()) {
+			consolePanel.appendText("Game Over!");
+			homeScreen();
+		}
+		currBlind = "None";
 	}
 
 	@Override
 	public void discardHandPressed() {
-		Vector<Card> selectedCards = new Vector<Card>(0);
+		if(leftPanel.currBlind.equals("None")) return;
 		
+		if(!leftPanel.useDiscard()) {
+			consolePanel.appendText("No discards remaining!");
+			return;
+		}
+		
+		// Pulls the selected cards
+		Vector<Card> selectedCards = new Vector<Card>(0);
 		for(int i = 0; i < player.deck.drawnCards.size(); i++) {
 			if(player.deck.drawnCards.get(i).isSelected) {
 				selectedCards.add(player.deck.drawnCards.get(i));
-				// FIXME When cards re selected they should go to discard pile and more should be drawn
+				player.deck.drawnCards.remove(i);
+				i--;
 			}
 		}
 		
-		System.out.println("Selected Cards:");
+		// Logs the change to the console
+		consolePanel.appendText("Discarding Cards:");
 		for(int i = 0; i < selectedCards.size(); i++) {
-			System.out.println(selectedCards.get(i).printCard());
-		}		
+			consolePanel.appendText(" - " + selectedCards.get(i).printCard());
+		}
+		
+		// Replenishes the player's hand
+		player.deck.discardedCards.addAll(selectedCards);
+		player.deck.drawTo(8);
+		
+		// Updates some information
+		playArea.setBorderTitle("Your Hand: " + player.deck.size() + " / " + player.deck.totalCards());
+		playArea.rebuildLayeredPane();
+		leftPanel.useDiscard();
 	}
 }
 

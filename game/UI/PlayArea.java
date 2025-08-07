@@ -15,6 +15,12 @@ public class PlayArea extends JPanel{
 		 super();
 	}
 	
+	public void setBorderTitle(String borderTitle) {
+		
+	}
+	
+	public void rebuildLayeredPane() {}
+	
 	public static GridBagConstraints getGBC() {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 1;

@@ -27,7 +27,6 @@ public class PlayedHand implements HandScorer, PokerHandIdentifier{
 		pokerHand = PokerHandIdentifier.determineHandType(playedCards);
 		
 		this.heldCards = heldCards;
-		
 	}
 	
 	public void setPokerHand(String pokerHand) {
