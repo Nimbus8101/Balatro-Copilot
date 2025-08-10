@@ -50,6 +50,10 @@ public class Deck implements DeckUtils {
 		}
 	}
 	
+	public void sortCards() {
+		
+	}
+	
 	public String printDeck(String buffer) {
 		return DeckUtils.printCardVector(cards, buffer + "   ");
 	}
