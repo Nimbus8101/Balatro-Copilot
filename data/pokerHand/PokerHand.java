@@ -38,4 +38,8 @@ public class PokerHand{
 	public int getMult() {
 		return mult;
 	}
+	
+	public String printPokerHand() {
+		return handName + ": " + chips + " x " + mult;
+	}
 }

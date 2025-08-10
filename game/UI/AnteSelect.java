@@ -13,7 +13,7 @@ public class AnteSelect extends PlayArea implements BlindCardListener{
 	BlindCard[] blinds = new BlindCard[3];
 	int blindSelected;
 	
-    public AnteSelect(AnteSelectListener listener, int baseChips) {
+    public AnteSelect(AnteSelectListener listener, int baseChips, int blindsDone) {
     	this.listener = listener;
         setLayout(new FlowLayout(FlowLayout.CENTER, 30, 20));
         setBorder(BorderFactory.createTitledBorder("Choose Your Blind"));
@@ -39,73 +39,22 @@ public class AnteSelect extends PlayArea implements BlindCardListener{
         add(blinds[1]);
         add(blinds[2]);
     }
-
-    private JPanel createBlindCard(String title, String description, String reward, boolean isActive, boolean canSkip) {
-        JPanel card = new JPanel();
-        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setPreferredSize(new Dimension(200, 250));
-        card.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
-        card.setBackground(isActive ? new Color(200, 230, 255) : new Color(230, 230, 230));
-
-        JLabel titleLabel = new JLabel(title, SwingConstants.CENTER);
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JLabel descLabel = new JLabel("<html><div style='text-align: center;'>" + description + "</div></html>");
-        descLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        descLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JLabel rewardLabel = new JLabel("Reward: " + reward);
-        rewardLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
-        rewardLabel.setForeground(new Color(34, 139, 34));
-        rewardLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        card.add(Box.createVerticalStrut(10));
-        card.add(titleLabel);
-        card.add(Box.createVerticalStrut(10));
-        card.add(descLabel);
-        card.add(Box.createVerticalStrut(10));
-        card.add(rewardLabel);
-        card.add(Box.createVerticalStrut(20));
-
-        if (isActive) {
-            JButton selectButton = new JButton("Select");
-            selectButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-            selectButton.addActionListener(e -> {
-            	if(listener != null) {
-            		 listener.onBlindSelected(title);
-            	}
-            });
-            card.add(selectButton);
-
-            if (canSkip) {
-                JButton skipButton = new JButton("Skip Blind");
-                skipButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-                skipButton.addActionListener(e -> {
-                	if(listener != null) {
-                		card.setBackground(new Color(230, 230, 230));
-                		listener.onBlindSkipped();
-                	}
-                });
-                card.add(Box.createVerticalStrut(5));
-                card.add(skipButton);
-            }
-        } else {
-            JLabel upcomingLabel = new JLabel("Upcoming");
-            upcomingLabel.setFont(new Font("SansSerif", Font.ITALIC, 12));
-            upcomingLabel.setForeground(Color.DARK_GRAY);
-            upcomingLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            card.add(Box.createVerticalStrut(10));
-            card.add(upcomingLabel);
-        }
-
-        return card;
-    }
     
     public static BlindType getRandomBlind() {
     	Random random = new Random();
         BlindType[] values = BlindType.values();
         return values[random.nextInt(values.length)];
+    }
+    
+    public void incrementBlinds() {
+    	for(BlindCard blind : blinds) {
+    		blind.incrementState();
+    	}
+    }
+    
+    @Override
+    public void rebuildLayeredPane() {
+    	
     }
     
     @Override

@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 public class LeftPanel extends JPanel{
 	public String currBlind;
 	public int scoreRequired;
-	public int currScore;
+	public double currScore;
 	public int numHands;
 	public int numDiscards;
 	public int money;
@@ -94,9 +94,12 @@ public class LeftPanel extends JPanel{
 		return false;
 	}
 	
-	public void useHand() {
+	public void useHand(double score) {
 		numHands--;
 		handsLabel.setText("Hands: " + numHands);
+		
+		currScore += score;
+		updateLabels();
 	}
 	
 	public boolean scoreReached() {

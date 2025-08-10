@@ -24,12 +24,18 @@ public interface HandScorer extends ValueCountUtils{
 	
 	public static double scoreHand(PlayedHand playedHand, PokerHandTable pokerHandTable) {
 		String handType = playedHand.getHandType();
-		playedHand.addChips(pokerHandTable.getPokerHand(handType).getChips());
-		playedHand.addMult(pokerHandTable.getPokerHand(handType).getMult());
-		
+		playedHand.setStartingChips(pokerHandTable.getPokerHand(handType).getChips());
+		playedHand.setStartingMult(pokerHandTable.getPokerHand(handType).getMult());
+				
 		// Pulls the cards that need to be scored and loops through the vector, scoring them
 		for(Card card : pullScoredCards(playedHand.getPlayedCards(), handType)) {
 			scoreCard(playedHand, card);
+		}
+		
+		Vector<ScoreChangeValues> changes = playedHand.getChanges();
+		
+		for(ScoreChangeValues change : changes) {
+			System.out.println(change.chips + " " + change.mult);
 		}
 		
 		// Runs through the cards in hand and performs scoring (if applicable)
@@ -39,54 +45,66 @@ public interface HandScorer extends ValueCountUtils{
 		
 		
 		playedHand.score();
+		
 		return playedHand.getScore();
 	}
 	
 	public static void scoreCard(PlayedHand playedHand, Card card) {
-		playedHand.addChips(card.getValue());
+		ScoreChangeValues change = new ScoreChangeValues();
+		
+		change.addChips(card.getValue());
 		
 		switch(card.getEdition()) {
 		case Card.BONUS:
-			playedHand.addChips(30);
+			change.addChips(30);
 		case Card.MULT:
-			playedHand.addMult(4);
+			change.addMult(4);;
 		}
 		
 		switch(card.getEnhancement()) {
 		case Card.FOIL:
-			playedHand.addChips(50);
+			change.addChips(50);
 		case Card.HOLOGRAPHIC:
-			playedHand.addMult(10);
+			change.addMult(10);
 		case Card.POLYCHROME:
-			playedHand.multiplyMult(1.5);
+			change.addMultiplier(1.5);
 		}
 		
 		// FIXME: Any other chip or mult additions (such as for joker abilities, like greedy joker or hiker)
+		
+		// Adds the changes to the list of changes
+		playedHand.addChange(change);
 	}
 	
 	public static Vector<Card> pullScoredCards(Vector<Card> playedCards, String handType){
 		Vector<Card> scoredCards = new Vector<Card>(0);
 		
-		if(handType == PokerHand.PAIR) {
+		switch(handType) {
+		case PokerHand.HIGH_CARD:
+			scoredCards = pullHighCard(playedCards);
+			break;
+		case PokerHand.PAIR:
 			scoredCards = pullMatches(playedCards, 2);
-		}else if(handType == PokerHand.THREE_OF_A_KIND){
+			break;
+		case PokerHand.THREE_OF_A_KIND:
 			scoredCards = pullMatches(playedCards, 3);
-		}else if(handType == PokerHand.FOUR_OF_A_KIND){
-			scoredCards = pullMatches(playedCards, 4);	
-		}else if(handType == PokerHand.FIVE_OF_A_KIND){
+			break;
+		case PokerHand.TWO_PAIR:
+			scoredCards = pullTwoPair(playedCards);
+			break;
+		case PokerHand.FOUR_OF_A_KIND:
+			scoredCards = pullMatches(playedCards, 4);
+			break;
+		case PokerHand.FIVE_OF_A_KIND:
+			// From this point, all hand types use all five cards, so no check is really necessary
+		case PokerHand.FLUSH:
+		case PokerHand.FULL_HOUSE:
+		case PokerHand.STRAIGHT_FLUSH:
+		case PokerHand.ROYAL_FLUSH:
+		case PokerHand.FLUSH_HOUSE:
+		case PokerHand.FLUSH_FIVE:
+		default:
 			return playedCards;
-		}
-		// The rest require five cards, so no check is really needed.
-		else if(handType == PokerHand.FLUSH_FIVE) {
-			return playedCards;
-		}else if(handType == PokerHand.FLUSH_HOUSE) {
-			return playedCards;
-		}else if(handType == PokerHand.FULL_HOUSE) {
-			return playedCards;
-		}else if(handType == PokerHand.ROYAL_FLUSH) {
-			return playedCards;
-		}else {
-			
 		}
 		
 		return scoredCards;
@@ -116,6 +134,8 @@ public interface HandScorer extends ValueCountUtils{
 		
 		return cards;
 	}
+	
+	
 	
 	/**
 	 * Recursive function which finds the cards which match to eachother, given how many matches are needed
@@ -149,4 +169,51 @@ public interface HandScorer extends ValueCountUtils{
 		return matchUtil(cards, matches, numMatches, currIndex + 1);
 	}
 	
+	public static Vector<Card> pullHighCard(Vector<Card> cards) {
+		Vector<Card> scoredCards = new Vector<Card>(0);
+		int max = cards.get(0).getValue();
+		int index = 0;
+		
+		for(int i = 0; i < cards.size(); i++) {
+			if(cards.get(i).getValue() > max) {
+				max = cards.get(i).getValue();
+				index = i;
+			}
+		}
+		scoredCards.add(cards.get(index));
+		
+		return scoredCards;
+	}
+	
+	public static Vector<Card> pullTwoPair(Vector<Card> cards){
+		Vector<Card> scoredCards = new Vector<Card>(0);
+		int unmatchedIndex = -1;
+
+		for (int i = 0; i < cards.size(); i++) {
+		    int value = cards.get(i).getValue();
+		    boolean isMatched = false;
+
+		    for (int j = 0; j < cards.size(); j++) {
+		        if (i != j && cards.get(j).getValue() == value) {
+		            // Found a match for cards[i]
+		            isMatched = true;
+		            break;
+		        }
+		    }
+
+		    if (!isMatched) {
+		        // Found the unmatched card
+		        unmatchedIndex = i;
+		        break; // No need to continue; we only expect one unmatched card
+		    }
+		}
+		
+		for(int i = 0; i < cards.size(); i++) {
+			if(i != unmatchedIndex) {
+				scoredCards.add(cards.get(i));
+			}
+		}
+		
+		return scoredCards;
+	}
 }

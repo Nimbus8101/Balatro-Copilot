@@ -18,7 +18,6 @@ public class HandPanel extends PlayArea implements CardSelectionListener{
 	JLayeredPane layeredPane;
 	private final int MAX_SELECTION = 5;
 	int numSelected = 0;
-	Card[] selectedCards = new Card[5];
 	
 	private final int CARD_Y = 200;
 	private final int CARD_WIDTH = 150;

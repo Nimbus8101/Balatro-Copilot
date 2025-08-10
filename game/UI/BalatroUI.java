@@ -5,6 +5,7 @@ import data.player.Player;
 import game.BlindType;
 import game.scoring.HandScorer;
 import game.scoring.PlayedHand;
+import game.scoring.ScoreChangeValues;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,6 +25,7 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 	JokerPanel jokerPanel;
 	ConsumablePanel consumablePanel;
 	PlayArea playArea;
+	AnteSelect anteSelect;
 	JPanel buttonPanel;
 	CopilotPanel copilotPanel;
 
@@ -88,7 +90,8 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 
 
         // ==== CENTER PANEL (Hand Cards) ====
-        playArea = new AnteSelect(this, player.getBaseChips(ante));
+        //anteSelect = new AnteSelect(this, player.getBaseChips(ante));
+        playArea = anteSelect;
         playArea.setBorder(BorderFactory.createTitledBorder("Ante Select"));
         pane.add(playArea, PlayArea.getGBC());
 
@@ -175,27 +178,51 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 			}
 		}
 		
+		if(selectedCards.size() == 0) {
+			consolePanel.appendText("No cards selected to play");
+			return;
+		}
+		
 		consolePanel.appendText("Playing Cards:");
 		for(int i = 0; i < selectedCards.size(); i++) {
 			consolePanel.appendText(" - " + selectedCards.get(i).printCard());
 		}
+				
+		PlayedHand playedHand = new PlayedHand(selectedCards, heldCards);
+		HandScorer.scoreHand(playedHand, player.getPokerHandTable());
 		
-		double playedHand= HandScorer.scoreHand(new PlayedHand(selectedCards, heldCards), null)
+		consolePanel.appendText(playedHand.printChanges());
+		consolePanel.appendText("Final Score: " + playedHand.score());
 		
 		player.deck.discardedCards.addAll(selectedCards);
 		player.deck.drawTo(8);
 		
 		playArea.setBorderTitle("Your Hand: " + player.deck.size() + " / " + player.deck.totalCards());
 		playArea.rebuildLayeredPane();
-		leftPanel.useHand();
+		
+		leftPanel.useHand(playedHand.getScore());
 		if(leftPanel.scoreReached()) {
 			consolePanel.appendText("Score Reached!");
 			leftPanel = new LeftPanel(currBlind, 0, player.getNumHands(), player.getNumDiscards(), player.money);
+			playArea.removeAll();
+			anteSelect.incrementBlinds();
+			playArea = anteSelect;
+			playArea.validate();
+			playArea.repaint();
+			resetDeck();
 		} else if(leftPanel.outOfHands()) {
 			consolePanel.appendText("Game Over!");
+			resetDeck();
 			homeScreen();
 		}
 		currBlind = "None";
+	}
+	
+	public void resetDeck() {
+		for(int i = 0; i < player.deck.drawnCards.size(); i++) {
+			player.deck.drawnCards.get(i).isSelected = false;	
+		}
+		player.deck.resetDeck();
 	}
 
 	@Override
@@ -215,6 +242,11 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 				player.deck.drawnCards.remove(i);
 				i--;
 			}
+		}
+		
+		if(selectedCards.size() == 0) {
+			consolePanel.appendText("No cards selected to discard");
+			return;
 		}
 		
 		// Logs the change to the console

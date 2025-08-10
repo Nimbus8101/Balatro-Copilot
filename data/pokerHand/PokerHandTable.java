@@ -31,4 +31,14 @@ public class PokerHandTable {
 		}
 		return names;
 	}
+	
+	public String printPokerHandTable() {
+		StringBuilder result = new StringBuilder();
+		
+		for(PokerHand pokerhand : pokerHands) {
+			result.append(pokerhand.printPokerHand() + "\n");
+		}
+		
+		return result.toString();
+	}
 }

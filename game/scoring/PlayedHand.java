@@ -12,13 +12,17 @@ public class PlayedHand implements HandScorer, PokerHandIdentifier{
 	private char flush;
 	Vector<Card> playedCards;
 	Vector<Card> heldCards;
+	Vector<ScoreChangeValues> scoreChanges;
+	
+	int startingChips;
+	int startingMult;
 	
 	int chips = 0;
 	double mult = 0.0;
 	double finalScore;
 		
 	public PlayedHand() {
-		
+		scoreChanges = new Vector<ScoreChangeValues>(0);
 	}
 	
 	public PlayedHand(Vector<Card> playedCards, Vector<Card> heldCards) {
@@ -27,6 +31,15 @@ public class PlayedHand implements HandScorer, PokerHandIdentifier{
 		pokerHand = PokerHandIdentifier.determineHandType(playedCards);
 		
 		this.heldCards = heldCards;
+		scoreChanges = new Vector<ScoreChangeValues>(0);
+	}
+	
+	public void setStartingChips(int chips) {
+		startingChips = chips;
+	}
+	
+	public void setStartingMult(int mult) {
+		startingMult = mult;
 	}
 	
 	public void setPokerHand(String pokerHand) {
@@ -54,8 +67,19 @@ public class PlayedHand implements HandScorer, PokerHandIdentifier{
 	}
 	
 	public double score() {
+		this.chips = startingChips;
+		this.mult = startingMult;
+		applyChanges();
 		finalScore = chips * mult;
 		return finalScore;
+	}
+	
+	public void applyChanges() {
+		for(ScoreChangeValues change : scoreChanges) {
+			this.chips += change.chips;
+			this.mult += change.mult;
+			this.mult *= change.multiplier;
+		}
 	}
 	
 	public void setFinalScore(double finalScore) {
@@ -80,6 +104,35 @@ public class PlayedHand implements HandScorer, PokerHandIdentifier{
 	
 	public void multiplyMult(double multiplyer) {
 		this.mult *= multiplyer;
+	}
+	
+	public void addChange(ScoreChangeValues change) {
+		System.out.println("Adding change");
+		scoreChanges.add(change);
+	}
+	
+	public Vector<ScoreChangeValues> getChanges(){
+		return scoreChanges;
+	}
+	
+	public String printChanges() {
+		StringBuilder result = new StringBuilder();
+		int chips = startingChips;
+		int mult = startingMult;
+		
+		result.append("Hand Type: " + pokerHand + "\n");
+		result.append("Starting Score: " + startingChips + " X " + startingMult + "\n");
+		
+		for(ScoreChangeValues change : scoreChanges) {
+			chips += change.chips;
+			mult += change.mult;
+			mult *= change.multiplier;
+			
+			result.append("chips: +" + change.chips + " , mult: +" + change.mult + " , mult: x" + change.multiplier + " => ");
+			result.append(chips + " X " + mult + "\n");
+		}
+		
+		return result.toString();
 	}
 
 	public String print(String buffer) {
