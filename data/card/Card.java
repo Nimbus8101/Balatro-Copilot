@@ -175,4 +175,63 @@ public class Card {
 		
 		return result;
 	}
+	
+	public int compare(Card card1, Card card2) {
+		if(card1.value < card2.value) {
+			return -1;
+		}
+		else if(card1.value < card2.value) {
+			return 1;
+		}
+		else {
+			if(card1.suit == card2.suit) {
+				return 1;
+			}
+			
+			int card1Val = 0;
+			int card2Val = 0;
+			
+			switch(card1.suit) {
+			case SPADES:
+				card1Val = 4;
+				break;
+			case HEARTS:
+				card1Val = 3;
+				break;
+			case CLUBS:
+				card1Val = 2;
+				break;
+			case DIAMONDS:
+				card1Val = 1;
+				break;
+			default:
+				card1Val = 0;
+			}
+			
+			switch(card2.suit) {
+			case SPADES:
+				card2Val = 4;
+				break;
+			case HEARTS:
+				card2Val = 3;
+				break;
+			case CLUBS:
+				card2Val = 2;
+				break;
+			case DIAMONDS:
+				card2Val = 1;
+				break;
+			default:
+				card1Val = 0;
+			}
+			
+			if(card1Val < card2Val) {
+				return -1;
+			}else if(card1Val > card2Val) {
+				return 1;
+			}else {
+				return 0;
+			}
+		}
+	}
 }

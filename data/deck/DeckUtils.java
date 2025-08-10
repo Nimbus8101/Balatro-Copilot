@@ -68,4 +68,22 @@ public interface DeckUtils {
 		}
 		return result;
 	}
+	
+	public static void sortCardVector(Vector<Card> cards, int typeOfSort) {
+		int RANK = 0;
+		int SUIT = 1;
+		
+		if(typeOfSort == RANK) {
+			int bottomRange = 0;
+			int rank = cards.get(0).getValue();
+			for(int i = 1; i < cards.size(); i++) {
+				if(cards.get(i).getValue() == rank) {
+					
+				}
+				else if(cards.get(i).getValue() > rank) {
+					
+				}
+			}
+		}
+	}
 }

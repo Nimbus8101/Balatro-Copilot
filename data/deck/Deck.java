@@ -19,6 +19,8 @@ public class Deck implements DeckUtils {
 	public void resetDeck() {
 		cards.addAll(drawnCards);
 		cards.addAll(discardedCards);
+		drawnCards = new Vector<Card>(0);
+		discardedCards = new Vector<Card>(0);
 	}
 	
 	

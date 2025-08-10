@@ -13,6 +13,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.border.LineBorder;
 
 import data.card.Card;
+import data.deck.Deck;
 
 public class HandPanel extends PlayArea implements CardSelectionListener{
 	JLayeredPane layeredPane;
@@ -23,6 +24,8 @@ public class HandPanel extends PlayArea implements CardSelectionListener{
 	private final int CARD_WIDTH = 150;
     private final int CARD_HEIGHT = 210;
     private final int OVERLAP = 50;
+    
+    //public Deck deck;
 	
 	public HandPanel() {
 		setLayout(new BorderLayout());

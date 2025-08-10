@@ -90,7 +90,7 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 
 
         // ==== CENTER PANEL (Hand Cards) ====
-        //anteSelect = new AnteSelect(this, player.getBaseChips(ante));
+        anteSelect = new AnteSelect(this, player.getBaseChips(ante), 1);
         playArea = anteSelect;
         playArea.setBorder(BorderFactory.createTitledBorder("Ante Select"));
         pane.add(playArea, PlayArea.getGBC());
@@ -124,9 +124,7 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 		
 		leftPanel.updateLabels();
 		
-		pane.remove(playArea);
-		playArea = new HandPanel();
-		pane.add(playArea, PlayArea.getGBC());
+		setPlayArea(new HandPanel());
 		
 		startBlind();
 		
@@ -149,6 +147,16 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 		leftPanel.numHands = player.numHands;
 		leftPanel.numDiscards = player.numDiscards;
 	}
+	
+	private void setPlayArea(JPanel newPlayArea) {
+	    if (playArea != null) {
+	        pane.remove(playArea);
+	    }
+	    playArea = (PlayArea) newPlayArea;
+	    pane.add(playArea, PlayArea.getGBC());
+	    pane.revalidate();
+	    pane.repaint();
+	}
 
 	@Override
 	public void onBlindSkipped() {
@@ -170,6 +178,7 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 		
 		for(int i = 0; i < player.deck.drawnCards.size(); i++) {
 			if(player.deck.drawnCards.get(i).isSelected) {
+				player.deck.drawnCards.get(i).isSelected = false;
 				selectedCards.add(player.deck.drawnCards.get(i));
 				player.deck.drawnCards.remove(i);
 				i--;
@@ -204,11 +213,8 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 		if(leftPanel.scoreReached()) {
 			consolePanel.appendText("Score Reached!");
 			leftPanel = new LeftPanel(currBlind, 0, player.getNumHands(), player.getNumDiscards(), player.money);
-			playArea.removeAll();
 			anteSelect.incrementBlinds();
-			playArea = anteSelect;
-			playArea.validate();
-			playArea.repaint();
+			setPlayArea(anteSelect);
 			resetDeck();
 		} else if(leftPanel.outOfHands()) {
 			consolePanel.appendText("Game Over!");
@@ -238,6 +244,7 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 		Vector<Card> selectedCards = new Vector<Card>(0);
 		for(int i = 0; i < player.deck.drawnCards.size(); i++) {
 			if(player.deck.drawnCards.get(i).isSelected) {
+				player.deck.drawnCards.get(i).isSelected = false;
 				selectedCards.add(player.deck.drawnCards.get(i));
 				player.deck.drawnCards.remove(i);
 				i--;
