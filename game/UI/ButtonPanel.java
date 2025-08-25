@@ -25,8 +25,16 @@ public class ButtonPanel extends JPanel{
         JButton discardHand = new JButton("Discard Hand");
         discardHand.addActionListener(e -> listener.discardHandPressed());
         
+        JButton sortByRank = new JButton("Sort By Rank");
+        sortByRank.addActionListener(e -> listener.sortByRankPressed());
+        
+        JButton sortBySuit = new JButton("Sort By Suit");
+        sortBySuit.addActionListener(e -> listener.sortBySuitPressed());
+        
         add(playHand);
         add(discardHand);
+        add(sortByRank);
+        add(sortBySuit);
 	}
 	
 	public static GridBagConstraints getGBC() {

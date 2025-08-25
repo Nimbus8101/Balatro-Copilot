@@ -1,6 +1,7 @@
 package game.UI;
 
 import data.card.Card;
+import data.deck.DeckUtils;
 import data.player.Player;
 import game.BlindType;
 import game.scoring.HandScorer;
@@ -137,6 +138,7 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 	public void startBlind() {
 		player.deck.shuffle();
 		player.deck.draw(8);
+		DeckUtils.sortCardVector(player.deck.drawnCards, DeckUtils.SORT_RANK);
 		playArea.deck = player.deck;
 		
 		playArea.setBorderTitle("Your Hand: " + player.deck.size() + " / " + player.deck.totalCards());
@@ -205,6 +207,7 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 		
 		player.deck.discardedCards.addAll(selectedCards);
 		player.deck.drawTo(8);
+		DeckUtils.sortCardVector(player.deck.drawnCards, DeckUtils.SORT_RANK);
 		
 		playArea.setBorderTitle("Your Hand: " + player.deck.size() + " / " + player.deck.totalCards());
 		playArea.rebuildLayeredPane();
@@ -235,7 +238,7 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 	public void discardHandPressed() {
 		if(leftPanel.currBlind.equals("None")) return;
 		
-		if(!leftPanel.useDiscard()) {
+		if(leftPanel.numDiscards <= 0) {
 			consolePanel.appendText("No discards remaining!");
 			return;
 		}
@@ -265,11 +268,26 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 		// Replenishes the player's hand
 		player.deck.discardedCards.addAll(selectedCards);
 		player.deck.drawTo(8);
+		DeckUtils.sortCardVector(player.deck.drawnCards, DeckUtils.SORT_RANK);
 		
 		// Updates some information
 		playArea.setBorderTitle("Your Hand: " + player.deck.size() + " / " + player.deck.totalCards());
 		playArea.rebuildLayeredPane();
 		leftPanel.useDiscard();
+	}
+	
+	@Override
+	public void sortByRankPressed() {
+		if(leftPanel.currBlind.equals("None")) return;
+		DeckUtils.sortCardVector(player.deck.drawnCards, DeckUtils.SORT_RANK);
+		playArea.rebuildLayeredPane();
+	}
+	
+	@Override
+	public void sortBySuitPressed() {
+		if(leftPanel.currBlind.equals("None")) return;
+		DeckUtils.sortCardVector(player.deck.drawnCards, DeckUtils.SORT_SUIT);
+		playArea.rebuildLayeredPane();
 	}
 }
 

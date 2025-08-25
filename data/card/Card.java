@@ -1,7 +1,7 @@
 package data.card;
 
 public class Card {
-	public static final int ACE = 1;
+	public static final int ACE = 14;
 	public static final int TWO = 2;
 	public static final int THREE = 3;
 	public static final int FOUR = 4;
@@ -176,11 +176,32 @@ public class Card {
 		return result;
 	}
 	
-	public int compare(Card card1, Card card2) {
+	public static int getCardSuitAsInt(char cardSuit) {
+		switch(cardSuit) {
+		case SPADES:
+			return 4;
+		case HEARTS:
+			return 3;
+		case CLUBS:
+			return 2;
+		case DIAMONDS:
+			return 1;
+		default:
+			return 0;
+		}
+	}
+	
+	/**
+	 * Compares the given cards. To determine if a card is "greater" than another, first the rank is compared, then the suit (S > H > C > D)
+	 * @param card1
+	 * @param card2
+	 * @return
+	 */
+	public static int compare(Card card1, Card card2) {
 		if(card1.value < card2.value) {
 			return -1;
 		}
-		else if(card1.value < card2.value) {
+		else if(card1.value > card2.value) {
 			return 1;
 		}
 		else {
@@ -188,42 +209,8 @@ public class Card {
 				return 1;
 			}
 			
-			int card1Val = 0;
-			int card2Val = 0;
-			
-			switch(card1.suit) {
-			case SPADES:
-				card1Val = 4;
-				break;
-			case HEARTS:
-				card1Val = 3;
-				break;
-			case CLUBS:
-				card1Val = 2;
-				break;
-			case DIAMONDS:
-				card1Val = 1;
-				break;
-			default:
-				card1Val = 0;
-			}
-			
-			switch(card2.suit) {
-			case SPADES:
-				card2Val = 4;
-				break;
-			case HEARTS:
-				card2Val = 3;
-				break;
-			case CLUBS:
-				card2Val = 2;
-				break;
-			case DIAMONDS:
-				card2Val = 1;
-				break;
-			default:
-				card1Val = 0;
-			}
+			int card1Val = getCardSuitAsInt(card1.getSuit());
+			int card2Val = getCardSuitAsInt(card2.getSuit());
 			
 			if(card1Val < card2Val) {
 				return -1;

@@ -50,7 +50,7 @@ public class Deck implements DeckUtils {
 		}
 	}
 	
-	public void sortCards() {
+	public void sortCards(String sortType) {
 		
 	}
 	

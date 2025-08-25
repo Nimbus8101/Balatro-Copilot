@@ -7,6 +7,9 @@ import java.util.Vector;
 import data.card.Card;
 
 public interface DeckUtils {
+	public static int SORT_RANK = 0;
+	public static int SORT_SUIT = 1;
+	
 	/**
 	 * Draws up to numDraw cards from deck and adds those to currHand, if there are cards in the deck to draw
 	 * @param currHand
@@ -69,20 +72,54 @@ public interface DeckUtils {
 		return result;
 	}
 	
-	public static void sortCardVector(Vector<Card> cards, int typeOfSort) {
-		int RANK = 0;
-		int SUIT = 1;
+	public static void sortCardVector(Vector<Card> cards, int typeOfSort) {	
+		if(typeOfSort == SORT_RANK) {
+			int bottomIndex = 0;
+			while(bottomIndex < cards.size() - 1) {		
+				for(int i = bottomIndex + 1; i < cards.size(); i++) {
+					
+					// If the first card is "smaller" than the second, swap the two
+					if(Card.compare(cards.get(bottomIndex), cards.get(i)) < 0) {
+						Collections.swap(cards, bottomIndex, i);
+					}
+				}
+				bottomIndex++;
+			}
+		}
 		
-		if(typeOfSort == RANK) {
+		if(typeOfSort == SORT_SUIT) {
+			// FIXME: Algorithm doesn't work as intended
+			
+			// Step 1: Move all spades to front, then sort those
 			int bottomRange = 0;
-			int rank = cards.get(0).getValue();
-			for(int i = 1; i < cards.size(); i++) {
-				if(cards.get(i).getValue() == rank) {
-					
+			int bottomIndex = 0;
+			char currSuit = Card.SPADES;
+			
+			while(true) {
+				// Group all the cards of the current suit together
+				for(int i = bottomRange; i < cards.size(); i++) {
+					if(cards.get(i).getSuit() == currSuit) {
+						Collections.swap(cards, bottomIndex, i);
+						bottomIndex++;
+					}
 				}
-				else if(cards.get(i).getValue() > rank) {
-					
+				
+				// Sort them by value
+				while(bottomRange < bottomIndex) {
+					for(int i = bottomRange; i < bottomIndex; i++) {
+						if(cards.get(bottomRange).getValue() < cards.get(i).getValue()) {
+							Collections.swap(cards, bottomRange, i);
+							break;
+						}
+					}
+					bottomRange++;
 				}
+				
+				// Change the currSuit for the next loop
+				if(currSuit == Card.SPADES) currSuit = Card.HEARTS;
+				else if(currSuit == Card.HEARTS) currSuit = Card.CLUBS;
+				else if(currSuit == Card.CLUBS) currSuit = Card.DIAMONDS;
+				else break;
 			}
 		}
 	}
