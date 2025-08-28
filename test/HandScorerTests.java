@@ -2,7 +2,8 @@ package test;
 
 import java.util.Vector;
 
-import data.card.Card;
+import data.card.JokerCard;
+import data.card.PlayingCard;
 import data.player.DefaultPlayer;
 import data.pokerHand.PokerHand;
 import data.pokerHand.PokerHandTable;
@@ -17,39 +18,39 @@ public class HandScorerTests {
         pokerHandTable = DefaultPlayer.createDefaultPlayer().getPokerHandTable();
         boolean allPassed = true;
 
-        allPassed &= runTest("Pair", 48.0, new Card[] {
-            new Card(7, Card.CLUBS), new Card(7, Card.HEARTS), new Card(3, Card.HEARTS), new Card(2, Card.CLUBS), new Card(4, Card.CLUBS)
+        allPassed &= runTest("Pair", 48.0, new PlayingCard[] {
+            new PlayingCard(7, PlayingCard.CLUBS), new PlayingCard(7, PlayingCard.HEARTS), new PlayingCard(3, PlayingCard.HEARTS), new PlayingCard(2, PlayingCard.CLUBS), new PlayingCard(4, PlayingCard.CLUBS)
         });
 
-        allPassed &= runTest("Three of a Kind", 153.0, new Card[] {
-        	new Card(7, Card.CLUBS), new Card(7, Card.HEARTS), new Card(7, Card.HEARTS), new Card(2, Card.CLUBS), new Card(4, Card.CLUBS)
+        allPassed &= runTest("Three of a Kind", 153.0, new PlayingCard[] {
+        	new PlayingCard(7, PlayingCard.CLUBS), new PlayingCard(7, PlayingCard.HEARTS), new PlayingCard(7, PlayingCard.HEARTS), new PlayingCard(2, PlayingCard.CLUBS), new PlayingCard(4, PlayingCard.CLUBS)
         });
 
-        allPassed &= runTest("Four of a Kind", 616.0, new Card[] {
-        	new Card(7, Card.CLUBS), new Card(7, Card.HEARTS), new Card(7, Card.HEARTS), new Card(7, Card.CLUBS), new Card(4, Card.CLUBS)
+        allPassed &= runTest("Four of a Kind", 616.0, new PlayingCard[] {
+        	new PlayingCard(7, PlayingCard.CLUBS), new PlayingCard(7, PlayingCard.HEARTS), new PlayingCard(7, PlayingCard.HEARTS), new PlayingCard(7, PlayingCard.CLUBS), new PlayingCard(4, PlayingCard.CLUBS)
         });
 
-        allPassed &= runTest("Five of a Kind", 1860.0, new Card[] {
-        	new Card(7, Card.CLUBS), new Card(7, Card.HEARTS), new Card(7, Card.HEARTS), new Card(7, Card.CLUBS), new Card(7, Card.CLUBS)
+        allPassed &= runTest("Five of a Kind", 1860.0, new PlayingCard[] {
+        	new PlayingCard(7, PlayingCard.CLUBS), new PlayingCard(7, PlayingCard.HEARTS), new PlayingCard(7, PlayingCard.HEARTS), new PlayingCard(7, PlayingCard.CLUBS), new PlayingCard(7, PlayingCard.CLUBS)
         });
 
         System.out.println("\nAll tests " + (allPassed ? "PASSED" : "FAILED"));
     }
 
-    private static boolean runTest(String testName, double expectedScore, Card[] playedCardData) {
+    private static boolean runTest(String testName, double expectedScore, PlayingCard[] playedPlayingCardData) {
     	// Converts the array into a vector
-        Vector<Card> playedCards = new Vector<>();
-        for (Card card : playedCardData) {
-            playedCards.add(card);
+        Vector<PlayingCard> playedPlayingCards = new Vector<>();
+        for (PlayingCard card : playedPlayingCardData) {
+            playedPlayingCards.add(card);
         }
 
         // Puts a card in hand
-        Vector<Card> handCards = new Vector<>();
-        handCards.add(new Card(1, Card.SPADES));
+        Vector<PlayingCard> handPlayingCards = new Vector<>();
+        handPlayingCards.add(new PlayingCard(1, PlayingCard.SPADES));
 
         // Scores the hand
-        PlayedHand playedHand = new PlayedHand(playedCards, handCards);
-        double actualScore = HandScorer.scoreHand(playedHand, pokerHandTable);
+        PlayedHand playedHand = new PlayedHand(playedPlayingCards, handPlayingCards);
+        double actualScore = HandScorer.scoreHand(playedHand, new Vector<JokerCard>(0), pokerHandTable);
 
         // Print statements
         boolean passed = actualScore == expectedScore;

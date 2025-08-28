@@ -2,6 +2,7 @@ package test;
 
 import java.util.Vector;
 
+import data.card.JokerCard;
 import data.player.DefaultPlayer;
 import data.pokerHand.PokerHandTable;
 import game.scoring.HandScorer;
@@ -44,7 +45,7 @@ public class TestDriver {
 		PokerHandTable pokerHandTable = new PokerHandTable(DefaultPlayer.createDefaultPokerHandVector());
 		
 		for(int i = 0; i < numHands; i++) {
-			playedHand = HandScorer.scorePlayedHand(ScoringTesterUtils.generateRandomHand(5), pokerHandTable);
+			playedHand = HandScorer.scorePlayedHand(ScoringTesterUtils.generateRandomHand(5), new Vector<JokerCard>(0), pokerHandTable);
 			System.out.println(playedHand.print(""));
 		}
 		

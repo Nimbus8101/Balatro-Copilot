@@ -48,7 +48,7 @@ public class BlindCard extends JPanel{
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        descLabel = new JLabel("<html><div style='text-align: center;'>" + description + "</div></html>");
+        descLabel = new JLabel("<html><div style='text-align: center;'>" + description + "</div></html>", SwingConstants.CENTER);
         descLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
         descLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -95,9 +95,14 @@ public class BlindCard extends JPanel{
 			setBackground(new Color(230, 230, 230));	
 			stateLabel.setText("Skipped");
 	        add(stateLabel);
+		}else if(state.equals("completed")) {
+			remove(selectButton);
+			remove(skipButton);
+			
+			setBackground(new Color(230, 230, 230));	
+			stateLabel.setText("Completed");
+	        add(stateLabel);
 		}
-		
-		
 	}
 	
 	public void initializeSelected() {

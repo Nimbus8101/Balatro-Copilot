@@ -2,7 +2,9 @@ package data.player;
 
 import java.util.Vector;
 
+import data.card.Card;
 import data.card.Joker;
+import data.card.JokerCard;
 import data.deck.Deck;
 import data.deck.DeckBuilder;
 import data.pokerHand.PokerHandTable;
@@ -16,15 +18,16 @@ public class Player {
 	
 	public Deck deck;
 	PokerHandTable pokerHandTable;
-	Vector<Joker> jokers;
+	public Vector<JokerCard> jokers;
 	
 	public Player() {
 		deck = DeckBuilder.buildDeck(DeckBuilder.DEFAULT_DECK);
 		pokerHandTable = new PokerHandTable(DefaultPlayer.createDefaultPokerHandVector());
 		BASE_CHIPS = DefaultPlayer.defaultChips();
+		jokers = new Vector<JokerCard>(0);
 	}
 	
-	public Player(Deck deck, PokerHandTable pokerHandTable, Vector<Joker> jokers) {
+	public Player(Deck deck, PokerHandTable pokerHandTable, Vector<JokerCard> jokers) {
 		this.deck = deck;
 		this.pokerHandTable = pokerHandTable;
 		this.jokers = jokers;
@@ -55,4 +58,21 @@ public class Player {
 		return numHands;
 	}
 	
+	public void addJoker(JokerCard joker) {
+		jokers.add(joker);
+	}
+	
+	public Vector<Card> getJokersAsCards(){
+		Vector<Card> newJokers = new Vector<Card>(0);
+		
+		for(JokerCard joker : jokers) {
+			newJokers.add(joker);
+		}
+		
+		return newJokers;
+	}
+	
+	public Vector<JokerCard> getJokersAsJokers(){
+		return jokers;
+	}
 }

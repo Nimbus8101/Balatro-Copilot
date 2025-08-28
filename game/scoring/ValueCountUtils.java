@@ -2,10 +2,10 @@ package game.scoring;
 
 import java.util.Vector;
 
-import data.card.Card;
+import data.card.PlayingCard;
 
 public interface ValueCountUtils {
-	public static Vector<ValueCount> countValues(Vector<Card> cards){
+	public static Vector<ValueCount> countValues(Vector<PlayingCard> cards){
 		Vector<ValueCount> valueCounts = new Vector<ValueCount>(0);
 		for(int i = 0; i < cards.size(); i++) {
 			addCount(valueCounts, cards.get(i).getValue());
@@ -83,7 +83,7 @@ public interface ValueCountUtils {
 	
 	public static boolean hasRoyalStraight(Vector<ValueCount> valueCounts) {
 		//FIXME might need to change this logic for the Shortcut Joker
-		if(valueCounts.get(0).getValue() == Card.ACE) {
+		if(valueCounts.get(0).getValue() == PlayingCard.ACE) {
 			//System.out.println("ACE!");
 			if(valueCounts.get(1).getValue() == 10 &&
 			   valueCounts.get(2).getValue() == 11 &&

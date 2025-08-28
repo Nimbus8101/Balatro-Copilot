@@ -76,6 +76,17 @@ public class LeftPanel extends JPanel{
         add(options);
 	}
 	
+	public void updateInfo(String currBlind, int requiredScore, double currScore, int numHands, int numDiscards, int money) {
+		this.currBlind = currBlind;
+		this.scoreRequired = requiredScore;
+		this.currScore = currScore;
+		this.numHands = numHands;
+		this.numDiscards = numDiscards;
+		this.money = money;
+		
+		updateLabels();
+	}
+	
 	public void updateLabels() {
 		currBlindLabel.setText(currBlind + ": " + scoreRequired);
         scoreLabel.setText("Score: " + currScore);
@@ -83,6 +94,7 @@ public class LeftPanel extends JPanel{
         discardsLabel.setText("Discards: " + numDiscards);
         moneyLabel.setText("Money: $" + money);
 	}
+	
 	
 	public boolean useDiscard() {
 		if(numDiscards > 0) {

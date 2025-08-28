@@ -15,8 +15,8 @@ public class AnteSelect extends PlayArea implements BlindCardListener{
 	
     public AnteSelect(AnteSelectListener listener, int baseChips, int blindsDone) {
     	this.listener = listener;
-        setLayout(new FlowLayout(FlowLayout.CENTER, 30, 20));
-        setBorder(BorderFactory.createTitledBorder("Choose Your Blind"));
+        setLayout(new GridBagLayout());
+        setBorder(BorderFactory.createTitledBorder("Ante Select - Choose Your Blind"));
         
         blindSelected = 0;
         
@@ -35,9 +35,17 @@ public class AnteSelect extends PlayArea implements BlindCardListener{
         //JPanel bossCard = createBlindCard("The Hook", "Discards 2 random cards per hand played\nScore at least 1600", "$$$$$", false, false);
 
         // Add cards to this panel
-        add(blinds[0]);
-        add(blinds[1]);
-        add(blinds[2]);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.insets = new Insets(10, 10, 10, 10); // spacing between cards
+        gbc.gridy = 0;
+
+        for (int i = 0; i < blinds.length; i++) {
+            gbc.gridx = i;
+            add(blinds[i], gbc);
+        }
     }
     
     public static BlindType getRandomBlind() {
@@ -47,9 +55,21 @@ public class AnteSelect extends PlayArea implements BlindCardListener{
     }
     
     public void incrementBlinds() {
-    	for(BlindCard blind : blinds) {
-    		blind.incrementState();
+    	blinds[blindSelected].incrementState();
+    	
+    	if(blindSelected < 2) {
+    		blinds[blindSelected + 1].incrementState();
     	}
+    	
+    	blindSelected++;
+    }
+    
+    public void blindSuccess() {
+    	blinds[blindSelected].state = "completed";
+	}
+    
+    public String getCurrentBlind() {
+    	return blinds[blindSelected].getName();
     }
     
     @Override
@@ -77,6 +97,17 @@ public class AnteSelect extends PlayArea implements BlindCardListener{
 			blinds[blindSelected - 1].incrementState();
 		}
 		listener.onBlindSkipped();
+	}
+	
+	public static GridBagConstraints getGBC() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 4;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        return gbc;
 	}
 }
 

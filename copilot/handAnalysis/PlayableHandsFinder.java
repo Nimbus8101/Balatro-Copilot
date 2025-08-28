@@ -4,6 +4,8 @@ import java.util.Vector;
 
 import copilot.utils.Combination;
 import data.card.Card;
+import data.card.JokerCard;
+import data.card.PlayingCard;
 import data.deck.DeckUtils;
 import data.pokerHand.PokerHandTable;
 import game.scoring.HandScorer;
@@ -17,7 +19,7 @@ public interface PlayableHandsFinder {
 	 * @param pokerHandTable
 	 * @return
 	 */
-	public static PlayedHand findHighestScoringPlayableHand(Vector<Card> cardsInHand, PokerHandTable pokerHandTable) {
+	public static PlayedHand findHighestScoringPlayableHand(Vector<PlayingCard> cardsInHand, PokerHandTable pokerHandTable) {
 		// Finds all playable hands
 		Vector<PlayedHand> playableHands = findPlayableHands(cardsInHand);
 		
@@ -26,7 +28,7 @@ public interface PlayableHandsFinder {
 		int highScoreIndex = 0;
 		for(int i = 0; i < playableHands.size(); i++) {
 			// Score the hand
-			HandScorer.scoreHand(playableHands.get(i), pokerHandTable);
+			HandScorer.scoreHand(playableHands.get(i), new Vector<JokerCard>(0), pokerHandTable);
 			
 			// Checks if the score is higher than the current high score, saving it if so
 			if(i == 0) {
@@ -45,7 +47,7 @@ public interface PlayableHandsFinder {
 	 * @param cardsInHand cardsInHand
 	 * @return vector of PlayedHand representing all the possible playable hands
 	 */
-	public static Vector<PlayedHand> findPlayableHands(Vector<Card> cardsInHand){
+	public static Vector<PlayedHand> findPlayableHands(Vector<PlayingCard> cardsInHand){
 		//FIXME i would like a similar function which finds all the potential hands from a hand of HAND_SIZE but only counts the highest scoring hand
 		Combination combination = new Combination();
 		boolean DEBUG = false;
@@ -74,13 +76,13 @@ public interface PlayableHandsFinder {
 	 * @param cardsInHand
 	 * @return
 	 */
-	private static Vector<PlayedHand> convertIndexCombinationsToPlayedHands(Vector<Vector<Integer>> indexCombinations, Vector<Card> cardsInHand){
+	private static Vector<PlayedHand> convertIndexCombinationsToPlayedHands(Vector<Vector<Integer>> indexCombinations, Vector<PlayingCard> cardsInHand){
 		Vector<PlayedHand> possibleHands = new Vector<PlayedHand>(0);
 		
 		for(int i = 0; i < indexCombinations.size(); i++) {
 			// Copies the cards from the played hand and held hand
-			Vector<Card> tempHand = DeckUtils.copyCardVector(cardsInHand);
-			Vector<Card> playedCards = pullCardsFromVector(tempHand, indexCombinations.get(i));
+			Vector<PlayingCard> tempHand = DeckUtils.copyCardVector(cardsInHand);
+			Vector<PlayingCard> playedCards = pullCardsFromVector(tempHand, indexCombinations.get(i));
 			
 			// Creates the PlayedHand from the copied vectors
 			PlayedHand hand = new PlayedHand(playedCards, tempHand);
@@ -101,9 +103,9 @@ public interface PlayableHandsFinder {
 	 * @param indexes
 	 * @return
 	 */
-	public static Vector<Card> pullCardsFromVector(Vector<Card> cards, Vector<Integer> indexes){
+	public static Vector<PlayingCard> pullCardsFromVector(Vector<PlayingCard> cards, Vector<Integer> indexes){
 		//System.out.println("-- " + cards.size() + " - " + indexes.size());
-		Vector<Card> pulledCards = new Vector<Card>(0);
+		Vector<PlayingCard> pulledCards = new Vector<PlayingCard>(0);
 			for(int i = indexes.size() - 1; i >= 0; i--) {
 				//System.out.println((int) indexes.get(i));
 				pulledCards.add(cards.remove((int) indexes.get(i)));

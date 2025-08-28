@@ -2,7 +2,7 @@ package test;
 
 import java.util.Vector;
 
-import data.card.Card;
+import data.card.PlayingCard;
 import game.scoring.ValueCount;
 import game.scoring.ValueCountUtils;
 
@@ -73,12 +73,12 @@ public class ValueCountTests {
 	}
 	
 	public static boolean testCountValues() {
-		Vector<Card> cards = new Vector<Card>(0);
-		cards.add(new Card(2, Card.CLUBS));
-		cards.add(new Card(3, Card.CLUBS));
-		cards.add(new Card(4, Card.CLUBS));
-		cards.add(new Card(5, Card.CLUBS));
-		cards.add(new Card(5, Card.CLUBS));
+		Vector<PlayingCard> cards = new Vector<PlayingCard>(0);
+		cards.add(new PlayingCard(2, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(3, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(4, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(5, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(5, PlayingCard.CLUBS));
 		
 		Vector<ValueCount> counts = ValueCountUtils.countValues(cards);
 		
@@ -91,12 +91,12 @@ public class ValueCountTests {
 	}
 	
 	public static boolean testMatchCounting() {
-		Vector<Card> cards = new Vector<Card>(0);
-		cards.add(new Card(2, Card.CLUBS));
-		cards.add(new Card(3, Card.CLUBS));
-		cards.add(new Card(4, Card.CLUBS));
-		cards.add(new Card(5, Card.CLUBS));
-		cards.add(new Card(5, Card.CLUBS));
+		Vector<PlayingCard> cards = new Vector<PlayingCard>(0);
+		cards.add(new PlayingCard(2, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(3, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(4, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(5, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(5, PlayingCard.CLUBS));
 		
 		Vector<ValueCount> counts = ValueCountUtils.countValues(cards);
 		
@@ -105,14 +105,14 @@ public class ValueCountTests {
 			return false;
 		}
 		
-		cards.set(0, new Card(5, Card.CLUBS));
+		cards.set(0, new PlayingCard(5, PlayingCard.CLUBS));
 		counts = ValueCountUtils.countValues(cards);
 		if(!ValueCountUtils.hasMoreThanThreeMatches(counts)) {
 			System.out.println("ValueCountUtils.hasMoreThanThreeMatches() test failed");
 			return false;
 		}
 		
-		cards.set(0, new Card(3, Card.CLUBS));
+		cards.set(0, new PlayingCard(3, PlayingCard.CLUBS));
 		counts = ValueCountUtils.countValues(cards);
 		if(ValueCountUtils.countPairs(counts) != 2) {
 			System.out.println("ValueCountUtils.countPairs() test failed");
@@ -123,12 +123,12 @@ public class ValueCountTests {
 	}
 	
 	private static boolean testHighestCount() {
-		Vector<Card> cards = new Vector<Card>(0);
-		cards.add(new Card(2, Card.CLUBS));
-		cards.add(new Card(3, Card.CLUBS));
-		cards.add(new Card(4, Card.CLUBS));
-		cards.add(new Card(5, Card.CLUBS));
-		cards.add(new Card(5, Card.CLUBS));
+		Vector<PlayingCard> cards = new Vector<PlayingCard>(0);
+		cards.add(new PlayingCard(2, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(3, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(4, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(5, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(5, PlayingCard.CLUBS));
 		
 		Vector<ValueCount> counts = ValueCountUtils.countValues(cards);
 		
@@ -137,14 +137,14 @@ public class ValueCountTests {
 			return false;
 		}
 		
-		cards.set(0, new Card(5, Card.CLUBS));
+		cards.set(0, new PlayingCard(5, PlayingCard.CLUBS));
 		counts = ValueCountUtils.countValues(cards);
 		if(ValueCountUtils.highestCount(counts) != 3) {
 			System.out.println("ValueCountUtils.highestCount() test [3] failed");
 			return false;
 		}
 		
-		cards.set(1, new Card(5, Card.CLUBS));
+		cards.set(1, new PlayingCard(5, PlayingCard.CLUBS));
 		counts = ValueCountUtils.countValues(cards);
 		if(ValueCountUtils.highestCount(counts) != 4) {
 			System.out.println("ValueCountUtils.highestCount() test [4] failed");

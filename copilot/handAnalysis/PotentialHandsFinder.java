@@ -5,6 +5,8 @@ import java.util.Vector;
 import copilot.deckAnalysis.PokerHandProbabilityTable;
 import copilot.utils.Combination;
 import data.card.Card;
+import data.card.JokerCard;
+import data.card.PlayingCard;
 import data.deck.DeckUtils;
 import data.pokerHand.PokerHandTable;
 import game.GameState;
@@ -13,9 +15,9 @@ import game.scoring.PlayedHand;
 
 public class PotentialHandsFinder {	
 	public static final boolean DEBUG = true;
-	private Card[] currHand;
-	private Card[] currDeck;
-	private Card[] partialHand;
+	private PlayingCard[] currHand;
+	private PlayingCard[] currDeck;
+	private PlayingCard[] partialHand;
 	int numDiscarded = 1;
 	
 	PokerHandProbabilityTable probabilityTable;
@@ -37,7 +39,7 @@ public class PotentialHandsFinder {
 		if(DEBUG) System.out.print("[DEBUG] - Entering generateProbabilityTableOfPotentialHands()\n");
 		for(numDiscarded = 1; numDiscarded <= 5; numDiscarded++) {
 			if(DEBUG) System.out.println("[DEBUG] - numDiscarded: " + numDiscarded);
-			discardCombinationUtil(currHand, new Card[currHand.length - numDiscarded], 0, currHand.length - 1, 0, currHand.length - numDiscarded);
+			discardCombinationUtil(currHand, new PlayingCard[currHand.length - numDiscarded], 0, currHand.length - 1, 0, currHand.length - numDiscarded);
 		}
 		return probabilityTable;
 		/**
@@ -66,9 +68,9 @@ public class PotentialHandsFinder {
 	 * @param index
 	 * @param r
 	 */
-	private void discardCombinationUtil(Card arr[], Card data[], int start, int end, int index, int r){
+	private void discardCombinationUtil(PlayingCard arr[], PlayingCard data[], int start, int end, int index, int r){
         if (index == r){
-        	Vector<Card> combination = new Vector<Card>(0);
+        	Vector<PlayingCard> combination = new Vector<PlayingCard>(0);
         	
         	if(DEBUG) System.out.print("[DEBUG] - partial hand: ");
         	
@@ -79,7 +81,7 @@ public class PotentialHandsFinder {
             if(DEBUG) System.out.print("\n");
             
             partialHand = data;
-            drawCombinationUtil(currDeck, new Card[numDiscarded], 0, currDeck.length - 1, 0, numDiscarded);
+            drawCombinationUtil(currDeck, new PlayingCard[numDiscarded], 0, currDeck.length - 1, 0, numDiscarded);
             //PlayableHandsFinder.findPlayableHands(combination);
             //System.out.println("");
             return;
@@ -100,10 +102,10 @@ public class PotentialHandsFinder {
 	 * @param index
 	 * @param r
 	 */
-	private void drawCombinationUtil(Card arr[], Card data[], int start, int end, int index, int r){
+	private void drawCombinationUtil(PlayingCard arr[], PlayingCard data[], int start, int end, int index, int r){
 		//FIXME if deck is smaller then numDiscarded, there is some weird behavior
 		if(index == r){
-        	Vector<Card> combination = new Vector<Card>(0);
+        	Vector<PlayingCard> combination = new Vector<PlayingCard>(0);
         	
         	if(DEBUG) System.out.print("                     -> ");
         	
@@ -130,7 +132,7 @@ public class PotentialHandsFinder {
 	
 	private void addPlayedHandsToProbabilityTable(Vector<PlayedHand> hands) {
 		for(int i = 0; i < hands.size(); i++) {
-			HandScorer.scoreHand(hands.get(i), pokerHandTable);
+			HandScorer.scoreHand(hands.get(i), new Vector<JokerCard>(0), pokerHandTable);
 			probabilityTable.addScore(hands.get(i).getHandType(), hands.get(i).getScore());
 		}
 	}
@@ -140,7 +142,7 @@ public class PotentialHandsFinder {
 		
 		if(DEBUG) System.out.println(currHand.length + " - " + indexes.length);
 		
-		Vector<Card> partialHand = new Vector<Card>(0);
+		Vector<PlayingCard> partialHand = new Vector<PlayingCard>(0);
 				
 		if(DEBUG) {
 			System.out.print("Hand: ");
@@ -172,7 +174,7 @@ public class PotentialHandsFinder {
 		this.partialHand = DeckUtils.convertCardVectorToArray(partialHand);
 		
 		//perform nCr on currDeck, n = currDeck.length, r = numToDraw
-		drawCombinationUtil(currDeck, new Card[indexes.length], 0, currDeck.length - 1, 0, indexes.length);
+		drawCombinationUtil(currDeck, new PlayingCard[indexes.length], 0, currDeck.length - 1, 0, indexes.length);
 		
 		return probabilityTable;
 	}
@@ -180,16 +182,16 @@ public class PotentialHandsFinder {
 	public static Vector<PlayedHand> findPotentialHands(GameState gameState){
 		if(DEBUG) System.out.print("[DEBUG] - in findPotentialHands() function");
 		
-		Vector<Card> currHand = gameState.getCurrHand();
+		Vector<PlayingCard> currHand = gameState.getCurrHand();
 		Vector<Vector<Integer>> discardCombinations = generateDiscardCombinations(currHand);
-		Vector<Vector<Card>> partialHands = convertDiscardCombinationsToPartialHands(discardCombinations, currHand);
+		Vector<Vector<PlayingCard>> partialHands = convertDiscardCombinationsToPartialHands(discardCombinations, currHand);
 		
 		if(DEBUG) System.out.print("[DEBUG] - discardCombinations and partialHands should be created\n");
 		
 		return generatePlayedHands(partialHands, gameState.getCurrDeck().cards());
 	}
 	
-	private static Vector<Vector<Integer>> generateDiscardCombinations(Vector<Card> cardsInHand) {
+	private static Vector<Vector<Integer>> generateDiscardCombinations(Vector<PlayingCard> cardsInHand) {
 		if(DEBUG) System.out.print("[DEBUG] - in genereateDiscardCombinations() function");
 		Combination combination = new Combination();
 
@@ -204,12 +206,12 @@ public class PotentialHandsFinder {
 		return indexCombinations;
 	}
 	
-	private static Vector<Vector<Card>> convertDiscardCombinationsToPartialHands(Vector<Vector<Integer>> indexCombinations, Vector<Card> cardsInHand){
+	private static Vector<Vector<PlayingCard>> convertDiscardCombinationsToPartialHands(Vector<Vector<Integer>> indexCombinations, Vector<PlayingCard> cardsInHand){
 		if(DEBUG) System.out.print("[DEBUG] - in convertDiscardCombinationsToPartialHands() function\n");
-		Vector<Vector<Card>> partialHands = new Vector<Vector<Card>>(0);  //This vector represents possible partial hands, and are missing the drawn cards
+		Vector<Vector<PlayingCard>> partialHands = new Vector<Vector<PlayingCard>>(0);  //This vector represents possible partial hands, and are missing the drawn cards
 		
 		for(int i = 0; i < indexCombinations.size(); i++) {
-			Vector<Card> tempHand = DeckUtils.copyCardVector(cardsInHand);
+			Vector<PlayingCard> tempHand = DeckUtils.copyCardVector(cardsInHand);
 			DeckUtils.pullCardsFromVector(tempHand, indexCombinations.get(i));
 			partialHands.add(tempHand);
 		}
@@ -217,16 +219,16 @@ public class PotentialHandsFinder {
 		return partialHands;
 	}
 	
-	private static Vector<PlayedHand> generatePlayedHands(Vector<Vector<Card>> partialHands, Vector<Card> cardsInDeck){
+	private static Vector<PlayedHand> generatePlayedHands(Vector<Vector<PlayingCard>> partialHands, Vector<PlayingCard> cardsInDeck){
 		if(DEBUG) System.out.print("[DEBUG] - In generatePlayedHands() function \n");
 		Vector<PlayedHand> potentialHands = new Vector<PlayedHand>(0);
 		
 		for(int i = 0; i < partialHands.size(); i++) {
-			Vector<Card> partialHand = partialHands.get(i);
-			Vector<Vector<Card>> potentialDraws = generateDrawCombinations(cardsInDeck, 7 - partialHand.size());
+			Vector<PlayingCard> partialHand = partialHands.get(i);
+			Vector<Vector<PlayingCard>> potentialDraws = generateDrawCombinations(cardsInDeck, 7 - partialHand.size());
 			
 			for(int j = 0; j < potentialDraws.size(); j++) {
-				Vector<Card> completeHand = new Vector<Card>(0);
+				Vector<PlayingCard> completeHand = new Vector<PlayingCard>(0);
 				completeHand.addAll(partialHand);
 				completeHand.addAll(potentialDraws.get(j));
 				potentialHands.addAll(PlayableHandsFinder.findPlayableHands(completeHand));
@@ -237,15 +239,15 @@ public class PotentialHandsFinder {
 		return potentialHands;
 	}
 	
-	private static Vector<Vector<Card>> generateDrawCombinations(Vector<Card> cardsInDeck, int numDraw){
+	private static Vector<Vector<PlayingCard>> generateDrawCombinations(Vector<PlayingCard> cardsInDeck, int numDraw){
 		if(DEBUG) System.out.print("[DEBUG] - In generateDrawCombinations() function \n	  numDraw: " + numDraw);
 		
 		Combination combination = new Combination();
 		
-		Vector<Vector<Card>> c = combination.findAllCombinations(cardsInDeck, numDraw);
+		Vector<Vector<PlayingCard>> c = combination.findAllCombinations(cardsInDeck, numDraw);
 		
 		for(int i = 0; i < c.size(); i++) {
-			Vector<Card> cards = c.get(i);
+			Vector<PlayingCard> cards = c.get(i);
 			System.out.print("[Debug] -  [");
 			for(int j = 0; j < cards.size(); j++) {
 				System.out.print(Integer.toString(cards.get(j).getValue()) + cards.get(j).getSuit());

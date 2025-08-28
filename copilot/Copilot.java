@@ -8,7 +8,7 @@ import copilot.handAnalysis.PlayableHandsFinder;
 import copilot.handAnalysis.PotentialHandsFinder;
 import copilot.utils.Combination;
 import copilot.utils.CopilotMessage;
-import data.card.Card;
+import data.card.PlayingCard;
 import data.deck.Deck;
 import data.pokerHand.PokerHandTable;
 import game.GameState;
@@ -37,7 +37,7 @@ public class Copilot implements PlayableHandsFinder{
 		
 	}
 	
-	public Vector<PlayedHand> findPlayableHands(Vector<Card> currHand){
+	public Vector<PlayedHand> findPlayableHands(Vector<PlayingCard> currHand){
 		return PlayableHandsFinder.findPlayableHands(currHand);
 	}
 	

@@ -1,7 +1,7 @@
 package game;
 
 import java.util.Vector;
-import data.card.Card;
+import data.card.PlayingCard;
 import data.deck.Deck;
 import data.deck.DeckUtils;
 import data.player.Player;
@@ -15,7 +15,7 @@ public class GameState {
 	Player player;
 	Deck currDeck;
 	Deck discard;
-	Vector<Card> currHand;
+	Vector<PlayingCard> currHand;
 	
 	/**
 	 * Constructor to create a "default" game state (turn 1)
@@ -29,12 +29,12 @@ public class GameState {
 		numDiscards = player.getNumDiscards();
 		
 		currDeck = player.getDeck();
-		discard = new Deck(new Vector<Card>(0));
+		discard = new Deck(new Vector<PlayingCard>(0));
 		currDeck.shuffle();
-		currHand = new Vector<Card>(0);
+		currHand = new Vector<PlayingCard>(0);
 	}
 	
-	public Vector<Card> getCurrHand() {
+	public Vector<PlayingCard> getCurrHand() {
 		return currHand;
 	}
 	

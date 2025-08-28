@@ -8,7 +8,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class ConsumablePanel extends JPanel{
+public class ConsumablePanel extends CardLayeredPane {
 	public ConsumablePanel() {
 		new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         setBorder(BorderFactory.createTitledBorder("Consumables"));
@@ -24,9 +24,10 @@ public class ConsumablePanel extends JPanel{
         gbc.gridy = 0;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
+        gbc.weightx = 0.2;
+        gbc.weighty = 0.0;
         gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(10, 0, 0, 0);
         return gbc;
 	}
 }

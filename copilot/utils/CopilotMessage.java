@@ -3,12 +3,13 @@ package copilot.utils;
 import java.util.Vector;
 
 import data.card.Card;
+import data.card.PlayingCard;
 import data.deck.DeckUtils;
 import game.scoring.PlayedHand;
 
 public interface CopilotMessage {
 	
-	public static String printPlayableHands(Vector<Card> hand, Vector<PlayedHand> playableHands) {
+	public static String printPlayableHands(Vector<PlayingCard> hand, Vector<PlayedHand> playableHands) {
 		String result = "";
 		result += "[Copilot] - Given a hand of: " + DeckUtils.printCardVector(hand, "") + "\n";
 		result += "[Copilot] - You can play: \n";
@@ -22,7 +23,7 @@ public interface CopilotMessage {
 		return result;
 	}
 	
-	public static String printPotentialHandProbabilityTable(Vector<Card> hand, String probabilityTable) {
+	public static String printPotentialHandProbabilityTable(Vector<PlayingCard> hand, String probabilityTable) {
 		String result = "";
 		result += "[Copilot] - Given a hand of: " + DeckUtils.printCardVector(hand, "") + " and ONE discard\n";
 		result += "[Copilot] - Here are the probabilities of obtaining your poker hands: \n";

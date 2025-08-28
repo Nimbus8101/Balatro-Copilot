@@ -3,6 +3,7 @@ package game;
 import java.util.Vector;
 
 import data.card.Card;
+import data.card.PlayingCard;
 import data.deck.Deck;
 import data.player.Player;
 
@@ -18,7 +19,7 @@ public class TestGameState extends GameState{
 		currDeck.shuffle();
 	}
 	
-	public void setCurrHand(Vector<Card> currHand) {
+	public void setCurrHand(Vector<PlayingCard> currHand) {
 		this.currHand = currHand;
 	}
 

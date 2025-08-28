@@ -45,7 +45,7 @@ public class ButtonPanel extends JPanel{
         gbc.weightx = 1.0;
         gbc.weighty = 0.25;
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.insets = new Insets(10, 0, 10, 0);
         return gbc;
 	}
 }

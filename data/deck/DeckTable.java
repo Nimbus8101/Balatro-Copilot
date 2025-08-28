@@ -4,15 +4,16 @@ import java.util.Vector;
 
 import copilot.deckAnalysis.PokerHandProbability;
 import data.card.Card;
+import data.card.PlayingCard;
 
 public class DeckTable {
-	private Vector<Card> cards;
+	private Vector<PlayingCard> cards;
 	
 	char[] suits = DeckBuilder.DEFAULT_SUITS;
 	int[] values = DeckBuilder.DEFAULT_VALUES;
 	int[][] counts = new int[4][13];
 	
-	public DeckTable(Vector<Card> cards) {
+	public DeckTable(Vector<PlayingCard> cards) {
 		this.cards = cards;
 		for(int[] row : counts) {
 			for(int column : row) {
@@ -23,8 +24,8 @@ public class DeckTable {
 		countCards(cards);
 	}
 	
-	public void countCards(Vector<Card> cards) {
-		for(Card card : cards) {
+	public void countCards(Vector<PlayingCard> cards) {
+		for(PlayingCard card : cards) {
 			int suitIndex = getIndexOfSuit(card.getSuit());
 			int valueIndex = card.getValue() - 1;
 			

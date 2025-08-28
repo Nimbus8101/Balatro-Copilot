@@ -2,7 +2,8 @@ package copilot.deckAnalysis;
 
 import java.util.Vector;
 
-import data.card.Card;
+import data.card.JokerCard;
+import data.card.PlayingCard;
 import data.deck.Deck;
 import data.deck.DeckUtils;
 import data.pokerHand.PokerHandTable;
@@ -32,8 +33,8 @@ public class DeckAnalysis {
 	 * @param n
 	 * @param r
 	 */
-	private void storeProbabilities(Card arr[], int n, int r) {
-        Card data[] = new Card[r];
+	private void storeProbabilities(PlayingCard arr[], int n, int r) {
+        PlayingCard data[] = new PlayingCard[r];
         combinationUtil(arr, data, 0, n-1, 0, r);
     }
 	
@@ -46,17 +47,17 @@ public class DeckAnalysis {
 	 * @param index
 	 * @param r
 	 */
-	private void combinationUtil(Card arr[], Card data[], int start, int end, int index, int r)
+	private void combinationUtil(PlayingCard arr[], PlayingCard data[], int start, int end, int index, int r)
     {
         // Current combination is ready to be printed, print it
         if (index == r){
-        	Vector<Card> combination = new Vector<Card>(0);
+        	Vector<PlayingCard> combination = new Vector<PlayingCard>(0);
             for (int j = 0; j < r; j++) {
             	combination.add(data[j]);
                 //System.out.print(data[j].printValueAndSuit() + " ");
             }
             
-            PlayedHand playedHand = HandScorer.scorePlayedHand(combination, pokerHandTable);
+            PlayedHand playedHand = HandScorer.scorePlayedHand(combination, new Vector<JokerCard>(0), pokerHandTable);
             probabilityTable.addScore(playedHand.getHandType(), playedHand.getScore());
             
             //System.out.println(playedHand.print("  "));

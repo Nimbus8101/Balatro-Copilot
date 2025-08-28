@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.Vector;
 
 import data.card.Card;
+import data.card.PlayingCard;
 
 public interface DeckUtils {
 	public static int SORT_RANK = 0;
@@ -17,10 +18,10 @@ public interface DeckUtils {
 	 * @param deck
 	 * @return
 	 */
-	public static Vector<Card> draw(Vector<Card> currHand, int numDraw, Deck deck){
+	public static Vector<PlayingCard> draw(Vector<PlayingCard> currHand, int numDraw, Deck deck){
 		if(currHand == null) {
 			System.out.println("Given a null currHand in DeckUtils.draw");
-			currHand = new Vector<Card>(0);
+			currHand = new Vector<PlayingCard>(0);
 		}
 		
 		while(currHand.size() < numDraw && deck.hasNext()) {
@@ -38,33 +39,33 @@ public interface DeckUtils {
 	 * @param indexes
 	 * @return
 	 */
-	public static Vector<Card> pullCardsFromVector(Vector<Card> cards, Vector<Integer> indexes){
+	public static Vector<PlayingCard> pullCardsFromVector(Vector<PlayingCard> cards, Vector<Integer> indexes){
 		//System.out.println("-- " + cards.size() + " - " + indexes.size());
-		Vector<Card> pulledCards = new Vector<Card>(0);
+		Vector<PlayingCard> pulledPlayingCards = new Vector<PlayingCard>(0);
 			for(int i = indexes.size() - 1; i >= 0; i--) {
 				//System.out.println((int) indexes.get(i));
-				pulledCards.add(cards.remove((int) indexes.get(i)));
+				pulledPlayingCards.add(cards.remove((int) indexes.get(i)));
 			}
-		return pulledCards;
+		return pulledPlayingCards;
 	}
 	
-	public static Card[] convertCardVectorToArray(Vector<Card> cards) {
-		Card[] newCards = new Card[cards.size()];
+	public static PlayingCard[] convertCardVectorToArray(Vector<PlayingCard> cards) {
+		PlayingCard[] newCards = new PlayingCard[cards.size()];
 		for(int i = 0; i < cards.size(); i++) {
 			newCards[i] = cards.get(i);
 		}
 		return newCards;
 	}
 	
-	public static Vector<Card> copyCardVector(Vector<Card> cards){
-		Vector<Card> newVector = new Vector<Card>(0);
+	public static Vector<PlayingCard> copyCardVector(Vector<PlayingCard> cards){
+		Vector<PlayingCard> newVector = new Vector<PlayingCard>(0);
 		for(int i = 0; i < cards.size(); i++) {
 			newVector.add(cards.get(i));
 		}
 		return newVector;
 	}
 	
-	public static String printCardVector(Vector<Card> cards, String buffer) {
+	public static String printCardVector(Vector<PlayingCard> cards, String buffer) {
 		String result = "";
 		for(int i = 0; i < cards.size(); i++) {
 			result += cards.get(i).printValueAndSuit() + " ";
@@ -72,14 +73,14 @@ public interface DeckUtils {
 		return result;
 	}
 	
-	public static void sortCardVector(Vector<Card> cards, int typeOfSort) {	
+	public static void sortCardVector(Vector<PlayingCard> cards, int typeOfSort) {	
 		if(typeOfSort == SORT_RANK) {
 			int bottomIndex = 0;
 			while(bottomIndex < cards.size() - 1) {		
 				for(int i = bottomIndex + 1; i < cards.size(); i++) {
 					
 					// If the first card is "smaller" than the second, swap the two
-					if(Card.compare(cards.get(bottomIndex), cards.get(i)) < 0) {
+					if(PlayingCard.compare(cards.get(bottomIndex), cards.get(i)) < 0) {
 						Collections.swap(cards, bottomIndex, i);
 					}
 				}
@@ -93,7 +94,7 @@ public interface DeckUtils {
 			// Step 1: Move all spades to front, then sort those
 			int bottomRange = 0;
 			int bottomIndex = 0;
-			char currSuit = Card.SPADES;
+			char currSuit = PlayingCard.SPADES;
 			
 			while(true) {
 				// Group all the cards of the current suit together
@@ -116,9 +117,9 @@ public interface DeckUtils {
 				}
 				
 				// Change the currSuit for the next loop
-				if(currSuit == Card.SPADES) currSuit = Card.HEARTS;
-				else if(currSuit == Card.HEARTS) currSuit = Card.CLUBS;
-				else if(currSuit == Card.CLUBS) currSuit = Card.DIAMONDS;
+				if(currSuit == PlayingCard.SPADES) currSuit = PlayingCard.HEARTS;
+				else if(currSuit == PlayingCard.HEARTS) currSuit = PlayingCard.CLUBS;
+				else if(currSuit == PlayingCard.CLUBS) currSuit = PlayingCard.DIAMONDS;
 				else break;
 			}
 		}

@@ -1,12 +1,12 @@
 package data.card;
 
-public class JokerGenerator {
+public class JokerCardGenerator {
 	
-	public JokerGenerator() {
+	public JokerCardGenerator() {
 		
 	}
 	
-	public Joker generateJoker(String jokerName) {
+	public JokerCard generateJoker(String jokerName) {
 		switch (jokerName) {
 		case "MULT_JOKER":
 			
@@ -18,7 +18,7 @@ public class JokerGenerator {
 		return null;
 	}
 	
-	public Joker createDefaultJoker(){
-		return new Joker("Default","NONE");
+	public JokerCard createDefaultJoker(){
+		return new JokerCard("Default","NONE");
 	}
 }

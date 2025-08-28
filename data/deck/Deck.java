@@ -4,23 +4,24 @@ import java.util.Collections;
 import java.util.Vector;
 
 import data.card.Card;
+import data.card.PlayingCard;
 
 public class Deck implements DeckUtils {
-	public Vector<Card> cards;
-	public Vector<Card> drawnCards;
-	public Vector<Card> discardedCards;
+	public Vector<PlayingCard> cards;
+	public Vector<PlayingCard> drawnCards;
+	public Vector<PlayingCard> discardedCards;
 	
-	public Deck(Vector<Card> cards) {
+	public Deck(Vector<PlayingCard> cards) {
 		this.cards = cards;
-		drawnCards = new Vector<Card>(0);
-		discardedCards = new Vector<Card>(0);
+		drawnCards = new Vector<PlayingCard>(0);
+		discardedCards = new Vector<PlayingCard>(0);
 	}
 	
 	public void resetDeck() {
 		cards.addAll(drawnCards);
 		cards.addAll(discardedCards);
-		drawnCards = new Vector<Card>(0);
-		discardedCards = new Vector<Card>(0);
+		drawnCards = new Vector<PlayingCard>(0);
+		discardedCards = new Vector<PlayingCard>(0);
 	}
 	
 	
@@ -36,7 +37,7 @@ public class Deck implements DeckUtils {
 		}
 	}
 	
-	public Card drawNext() {
+	public PlayingCard drawNext() {
 		return cards.remove(0);
 	}
 	
@@ -66,7 +67,7 @@ public class Deck implements DeckUtils {
 		return cards.size() + drawnCards.size() + discardedCards.size();
 	}
 
-	public Vector<Card> cards() {
+	public Vector<PlayingCard> cards() {
 		return cards;
 	}
 }

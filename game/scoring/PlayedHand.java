@@ -3,6 +3,7 @@ package game.scoring;
 import java.util.Vector;
 
 import data.card.Card;
+import data.card.PlayingCard;
 import data.deck.DeckUtils;
 import data.pokerHand.PokerHand;
 import data.pokerHand.PokerHandIdentifier;
@@ -10,8 +11,8 @@ import data.pokerHand.PokerHandIdentifier;
 public class PlayedHand implements HandScorer, PokerHandIdentifier{
 	String pokerHand;
 	private char flush;
-	Vector<Card> playedCards;
-	Vector<Card> heldCards;
+	Vector<PlayingCard> playedCards;
+	Vector<PlayingCard> heldCards;
 	Vector<ScoreChangeValues> scoreChanges;
 	
 	int startingChips;
@@ -25,7 +26,7 @@ public class PlayedHand implements HandScorer, PokerHandIdentifier{
 		scoreChanges = new Vector<ScoreChangeValues>(0);
 	}
 	
-	public PlayedHand(Vector<Card> playedCards, Vector<Card> heldCards) {
+	public PlayedHand(Vector<PlayingCard> playedCards, Vector<PlayingCard> heldCards) {
 		this.playedCards = playedCards;
 		flush = PokerHandIdentifier.determineFlush(playedCards);
 		pokerHand = PokerHandIdentifier.determineHandType(playedCards);
@@ -46,15 +47,15 @@ public class PlayedHand implements HandScorer, PokerHandIdentifier{
 		this.pokerHand = pokerHand;
 	}
 	
-	public void setPlayedCards(Vector<Card> cards) {
+	public void setPlayedCards(Vector<PlayingCard> cards) {
 		this.playedCards = cards;
 	}
 	
-	public Vector<Card> getPlayedCards(){
+	public Vector<PlayingCard> getPlayedCards(){
 		return playedCards;
 	}
 	
-	public void setHeldCards(Vector<Card> cards) {
+	public void setHeldCards(Vector<PlayingCard> cards) {
 		this.heldCards = cards;
 	}
 	

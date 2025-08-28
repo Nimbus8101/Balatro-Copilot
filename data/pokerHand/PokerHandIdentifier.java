@@ -3,12 +3,13 @@ package data.pokerHand;
 import java.util.Vector;
 
 import data.card.Card;
+import data.card.PlayingCard;
 import game.scoring.PlayedHand;
 import game.scoring.ValueCount;
 import game.scoring.ValueCountUtils;
 
 public interface PokerHandIdentifier {
-	public static PlayedHand identifyPlayedHand(Vector<Card> cards) {
+	public static PlayedHand identifyPlayedHand(Vector<PlayingCard> cards) {
 		PlayedHand playedHand = new PlayedHand();
 		playedHand.setPlayedCards(cards);
 		playedHand.setFlush(PokerHandIdentifier.determineFlush(cards));
@@ -16,7 +17,7 @@ public interface PokerHandIdentifier {
 		return playedHand;
 	}
 	
-	public static String determineHandType(Vector<Card> cards) {
+	public static String determineHandType(Vector<PlayingCard> cards) {
 		Boolean DEBUG = false;
 		
 		String pokerHand = PokerHand.HIGH_CARD;
@@ -105,7 +106,7 @@ public interface PokerHandIdentifier {
 		return pokerHand;
 	}
 	
-	public static boolean isFlush(Vector<Card> cards) {
+	public static boolean isFlush(Vector<PlayingCard> cards) {
 		if(cards.size() < 5) {
 			System.out.println("Less than five cards");
 			return false;
@@ -123,7 +124,7 @@ public interface PokerHandIdentifier {
 		return true;
 	}
 	
-	public static char determineFlush(Vector<Card> cards) {
+	public static char determineFlush(Vector<PlayingCard> cards) {
 		if(isFlush(cards)) {
 			return cards.get(0).getSuit();
 		}

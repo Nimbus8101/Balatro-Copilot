@@ -2,7 +2,7 @@ package test;
 
 import java.util.Vector;
 
-import data.card.Card;
+import data.card.PlayingCard;
 import data.pokerHand.PokerHand;
 import game.scoring.HandScorer;
 import data.pokerHand.PokerHandIdentifier;
@@ -10,7 +10,7 @@ import data.pokerHand.PokerHandIdentifier;
 public class PokerHandDeterminationTests {
 	public static void runTests() {
 		System.out.println("Running Poker Hand Determiner tests...");
-		if(testHighCard()
+		if(testHighPlayingCard()
 			&testPair()
 			&testTwoPair()
 			&testThreeOfAKind()
@@ -30,13 +30,13 @@ public class PokerHandDeterminationTests {
 		
 	}
 	
-	public static boolean testHighCard() {
-		Vector<Card> cards = new Vector<Card>(0);
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(6, Card.CLUBS));
-		cards.add(new Card(3, Card.HEARTS));
-		cards.add(new Card(2, Card.CLUBS));
-		cards.add(new Card(4, Card.CLUBS));
+	public static boolean testHighPlayingCard() {
+		Vector<PlayingCard> cards = new Vector<PlayingCard>(0);
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(6, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(3, PlayingCard.HEARTS));
+		cards.add(new PlayingCard(2, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(4, PlayingCard.CLUBS));
 		
 		String handType = PokerHandIdentifier.determineHandType(cards);
 		
@@ -50,12 +50,12 @@ public class PokerHandDeterminationTests {
 	}
 	
 	public static boolean testPair() {
-		Vector<Card> cards = new Vector<Card>(0);
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(3, Card.HEARTS));
-		cards.add(new Card(2, Card.CLUBS));
-		cards.add(new Card(4, Card.CLUBS));
+		Vector<PlayingCard> cards = new Vector<PlayingCard>(0);
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(3, PlayingCard.HEARTS));
+		cards.add(new PlayingCard(2, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(4, PlayingCard.CLUBS));
 		
 		String handType = PokerHandIdentifier.determineHandType(cards);
 		
@@ -68,12 +68,12 @@ public class PokerHandDeterminationTests {
 	}
 	
 	public static boolean testTwoPair() {
-		Vector<Card> cards = new Vector<Card>(0);
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(3, Card.HEARTS));
-		cards.add(new Card(3, Card.CLUBS));
-		cards.add(new Card(4, Card.CLUBS));
+		Vector<PlayingCard> cards = new Vector<PlayingCard>(0);
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(3, PlayingCard.HEARTS));
+		cards.add(new PlayingCard(3, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(4, PlayingCard.CLUBS));
 		
 		String handType = PokerHandIdentifier.determineHandType(cards);
 		
@@ -86,12 +86,12 @@ public class PokerHandDeterminationTests {
 	}
 	
 	public static boolean testThreeOfAKind() {
-		Vector<Card> cards = new Vector<Card>(0);
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(7, Card.HEARTS));
-		cards.add(new Card(2, Card.CLUBS));
-		cards.add(new Card(4, Card.CLUBS));
+		Vector<PlayingCard> cards = new Vector<PlayingCard>(0);
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(7, PlayingCard.HEARTS));
+		cards.add(new PlayingCard(2, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(4, PlayingCard.CLUBS));
 		
 		String handType = PokerHandIdentifier.determineHandType(cards);
 		
@@ -104,12 +104,12 @@ public class PokerHandDeterminationTests {
 	}
 	
 	public static boolean testFourOfAKind() {
-		Vector<Card> cards = new Vector<Card>(0);
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(7, Card.HEARTS));
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(4, Card.CLUBS));
+		Vector<PlayingCard> cards = new Vector<PlayingCard>(0);
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(7, PlayingCard.HEARTS));
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(4, PlayingCard.CLUBS));
 		
 		String handType = PokerHandIdentifier.determineHandType(cards);
 		
@@ -122,12 +122,12 @@ public class PokerHandDeterminationTests {
 	}
 	
 	public static boolean testFiveOfAKind() {
-		Vector<Card> cards = new Vector<Card>(0);
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(7, Card.HEARTS));
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(7, Card.CLUBS));
+		Vector<PlayingCard> cards = new Vector<PlayingCard>(0);
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(7, PlayingCard.HEARTS));
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
 		
 		String handType = PokerHandIdentifier.determineHandType(cards);
 		
@@ -140,12 +140,12 @@ public class PokerHandDeterminationTests {
 	}
 	
 	public static boolean testStraight() {
-		Vector<Card> cards = new Vector<Card>(0);
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(6, Card.CLUBS));
-		cards.add(new Card(3, Card.HEARTS));
-		cards.add(new Card(5, Card.CLUBS));
-		cards.add(new Card(4, Card.CLUBS));
+		Vector<PlayingCard> cards = new Vector<PlayingCard>(0);
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(6, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(3, PlayingCard.HEARTS));
+		cards.add(new PlayingCard(5, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(4, PlayingCard.CLUBS));
 		
 		String handType = PokerHandIdentifier.determineHandType(cards);
 		
@@ -159,42 +159,42 @@ public class PokerHandDeterminationTests {
 	
 	public static boolean testFlush() {
 		//Flush overrides high card, pair, two pair, three of a kind, and four of a kind,
-		Vector<Card> cards = new Vector<Card>(0);
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(6, Card.CLUBS));
-		cards.add(new Card(3, Card.CLUBS));
-		cards.add(new Card(2, Card.CLUBS));
-		cards.add(new Card(4, Card.CLUBS));
+		Vector<PlayingCard> cards = new Vector<PlayingCard>(0);
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(6, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(3, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(2, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(4, PlayingCard.CLUBS));
 		
 		String handType = PokerHandIdentifier.determineHandType(cards);
 		
 		if(!handType.equals(PokerHand.FLUSH)) {
-			System.out.println("   " + PokerHand.FLUSH + " test [High Card] failed, got " + handType);
+			System.out.println("   " + PokerHand.FLUSH + " test [High PlayingCard] failed, got " + handType);
 			return false;
 		} 
 		
-		cards.set(1, new Card(7, Card.CLUBS));
+		cards.set(1, new PlayingCard(7, PlayingCard.CLUBS));
 		handType = PokerHandIdentifier.determineHandType(cards);
 		if(!handType.equals(PokerHand.FLUSH)) {
 			System.out.println("   " + PokerHand.FLUSH + " test [Pair] failed, got " + handType);
 			return false;
 		}
 
-		cards.set(3, new Card(3, Card.CLUBS));
+		cards.set(3, new PlayingCard(3, PlayingCard.CLUBS));
 		handType = PokerHandIdentifier.determineHandType(cards);
 		if(!handType.equals(PokerHand.FLUSH)) {
 			System.out.println("   " + PokerHand.STRAIGHT + " test [Two Pair] failed, got " + handType);
 			return false;
 		}
 
-		cards.set(3, new Card(7, Card.CLUBS));
+		cards.set(3, new PlayingCard(7, PlayingCard.CLUBS));
 		handType = PokerHandIdentifier.determineHandType(cards);
 		if(!handType.equals(PokerHand.FLUSH)) {
 			System.out.println("   " + PokerHand.FLUSH + " test [Three of a Kind] failed, got " + handType);
 			return false;
 		}
 
-		cards.set(2, new Card(7, Card.CLUBS));
+		cards.set(2, new PlayingCard(7, PlayingCard.CLUBS));
 		handType = PokerHandIdentifier.determineHandType(cards);
 		if(!handType.equals(PokerHand.FLUSH)) {
 			System.out.println("   " + PokerHand.FLUSH + " test [Four of a Kind] failed, got " + handType);
@@ -206,12 +206,12 @@ public class PokerHandDeterminationTests {
 	}
 	
 	public static boolean testStraightFlush() {
-		Vector<Card> cards = new Vector<Card>(0);
-		cards.add(new Card(6, Card.CLUBS));
-		cards.add(new Card(5, Card.CLUBS));
-		cards.add(new Card(4, Card.CLUBS));
-		cards.add(new Card(3, Card.CLUBS));
-		cards.add(new Card(2, Card.CLUBS));
+		Vector<PlayingCard> cards = new Vector<PlayingCard>(0);
+		cards.add(new PlayingCard(6, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(5, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(4, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(3, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(2, PlayingCard.CLUBS));
 		
 		String handType = PokerHandIdentifier.determineHandType(cards);
 		
@@ -224,12 +224,12 @@ public class PokerHandDeterminationTests {
 	}
 	
 	public static boolean testFlushFive() {
-		Vector<Card> cards = new Vector<Card>(0);
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(7, Card.CLUBS));
+		Vector<PlayingCard> cards = new Vector<PlayingCard>(0);
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
 		
 		String handType = PokerHandIdentifier.determineHandType(cards);
 		
@@ -242,12 +242,12 @@ public class PokerHandDeterminationTests {
 	}
 	
 	public static boolean testFlushHouse() {
-		Vector<Card> cards = new Vector<Card>(0);
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(2, Card.CLUBS));
-		cards.add(new Card(2, Card.CLUBS));
+		Vector<PlayingCard> cards = new Vector<PlayingCard>(0);
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(2, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(2, PlayingCard.CLUBS));
 		
 		String handType = PokerHandIdentifier.determineHandType(cards);
 		
@@ -260,12 +260,12 @@ public class PokerHandDeterminationTests {
 	}
 	
 	public static boolean testFullHouse() {
-		Vector<Card> cards = new Vector<Card>(0);
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(7, Card.CLUBS));
-		cards.add(new Card(7, Card.HEARTS));
-		cards.add(new Card(2, Card.CLUBS));
-		cards.add(new Card(2, Card.CLUBS));
+		Vector<PlayingCard> cards = new Vector<PlayingCard>(0);
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(7, PlayingCard.HEARTS));
+		cards.add(new PlayingCard(2, PlayingCard.CLUBS));
+		cards.add(new PlayingCard(2, PlayingCard.CLUBS));
 		
 		String handType = PokerHandIdentifier.determineHandType(cards);
 		

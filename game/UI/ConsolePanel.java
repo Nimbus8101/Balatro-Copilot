@@ -4,9 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ConsolePanel extends JPanel {
+	private static final int MIN_X = 75;
+	private static final int MIN_Y = 100;
+	
     private JTextArea consoleArea;
 
     public ConsolePanel() {
+    	setMinimumSize(new Dimension(MIN_X, MIN_Y));
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createTitledBorder("Console Output"));
 
@@ -33,7 +37,7 @@ public class ConsolePanel extends JPanel {
         gbc.weightx = 0.2;
         gbc.weighty = 0.2;
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.insets = new Insets(10, 10, 0, 10);
         return gbc;
 	}
 }

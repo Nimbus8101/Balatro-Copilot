@@ -3,7 +3,7 @@ package data.player;
 import java.util.Vector;
 
 import data.card.Card;
-import data.card.Joker;
+import data.card.JokerCard;
 import data.deck.Deck;
 import data.deck.DeckBuilder;
 import data.pokerHand.PokerHand;
@@ -13,13 +13,13 @@ public interface DefaultPlayer {
 	public static final int MAX_DECK_VALUE = 7;
 	
 	public static Player createDefaultPlayer() {
-		return new Player(DeckBuilder.buildDeck(DeckBuilder.DEFAULT_DECK), new PokerHandTable(createDefaultPokerHandVector()), new Vector<Joker>(0));
+		return new Player(DeckBuilder.buildDeck(DeckBuilder.DEFAULT_DECK), new PokerHandTable(createDefaultPokerHandVector()), new Vector<JokerCard>(0));
 	}
 	
 	public static Player createTestPlayer() {
 		int[] values = {2, 3, 4, 5, 6, 7, 8};
 		char[] suit = {'S', 'C'};
-		return new Player(DeckBuilder.generateDeck(values, suit), new PokerHandTable(createDefaultPokerHandVector()), new Vector<Joker>(0));
+		return new Player(DeckBuilder.generateDeck(values, suit), new PokerHandTable(createDefaultPokerHandVector()), new Vector<JokerCard>(0));
 	}
 	
 	public static Vector<PokerHand> createDefaultPokerHandVector(){

@@ -5,6 +5,7 @@ import copilot.Copilot;
 import copilot.deckAnalysis.PokerHandProbabilityTable;
 import copilot.handAnalysis.PotentialHandsFinder;
 import data.card.Card;
+import data.card.PlayingCard;
 import data.deck.Deck;
 import data.deck.DeckBuilder;
 import data.player.DefaultPlayer;
@@ -55,24 +56,24 @@ public class Driver {
 			Player testPlayer = DefaultPlayer.createTestPlayer();
 			TestGameState game = new TestGameState(testPlayer, 600);
 			
-			Vector<Card> currHand = new Vector<Card>(0);
-			currHand.add(new Card(2, 'C')); //0
-			currHand.add(new Card(3, 'H'));
-			currHand.add(new Card(5, 'S'));
-			currHand.add(new Card(5, 'C'));
-			currHand.add(new Card(6, 'H'));
-			currHand.add(new Card(6, 'S'));
-			currHand.add(new Card(8, 'D'));
-			currHand.add(new Card(9, 'C')); //7
+			Vector<PlayingCard> currHand = new Vector<PlayingCard>(0);
+			currHand.add(new PlayingCard(2, 'C')); //0
+			currHand.add(new PlayingCard(3, 'H'));
+			currHand.add(new PlayingCard(5, 'S'));
+			currHand.add(new PlayingCard(5, 'C'));
+			currHand.add(new PlayingCard(6, 'H'));
+			currHand.add(new PlayingCard(6, 'S'));
+			currHand.add(new PlayingCard(8, 'D'));
+			currHand.add(new PlayingCard(9, 'C')); //7
 			
 			game.setCurrHand(currHand);
 			
-			Vector<Card> deckCards = new Vector<Card>(0);
-			deckCards.add(new Card(4, 'C'));
-			deckCards.add(new Card(4, 'C'));
-			deckCards.add(new Card(4, 'C'));
-			deckCards.add(new Card(4, 'C'));
-			deckCards.add(new Card(4, 'C'));
+			Vector<PlayingCard> deckCards = new Vector<PlayingCard>(0);
+			deckCards.add(new PlayingCard(4, 'C'));
+			deckCards.add(new PlayingCard(4, 'C'));
+			deckCards.add(new PlayingCard(4, 'C'));
+			deckCards.add(new PlayingCard(4, 'C'));
+			deckCards.add(new PlayingCard(4, 'C'));
 			
 			game.setCurrDeck(new Deck(deckCards));
 			
