@@ -11,6 +11,12 @@ import data.pokerHand.PokerHandTable;
 import game.scoring.HandScorer;
 import game.scoring.PlayedHand;
 
+
+/**
+ * Class which finds the hands that can be played from a given Vector of Cards, returning the highest scoring one
+ * 
+ * @author Elijah
+ */
 public interface PlayableHandsFinder {	
 	/**
 	 * Given a vector of Cards, finds the playable hands and scores them, keeping track of the highest one while scoring

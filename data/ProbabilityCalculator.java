@@ -2,6 +2,13 @@ package data;
 
 import data.deck.Deck;
 
+/**
+ * This class seems unused
+ * 
+ * 
+ * @author Elijah
+ *
+ */
 public class ProbabilityCalculator {
 	Deck deck;
 	

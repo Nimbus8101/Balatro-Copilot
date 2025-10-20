@@ -7,6 +7,12 @@ import data.card.PlayingCard;
 import data.deck.DeckUtils;
 import game.scoring.PlayedHand;
 
+
+/**
+ * Class for printing messages from the copilot
+ * 
+ * @author Elijah
+ */
 public interface CopilotMessage {
 	
 	public static String printPlayableHands(Vector<PlayingCard> hand, Vector<PlayedHand> playableHands) {
@@ -23,6 +29,13 @@ public interface CopilotMessage {
 		return result;
 	}
 	
+	
+	/**
+	 * 
+	 * @param hand
+	 * @param probabilityTable
+	 * @return
+	 */
 	public static String printPotentialHandProbabilityTable(Vector<PlayingCard> hand, String probabilityTable) {
 		String result = "";
 		result += "[Copilot] - Given a hand of: " + DeckUtils.printCardVector(hand, "") + " and ONE discard\n";

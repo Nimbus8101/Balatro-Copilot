@@ -7,6 +7,12 @@ import data.card.PlayingCard;
 import data.deck.Deck;
 import data.player.Player;
 
+
+/**
+ * Class for generating and using a TestGameState
+ * 
+ * @author Elijah Reyna
+ */
 public class TestGameState extends GameState{
 
 	public TestGameState(Player player, int minimumScore) {

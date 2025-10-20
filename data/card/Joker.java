@@ -1,6 +1,13 @@
 package data.card;
 
+
+/**
+ * Class handling variables for a Joker
+ * 
+ * @author Elijah Reyna
+ */
 public enum Joker {
+	// ========== Joker List ========== //
 	JOKER("Joker", 1, 0, 4, 1.0, 0);
 	
 	private final String name;
@@ -10,6 +17,9 @@ public enum Joker {
 	private final double baseMultiplier;
 	private final int type;
 	
+	
+	// ===== Joker Types ===== //
+	// Used by an evaluation algorithm (which isn't currently implemented)
 	public static int NO_TYPE = 0;
 	public static int SCALING = 3;
 	

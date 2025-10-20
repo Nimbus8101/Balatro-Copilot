@@ -1,5 +1,10 @@
 package game.scoring;
 
+/**
+ * Basic utility class to hold a value and the amount counted
+ * 
+ * @author Elijah Reyna
+ */
 public class ValueCount{
 	int value;
 	int count;

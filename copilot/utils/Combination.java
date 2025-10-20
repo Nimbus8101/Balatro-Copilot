@@ -2,10 +2,17 @@ package copilot.utils;
 
 import java.util.Vector;
 
-import data.card.Card;
 import data.card.CardPrinter;
 import data.card.PlayingCard;
 
+
+/**
+ * Class for generating combinations of PlayingCards and Integers
+ * 
+ * Used by methods in the PotentialHandsFinder class that are no longer being used.
+ * 
+ * @author Elijah Reyna
+ */
 public class Combination {
 	public Vector<Vector<PlayingCard>> allCombinations;
 	public Vector<Vector<Integer>> allIndexCombinations;

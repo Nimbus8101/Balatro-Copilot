@@ -9,19 +9,38 @@ import data.deck.DeckBuilder;
 import data.pokerHand.PokerHand;
 import data.pokerHand.PokerHandTable;
 
+
+/**
+ * Class for creating a default Player instance
+ * 
+ * @author Elijah Reyna
+ */
 public interface DefaultPlayer {
-	public static final int MAX_DECK_VALUE = 7;
-	
+
+	/**
+	 * Generates a default player
+	 * @return
+	 */
 	public static Player createDefaultPlayer() {
 		return new Player(DeckBuilder.buildDeck(DeckBuilder.DEFAULT_DECK), new PokerHandTable(createDefaultPokerHandVector()), new Vector<JokerCard>(0));
 	}
 	
+	
+	/**
+	 * Creates a test Player
+	 * @return
+	 */
 	public static Player createTestPlayer() {
 		int[] values = {2, 3, 4, 5, 6, 7, 8};
 		char[] suit = {'S', 'C'};
 		return new Player(DeckBuilder.generateDeck(values, suit), new PokerHandTable(createDefaultPokerHandVector()), new Vector<JokerCard>(0));
 	}
 	
+	
+	/**
+	 * Generates a List of PokerHands to pass to a PokerHandTable constructor
+	 * @return Vector<PokerHand>
+	 */
 	public static Vector<PokerHand> createDefaultPokerHandVector(){
 		Vector<PokerHand> pokerHands = new Vector<PokerHand>(0);
 		pokerHands.add(new PokerHand(PokerHand.FLUSH_FIVE, 160, 16));
@@ -41,6 +60,11 @@ public interface DefaultPlayer {
 		return pokerHands;
 	}
 	
+	
+	/**
+	 * The default chip values for each ante
+	 * @return int[]
+	 */
 	public static int[] defaultChips() {
 		int[] chips = new int[9];
 		chips[0] = 100;

@@ -2,11 +2,22 @@ package game.scoring;
 
 import java.util.Vector;
 
+/**
+ * Class for visualizing scores by printing scores as counts in a set of bins
+ * 
+ * @author Elijah Reyna
+ */
 public interface ScorePrinter {
 	public static final int NUM_BINS = 20;
 	
 	static boolean DEBUG = false;
 	
+	
+	/**
+	 * Generates a String representation of the scores
+	 * @param scores
+	 * @return
+	 */
 	public static String graphScores(Vector<PlayedHand> scores) {
 		
 		scores = sortByScore(scores);
@@ -22,6 +33,12 @@ public interface ScorePrinter {
 		return result;
 	}
 	
+	
+	/**
+	 * Sorts the PlayedHand objects by score
+	 * @param scores
+	 * @return
+	 */
 	public static Vector<PlayedHand> sortByScore(Vector<PlayedHand> scores) {
 		Vector<PlayedHand> sortedScores = new Vector<PlayedHand>(0);
 		int lowIndex;
@@ -50,6 +67,12 @@ public interface ScorePrinter {
 		return sortedScores;
 	}
 	
+	
+	/**
+	 * Utility function to generate partition values
+	 * @param scores
+	 * @return
+	 */
 	public static int[] generatePartitionValues(Vector<PlayedHand> scores) {
 		double lowScore = scores.get(0).getScore();
 		double highScore = scores.get(scores.size() - 1).getScore();
@@ -70,6 +93,13 @@ public interface ScorePrinter {
 		return partitionValues;
 	}
 	
+	
+	/**
+	 * Function for counting the scores and storing them
+	 * @param scores
+	 * @param partitionValues
+	 * @return
+	 */
 	public static int[] countScoresInEachPartition(Vector<PlayedHand> scores, int[] partitionValues) {
 		int[] scoreCount = new int[partitionValues.length - 1];
 		
@@ -88,7 +118,13 @@ public interface ScorePrinter {
 	}
 	
 	
-	
+	/**
+	 * Utility function for finding the index of the first value in a partition
+	 * @param value
+	 * @param scores
+	 * @param beginningIndex
+	 * @return
+	 */
 	public static int findIndexOfFirstValueWithinPartition(int value, Vector<PlayedHand> scores, int beginningIndex) {
 		beginningIndex = binarySearch(scores, value, beginningIndex, scores.size() - 1);
 		while(beginningIndex - 1 > 0 && scores.get(beginningIndex - 1).getScore() > value) {
@@ -97,6 +133,13 @@ public interface ScorePrinter {
 		return beginningIndex;
 	}
 	
+	/**
+	 * Utility function for finding the last value in a partition
+	 * @param value
+	 * @param scores
+	 * @param beginningIndex
+	 * @return
+	 */
 	public static int findIndexOfLastValueWithinPartition(int value, Vector<PlayedHand> scores, int beginningIndex) {
 		beginningIndex = binarySearch(scores, value, beginningIndex, scores.size() - 1);
 		while(beginningIndex < scores.size() && scores.get(beginningIndex).getScore() <= value) {
@@ -105,6 +148,14 @@ public interface ScorePrinter {
 		return beginningIndex;
 	}
 	
+	/**
+	 * FIXME: What does this function do???
+	 * @param scores
+	 * @param partitionValue
+	 * @param low
+	 * @param high
+	 * @return
+	 */
 	public static int binarySearch(Vector<PlayedHand> scores, int partitionValue, int low, int high) {
 		int mid = (low + high) / 2;
 		
@@ -122,6 +173,11 @@ public interface ScorePrinter {
 		}
 	}
 	
+	/**
+	 * Counts the scores for a total count
+	 * @param scoreCounts
+	 * @return
+	 */
 	private static int countScores(int[] scoreCounts) {
 		int sum = 0;
 		for(int i = 0; i < scoreCounts.length; i++) {

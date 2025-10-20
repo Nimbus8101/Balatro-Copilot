@@ -1,5 +1,13 @@
 package data.card;
 
+
+/**
+ * Class for generating Jokers
+ * 
+ * Currently has no functionality, but will likely be used in the future
+ * 
+ * @author Elijah Reyna
+ */
 public class JokerCardGenerator {
 	
 	public JokerCardGenerator() {

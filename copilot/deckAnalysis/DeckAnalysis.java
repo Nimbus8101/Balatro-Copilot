@@ -10,6 +10,16 @@ import data.pokerHand.PokerHandTable;
 import game.scoring.HandScorer;
 import game.scoring.PlayedHand;
 
+
+/**
+ * Class which Finds all possible combinations of cards in a deck, scores them, and stores that information into the PokerHandProbabilityTable
+ * Currently stores:
+ *  - Poker Hand probabilities
+ *  - their upper and lower scores
+ *  - The number of times they appeared
+ * 
+ * @author Elijah Reyna
+ */
 public class DeckAnalysis {
 	PokerHandProbabilityTable probabilityTable;
 	PokerHandTable pokerHandTable;
@@ -58,6 +68,8 @@ public class DeckAnalysis {
             }
             
             PlayedHand playedHand = HandScorer.scorePlayedHand(combination, new Vector<JokerCard>(0), pokerHandTable);
+            
+            
             probabilityTable.addScore(playedHand.getHandType(), playedHand.getScore());
             
             //System.out.println(playedHand.print("  "));

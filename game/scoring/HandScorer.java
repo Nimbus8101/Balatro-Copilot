@@ -1,5 +1,7 @@
 package game.scoring;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import data.card.Card;
@@ -19,13 +21,13 @@ public interface HandScorer extends ValueCountUtils{
 	 * @param pokerHandTable
 	 * @return
 	 */
-	public static PlayedHand scorePlayedHand(Vector<PlayingCard> cards, Vector<JokerCard> jokers, PokerHandTable pokerHandTable) {
+	public static PlayedHand scorePlayedHand(List<PlayingCard> cards, List<JokerCard> jokers, PokerHandTable pokerHandTable) {
 		PlayedHand playedHand = PokerHandIdentifier.identifyPlayedHand(cards);
 		scoreHand(playedHand, jokers, pokerHandTable);
 		return playedHand;
 	}
 	
-	public static double scoreHand(PlayedHand playedHand, Vector<JokerCard> jokers, PokerHandTable pokerHandTable) {
+	public static double scoreHand(PlayedHand playedHand, List<JokerCard> jokers, PokerHandTable pokerHandTable) {
 		String handType = playedHand.getHandType();
 		playedHand.setStartingChips(pokerHandTable.getPokerHand(handType).getChips());
 		playedHand.setStartingMult(pokerHandTable.getPokerHand(handType).getMult());
@@ -35,7 +37,7 @@ public interface HandScorer extends ValueCountUtils{
 			scoreCard(playedHand, card);
 		}
 		
-		Vector<ScoreChangeValues> changes = playedHand.getChanges();
+		List<ScoreChangeValues> changes = playedHand.getChanges();
 		
 		// Runs through the jokers and performs scoring (if applicable)
 		for(JokerCard joker : jokers) {
@@ -85,8 +87,8 @@ public interface HandScorer extends ValueCountUtils{
 		playedHand.addChange(change);
 	}
 	
-	public static Vector<PlayingCard> pullScoredCards(Vector<PlayingCard> playedCards, String handType){
-		Vector<PlayingCard> scoredCards = new Vector<PlayingCard>(0);
+	public static List<PlayingCard> pullScoredCards(List<PlayingCard> playedCards, String handType){
+		List<PlayingCard> scoredCards = new ArrayList<>(0);
 		
 		switch(handType) {
 		case PokerHand.HIGH_CARD:
@@ -127,10 +129,10 @@ public interface HandScorer extends ValueCountUtils{
 	 * 
 	 * @param cards The cards to search
 	 * @param numMatches The number of matches required
-	 * @return Vector<PlayingCard> of matching cards
+	 * @return List<PlayingCard> of matching cards
 	 */
-	public static Vector<PlayingCard> pullMatches(Vector<PlayingCard> cards, int numMatches){
-		Vector<PlayingCard> matches = new Vector<PlayingCard>(0);
+	public static List<PlayingCard> pullMatches(List<PlayingCard> cards, int numMatches){
+		List<PlayingCard> matches = new ArrayList<>(0);
 		for(int i = 0; i < cards.size(); i++) {
 			matches.add(cards.get(i));
 			
@@ -149,7 +151,7 @@ public interface HandScorer extends ValueCountUtils{
 	/**
 	 * Recursive function which finds the cards which match to each other, given how many matches are needed
 	 * 
-	 * NOTE: The function changes the matches vector, so returning a Vector<PlayingCard> isn't strictly necessary, but helps readibility
+	 * NOTE: The function changes the matches vector, so returning a List<PlayingCard> isn't strictly necessary, but helps readibility
 	 * 
 	 * @param cards The cards to search
 	 * @param matches Card vector of cards that match in value
@@ -157,7 +159,7 @@ public interface HandScorer extends ValueCountUtils{
 	 * @param currIndex The current index in the cards vector
 	 * @return Matches vector, either one of length == numMatches, or length of 0 (indicating another round is necessary
 	 */
-	public static Vector<PlayingCard> matchUtil(Vector<PlayingCard> cards, Vector<PlayingCard> matches, int numMatches, int currIndex){
+	public static List<PlayingCard> matchUtil(List<PlayingCard> cards, List<PlayingCard> matches, int numMatches, int currIndex){
 		// The function ticks numMatches down by one each time a match is found. If this function is called with numMatches == 0
 		// All the matches have been found, and the function returns the matches vector
 		if(numMatches == 0) {
@@ -178,8 +180,8 @@ public interface HandScorer extends ValueCountUtils{
 		return matchUtil(cards, matches, numMatches, currIndex + 1);
 	}
 	
-	public static Vector<PlayingCard> pullHighCard(Vector<PlayingCard> cards) {
-		Vector<PlayingCard> scoredCards = new Vector<PlayingCard>(0);
+	public static List<PlayingCard> pullHighCard(List<PlayingCard> cards) {
+		List<PlayingCard> scoredCards = new ArrayList<>(0);
 		int max = cards.get(0).getValue();
 		int index = 0;
 		
@@ -194,8 +196,8 @@ public interface HandScorer extends ValueCountUtils{
 		return scoredCards;
 	}
 	
-	public static Vector<PlayingCard> pullTwoPair(Vector<PlayingCard> cards){
-		Vector<PlayingCard> scoredCards = new Vector<PlayingCard>(0);
+	public static List<PlayingCard> pullTwoPair(List<PlayingCard> cards){
+		List<PlayingCard> scoredCards = new ArrayList<>(0);
 		int unmatchedIndex = -1;
 
 		for (int i = 0; i < cards.size(); i++) {

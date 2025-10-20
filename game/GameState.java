@@ -6,6 +6,12 @@ import data.deck.Deck;
 import data.deck.DeckUtils;
 import data.player.Player;
 
+
+/**
+ * Class for storing information about the game state
+ * 
+ * @author Elijah Reyna
+ */
 public class GameState {
 	int minimumScore;
 	int currScore;
@@ -51,8 +57,6 @@ public class GameState {
 		currHand = DeckUtils.draw(currHand, 8, currDeck);
 		//FIXME the draw should change based on the player's hand size
 	}
-	
-	
 	
 	
 	public String printState() {

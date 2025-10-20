@@ -1,5 +1,10 @@
 package data.card;
 
+/**
+ * Class for holding Joker information as well as modifications that can be made to it
+ * @author Elijah
+ *
+ */
 public class JokerCard extends Card {
 	public static final String JOKER = "JOKER";
 	

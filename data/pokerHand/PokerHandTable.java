@@ -4,6 +4,12 @@ import java.util.Vector;
 
 import data.player.DefaultPlayer;
 
+
+/**
+ * Table for storing PokerHand information
+ * 
+ * @author Elijah Reyna
+ */
 public class PokerHandTable {
 	private Vector<PokerHand> pokerHands;
 	

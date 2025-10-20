@@ -5,11 +5,20 @@ import java.util.Vector;
 import data.card.Card;
 import data.card.PlayingCard;
 
+
+/**
+ * Class for building the default decks
+ * 
+ * 
+ * @author Elijah Reyna
+ */
 public class DeckBuilder {
+	// ======================== Decks ======================== //
 	public static final String DEFAULT_DECK = "DEFAULT_DECK";
 	public static final String ABANDONED_DECK = "ABANDONED_DECK";
 	public static final String PAINTED_DECK = "PAINTED_DECK";
 	
+	// ======================== Card Value and Suit Information ======================== //
 	public static int[] DEFAULT_VALUES = {PlayingCard.ACE, PlayingCard.TWO, PlayingCard.THREE, PlayingCard.FOUR, PlayingCard.FIVE, PlayingCard.SIX, PlayingCard.SEVEN, 
 			  							  PlayingCard.EIGHT, PlayingCard.NINE, PlayingCard.TEN, PlayingCard.JACK, PlayingCard.QUEEN, PlayingCard.KING};
 	public static char[] DEFAULT_SUITS = {PlayingCard.SPADES, PlayingCard.HEARTS, PlayingCard.DIAMONDS, PlayingCard.CLUBS};
@@ -21,6 +30,11 @@ public class DeckBuilder {
 		
 	}
 	
+	/**
+	 * Builds the specified deck
+	 * @param deckName String Name of deck to build
+	 * @return Deck Generated deck
+	 */
 	public static Deck buildDeck(String deckName) {
 		switch(deckName) {
 		case ABANDONED_DECK:
@@ -32,6 +46,13 @@ public class DeckBuilder {
 		}
 	}
 	
+	
+	/**
+	 * Generates a deck for all possible combinations of values and suits given
+	 * @param values int[] Values in the deck
+	 * @param suits char[] Suits in the deck
+	 * @return Deck Generated deck
+	 */
 	public static Deck generateDeck(int[] values, char[] suits) {
 		Vector<PlayingCard> cards = new Vector<PlayingCard>(0);
 		for(int i = 0; i < values.length; i++) {

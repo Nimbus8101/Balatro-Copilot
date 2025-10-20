@@ -97,7 +97,10 @@ public class BlindCard extends JPanel{
 	        add(stateLabel);
 		}else if(state.equals("completed")) {
 			remove(selectButton);
-			remove(skipButton);
+			
+			if(skipButton != null) {
+				remove(skipButton);
+			}
 			
 			setBackground(new Color(230, 230, 230));	
 			stateLabel.setText("Completed");

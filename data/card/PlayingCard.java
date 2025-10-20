@@ -1,6 +1,13 @@
 package data.card;
 
+
+/**
+ * Class to hold PlayingCard information
+ * 
+ * @author Elijah Reyna
+ */
 public class PlayingCard extends Card{
+	// ============ Values ============ //
 	public static final int ACE = 14;
 	public static final int TWO = 2;
 	public static final int THREE = 3;
@@ -15,11 +22,13 @@ public class PlayingCard extends Card{
 	public static final int QUEEN = 12;
 	public static final int KING = 13;
 	
+	// ============ Suits ============ //
 	public static final char SPADES = 'S';
 	public static final char HEARTS = 'H';
 	public static final char CLUBS = 'C';
 	public static final char DIAMONDS = 'D';
 	
+	// ============ Modifiers ============ //
 	public static final String BONUS = "BONUS";
 	public static final String MULT = "MULT";
 	public static final String WILD = "WILD";
@@ -29,12 +38,14 @@ public class PlayingCard extends Card{
 	public static final String GOLD = "GOLD";
 	public static final String LUCKY = "LUCKY";
 	
+	// ============ Editions ============ //
 	public static final String BASE = "BASE";
 	public static final String FOIL = "FOIL";
 	public static final String HOLOGRAPHIC = "HOLOGRAPHIC";
 	public static final String POLYCHROME = "POLYCHROME";
 	public static final String NEGATIVE = "NEGATIVE";
 	
+	// ============ Seals ============ //
 	public static final String GOLD_SEAL = "GOLD_SEAL";
 	public static final String RED_SEAL = "RED_SEAL";
 	public static final String BLUE_SEAL = "BLUE_SEAL";
@@ -43,6 +54,7 @@ public class PlayingCard extends Card{
 	public static final String NONE = "NONE";
 	public static int id = 000;
 	
+	// ======== Card Variables ======== //
 	private int value;
 	private char suit;
 	private int cardID;
@@ -53,6 +65,12 @@ public class PlayingCard extends Card{
 	
 	private int chips;
 	
+	
+	/**
+	 * Constructor
+	 * @param value Values of the card
+	 * @param suit Suit of the card
+	 */
 	public PlayingCard(int value, char suit) {
 		this.value = value;
 		this.suit = suit;
@@ -62,6 +80,7 @@ public class PlayingCard extends Card{
 		cardID = id++;
 	}
 
+	// ========== Getters and Setters ========== //
 	public int getValue() {
 		return value;
 	}
@@ -102,14 +121,28 @@ public class PlayingCard extends Card{
 		this.seal = seal;
 	}
 	
+	
+	// ========== Other Methods ========== //
+	
+	/**
+	 * Generates a string representation of the card
+	 * @return
+	 */
 	public String printCard() {
 		return Integer.toString(value) + " of " + suit + " " + enhancement + " " + edition + " " + seal;
 	}
 	
+	/**
+	 * Generates a string with the value and suit of the card
+	 * @return
+	 */
 	public String printValueAndSuit() {
 		return Integer.toString(value) + suit;
 	}
 	
+	/**
+	 * Methods for getting the path name of a card, used by the GUI to get the correct images for a card
+	 */
 	@Override
 	public String cardPathName() {
 		String result = "";
@@ -175,6 +208,12 @@ public class PlayingCard extends Card{
 		return result;
 	}
 	
+	
+	/**
+	 * Gets the suit of a card as an integer (For comparison between cards)
+	 * @param cardSuit
+	 * @return
+	 */
 	public static int getCardSuitAsInt(char cardSuit) {
 		switch(cardSuit) {
 		case SPADES:

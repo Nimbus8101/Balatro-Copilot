@@ -4,6 +4,14 @@ import java.util.Vector;
 
 import data.card.Card;
 
+
+/**
+ * I believe this class is unsused
+ * 
+ * 
+ * @author Elijah
+ *
+ */
 public class CardCombination {
 	Vector<Card> cards;
 	

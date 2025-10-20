@@ -1,15 +1,24 @@
 package data.deck;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 
 import data.card.Card;
 import data.card.PlayingCard;
 
+
+/**
+ * Class for performing functions related to Decks (Vector<PlayingCard>)
+ * 
+ * @author Elijah Reyna
+ */
 public interface DeckUtils {
+	// ========== Types of Sorts ========== //
 	public static int SORT_RANK = 0;
 	public static int SORT_SUIT = 1;
+	
 	
 	/**
 	 * Draws up to numDraw cards from deck and adds those to currHand, if there are cards in the deck to draw
@@ -31,6 +40,7 @@ public interface DeckUtils {
 		return currHand;
 	}
 	
+	
 	/**
 	 * Pulls cards from the given vector and returns the pulled cards.
 	 * NOTE This modifies the original array, and is important for the converIndexCombinationsToPlayedHands() function, 
@@ -49,6 +59,12 @@ public interface DeckUtils {
 		return pulledPlayingCards;
 	}
 	
+	
+	/**
+	 * Converts cards from a vector to an array
+	 * @param cards Vector<PlayingCard> Card vector to convert
+	 * @return Card[] Array of Cards
+	 */
 	public static PlayingCard[] convertCardVectorToArray(Vector<PlayingCard> cards) {
 		PlayingCard[] newCards = new PlayingCard[cards.size()];
 		for(int i = 0; i < cards.size(); i++) {
@@ -57,6 +73,12 @@ public interface DeckUtils {
 		return newCards;
 	}
 	
+	
+	/**
+	 * Copies the given Vector
+	 * @param cards Vector<PlayingCard> Cards to copy
+	 * @return Vector<PlayingCard> copied vector
+	 */
 	public static Vector<PlayingCard> copyCardVector(Vector<PlayingCard> cards){
 		Vector<PlayingCard> newVector = new Vector<PlayingCard>(0);
 		for(int i = 0; i < cards.size(); i++) {
@@ -65,7 +87,14 @@ public interface DeckUtils {
 		return newVector;
 	}
 	
-	public static String printCardVector(Vector<PlayingCard> cards, String buffer) {
+	
+	/**
+	 * Generates a String representation of given cards
+	 * @param cards List<PlayingCard> Cards to represent in a String
+	 * @param buffer String offset to apply to each line
+	 * @return String to be printed
+	 */
+	public static String printCardVector(List<PlayingCard> cards, String buffer) {
 		String result = "";
 		for(int i = 0; i < cards.size(); i++) {
 			result += cards.get(i).printValueAndSuit() + " ";
@@ -73,6 +102,12 @@ public interface DeckUtils {
 		return result;
 	}
 	
+	
+	/**
+	 * Sorts the cards in place
+	 * @param cards Vector<PlayingCard> Cards to sort
+	 * @param typeOfSort int Type of sort to perform
+	 */
 	public static void sortCardVector(Vector<PlayingCard> cards, int typeOfSort) {	
 		if(typeOfSort == SORT_RANK) {
 			int bottomIndex = 0;

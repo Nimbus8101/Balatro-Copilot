@@ -13,7 +13,7 @@ public class AnteSelect extends PlayArea implements BlindCardListener{
 	BlindCard[] blinds = new BlindCard[3];
 	int blindSelected;
 	
-    public AnteSelect(AnteSelectListener listener, int baseChips, int blindsDone) {
+    public AnteSelect(AnteSelectListener listener, int baseChips) {
     	this.listener = listener;
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createTitledBorder("Ante Select - Choose Your Blind"));
@@ -25,6 +25,7 @@ public class AnteSelect extends PlayArea implements BlindCardListener{
         blinds[1] = new BlindCard(this, "Big Blind", "Score at least " + (int) (baseChips * 1.5), "$$$$", "upcoming", true);
         
         BlindType bossBlind = getRandomBlind();
+        // FIXME Would be nice if this boss blind displayed the score required. Functionally the score is correct, but is not currently displayed before the blind
         blinds[2] = new BlindCard(this, bossBlind.getBlindName(), bossBlind.getDescription(), "$".repeat(bossBlind.getCost()), "upcoming", false);
 
         // Create each blind card as a JPanel
@@ -59,6 +60,8 @@ public class AnteSelect extends PlayArea implements BlindCardListener{
     	
     	if(blindSelected < 2) {
     		blinds[blindSelected + 1].incrementState();
+    	}else {
+    		// If on the third blind, will need to generate a new set of blinds, and set blindSelected to 0
     	}
     	
     	blindSelected++;

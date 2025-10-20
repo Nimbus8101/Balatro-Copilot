@@ -1,12 +1,24 @@
 package copilot.deckAnalysis;
 
+
+/**
+ * Class which stores some data regarding a PokerHand for the PokerHandProbabilityTable
+ * 
+ * @author Elijah
+ */
 public class PokerHandProbability {
+	// ============ Poker Hand Variables ============ //
 	private String handName;
 	private double highestScore;
 	private double lowestScore;
 	private double averageScore;
 	private int handCount;
 	
+	
+	/**
+	 * Default constructor which initializes all fields to 0
+	 * @param handName
+	 */
 	public PokerHandProbability(String handName) {
 		this.handName = handName;
 		highestScore = 0;
@@ -15,6 +27,8 @@ public class PokerHandProbability {
 		handCount = 0;
 	}
 	
+	
+	// ======= Basic Setters and Getters ======= //
 	public String getName() {
 		return handName;
 	}
@@ -35,6 +49,11 @@ public class PokerHandProbability {
 		return averageScore;
 	}
 	
+	
+	/**
+	 * Adds a score to the stored data
+	 * @param score (double) Score to add
+	 */
 	public void addScore(double score) {
 		if(handCount == 0) {
 			highestScore = score;

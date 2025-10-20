@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -26,7 +27,7 @@ public class CardLayeredPane extends JPanel implements CardSelectionListener{
     String borderName = "";
     int cardY = 0;
     
-    Vector<Card> cards;
+    List<Card> cards;
     
     public CardLayeredPane() {
     	// Sets up the Layered Pane
@@ -61,7 +62,7 @@ public class CardLayeredPane extends JPanel implements CardSelectionListener{
 		setBorder(BorderFactory.createTitledBorder(borderTitle));
 	}
     
-    public void setCardVector(Vector<Card> cards) {
+    public void setCardVector(List<Card> cards) {
     	this.cards = cards;
     }
 	

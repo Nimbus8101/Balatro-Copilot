@@ -2,6 +2,18 @@ package copilot.deckAnalysis;
 
 import java.util.Vector;
 
+
+/**
+ * Class which stores PokerHand information
+ * Currently stores:
+ *  - Poker Hand probabilities
+ *  - their upper and lower scores
+ *  - The number of times they appeared
+ *  
+ *  
+ * @author Elijah
+ *
+ */
 public class PokerHandProbabilityTable {
 	Vector<PokerHandProbability> probabilityTable;
 	int totalCount = 0;

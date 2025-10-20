@@ -1,5 +1,12 @@
 package game.scoring;
 
+
+/**
+ * Class to hold information regarding adding chips, mult, and multiplier to a score
+ * Used in the PlayedHand class to store changes, then apply them one after the other
+ * 
+ * @author Elijah Reyna
+ */
 public class ScoreChangeValues {
 	public int chips;
 	public int mult;

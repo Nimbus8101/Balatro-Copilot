@@ -1,5 +1,6 @@
 package data.pokerHand;
 
+import java.util.List;
 import java.util.Vector;
 
 import data.card.Card;
@@ -8,8 +9,19 @@ import game.scoring.PlayedHand;
 import game.scoring.ValueCount;
 import game.scoring.ValueCountUtils;
 
+
+/**
+ * Class for identifying which poker hand a set of five cards is
+ * 
+ * @author Elijah Reyna
+ */
 public interface PokerHandIdentifier {
-	public static PlayedHand identifyPlayedHand(Vector<PlayingCard> cards) {
+	/**
+	 * Identifies a List of Cards hand type
+	 * @param cards Cards to identify
+	 * @return PlayedHand Hand information
+	 */
+	public static PlayedHand identifyPlayedHand(List<PlayingCard> cards) {
 		PlayedHand playedHand = new PlayedHand();
 		playedHand.setPlayedCards(cards);
 		playedHand.setFlush(PokerHandIdentifier.determineFlush(cards));
@@ -17,12 +29,18 @@ public interface PokerHandIdentifier {
 		return playedHand;
 	}
 	
-	public static String determineHandType(Vector<PlayingCard> cards) {
+	/**
+	 * Determines a List of Cards' hand type
+	 * @param cards Cards to identify
+	 * @return String Hand type
+	 */
+	public static String determineHandType(List<PlayingCard> cards) {
 		Boolean DEBUG = false;
 		
 		String pokerHand = PokerHand.HIGH_CARD;
 		
-		Vector<ValueCount> valueCounts = ValueCountUtils.countValues(cards);
+		// Counts the number of each type of card, then sorts the array
+		List<ValueCount> valueCounts = ValueCountUtils.countValues(cards);
 		ValueCountUtils.sortByValue(valueCounts);
 		
 		if(DEBUG) {
@@ -106,7 +124,12 @@ public interface PokerHandIdentifier {
 		return pokerHand;
 	}
 	
-	public static boolean isFlush(Vector<PlayingCard> cards) {
+	/**
+	 * Determines if a List of Cards all share the same suit
+	 * @param cards
+	 * @return Boolean
+	 */
+	public static boolean isFlush(List<PlayingCard> cards) {
 		if(cards.size() < 5) {
 			System.out.println("Less than five cards");
 			return false;
@@ -124,7 +147,13 @@ public interface PokerHandIdentifier {
 		return true;
 	}
 	
-	public static char determineFlush(Vector<PlayingCard> cards) {
+	
+	/**
+	 * Method for getting the suit of the flush after the identifying has been done (returning 'N' if it isnt a flush)
+	 * @param cards 
+	 * @return
+	 */
+	public static char determineFlush(List<PlayingCard> cards) {
 		if(isFlush(cards)) {
 			return cards.get(0).getSuit();
 		}

@@ -1,7 +1,13 @@
 package data.pokerHand;
 
+
+/**
+ * Class for storing PokerHand information
+ * 
+ * @author Elijah Reyna
+ */
 public class PokerHand{
-	//All Poker Hand names
+	// ==================== Poker Hand names ==================== //
 	public static final String HIGH_CARD = "HIGH_CARD";
 	public static final String PAIR = "PAIR";
 	public static final String TWO_PAIR = "TWO_PAIR";
@@ -17,16 +23,25 @@ public class PokerHand{
 	public static final String FLUSH_HOUSE = "FLUSH_HOUSE";
 	
 	
+	// ==================== Poker Hand Variables ==================== //
 	String handName;
 	int chips;
 	int mult;
 	
+	
+	/**
+	 * Constructor
+	 * @param handName
+	 * @param chips
+	 * @param mult
+	 */
 	public PokerHand(String handName, int chips, int mult) {
 		this.handName = handName;
 		this.chips = chips;
 		this.mult = mult;
 	}
 	
+	// ==================== Getters and Setters ==================== //
 	public String getName() {
 		return handName;
 	}
@@ -39,6 +54,10 @@ public class PokerHand{
 		return mult;
 	}
 	
+	/**
+	 * Generates a String representation of the PokerHand
+	 * @return
+	 */
 	public String printPokerHand() {
 		return handName + ": " + chips + " x " + mult;
 	}

@@ -1,5 +1,7 @@
 package game.scoring;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import data.card.Card;
@@ -8,13 +10,22 @@ import data.deck.DeckUtils;
 import data.pokerHand.PokerHand;
 import data.pokerHand.PokerHandIdentifier;
 
+
+/**
+ * Class for holding information about a list of cards that is being played
+ * 
+ * @author Elijah Reyna
+ */
 public class PlayedHand implements HandScorer, PokerHandIdentifier{
+	// ==================== Hand Information =================== //
+	List<PlayingCard> playedCards;
+	List<PlayingCard> heldCards;
 	String pokerHand;
 	private char flush;
-	Vector<PlayingCard> playedCards;
-	Vector<PlayingCard> heldCards;
-	Vector<ScoreChangeValues> scoreChanges;
+
 	
+	// ==================== Scoring Information =================== //
+	List<ScoreChangeValues> scoreChanges;
 	int startingChips;
 	int startingMult;
 	
@@ -22,17 +33,18 @@ public class PlayedHand implements HandScorer, PokerHandIdentifier{
 	double mult = 0.0;
 	double finalScore;
 		
+	
 	public PlayedHand() {
-		scoreChanges = new Vector<ScoreChangeValues>(0);
+		scoreChanges = new ArrayList<>(0);
 	}
 	
-	public PlayedHand(Vector<PlayingCard> playedCards, Vector<PlayingCard> heldCards) {
+	public PlayedHand(List<PlayingCard> playedCards, List<PlayingCard> heldCards) {
 		this.playedCards = playedCards;
 		flush = PokerHandIdentifier.determineFlush(playedCards);
 		pokerHand = PokerHandIdentifier.determineHandType(playedCards);
 		
 		this.heldCards = heldCards;
-		scoreChanges = new Vector<ScoreChangeValues>(0);
+		scoreChanges = new ArrayList<>(0);
 	}
 	
 	public void setStartingChips(int chips) {
@@ -47,15 +59,15 @@ public class PlayedHand implements HandScorer, PokerHandIdentifier{
 		this.pokerHand = pokerHand;
 	}
 	
-	public void setPlayedCards(Vector<PlayingCard> cards) {
+	public void setPlayedCards(List<PlayingCard> cards) {
 		this.playedCards = cards;
 	}
 	
-	public Vector<PlayingCard> getPlayedCards(){
+	public List<PlayingCard> getPlayedCards(){
 		return playedCards;
 	}
 	
-	public void setHeldCards(Vector<PlayingCard> cards) {
+	public void setHeldCards(List<PlayingCard> cards) {
 		this.heldCards = cards;
 	}
 	
@@ -112,7 +124,7 @@ public class PlayedHand implements HandScorer, PokerHandIdentifier{
 		scoreChanges.add(change);
 	}
 	
-	public Vector<ScoreChangeValues> getChanges(){
+	public List<ScoreChangeValues> getChanges(){
 		return scoreChanges;
 	}
 	

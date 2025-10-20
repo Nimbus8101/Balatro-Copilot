@@ -4,6 +4,14 @@ import java.util.Vector;
 
 import data.pokerHand.PokerHand;
 
+
+/**
+ * Utility class for operating on a Vector of PlayedHand objects
+ * Functionality:
+ * - Sorting by Score and Hand Type
+ * 
+ * @author Elijah Reyna
+ */
 public interface PlayedHandVectorUtils {
 	String[] handTypeOrder = {PokerHand.HIGH_CARD, PokerHand.PAIR, PokerHand.TWO_PAIR, PokerHand.THREE_OF_A_KIND,
 			  PokerHand.FLUSH, PokerHand.STRAIGHT, PokerHand.FULL_HOUSE, PokerHand.FOUR_OF_A_KIND, 
