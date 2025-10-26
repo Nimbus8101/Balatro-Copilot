@@ -14,6 +14,7 @@ import data.pokerHand.PokerHandIdentifier;
 import data.pokerHand.PokerHandTable;
 
 public interface HandScorer extends ValueCountUtils{
+	static final List<JokerCard> NO_JOKERS = List.of();
 	
 	/**
 	 * Function to score a hand of 5
@@ -51,9 +52,11 @@ public interface HandScorer extends ValueCountUtils{
 			}
 		}
 		
+		/**
 		for(ScoreChangeValues change : changes) {
 			System.out.println(change.chips + " " + change.mult);
 		}
+		*/
 		
 		playedHand.score();
 		
@@ -131,19 +134,23 @@ public interface HandScorer extends ValueCountUtils{
 	 * @param numMatches The number of matches required
 	 * @return List<PlayingCard> of matching cards
 	 */
-	public static List<PlayingCard> pullMatches(List<PlayingCard> cards, int numMatches){
-		List<PlayingCard> matches = new ArrayList<>(0);
-		for(int i = 0; i < cards.size(); i++) {
-			matches.add(cards.get(i));
-			
-			matchUtil(cards, matches, numMatches - 1, i + 1);
-			
-			if(matches.size() == numMatches) {
-				return matches;
-			}
-		}
-		
-		return cards;
+	public static List<PlayingCard> pullMatches(List<PlayingCard> cards, int numMatches) {
+	    List<ValueCount> counts = ValueCountUtils.countValues(cards);
+	    int targetValue = -1;
+	    for (ValueCount vc : counts) {
+	        if (vc.getCount() == numMatches) {
+	            targetValue = vc.getValue();
+	            break;
+	        }
+	    }
+	    if (targetValue == -1) return cards; // fallback
+
+	    List<PlayingCard> matches = new ArrayList<>(numMatches);
+	    for (PlayingCard c : cards) {
+	        if (c.getValue() == targetValue)
+	            matches.add(c);
+	    }
+	    return matches;
 	}
 	
 	

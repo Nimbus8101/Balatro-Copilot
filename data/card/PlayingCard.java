@@ -81,6 +81,7 @@ public class PlayingCard extends Card{
 	}
 
 	// ========== Getters and Setters ========== //
+	 
 	public int getValue() {
 		return value;
 	}

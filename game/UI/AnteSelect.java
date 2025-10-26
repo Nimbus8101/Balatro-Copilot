@@ -10,6 +10,11 @@ import java.util.Random;
 public class AnteSelect extends PlayArea implements BlindCardListener{
 	private AnteSelectListener listener;
 	
+	public static final String NONE = "None";
+	public static final String SMALL = "Small";
+	public static final String BIG = "Big";
+	public static final String BOSS = "Boss";
+	
 	BlindCard[] blinds = new BlindCard[3];
 	int blindSelected;
 	

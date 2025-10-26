@@ -120,7 +120,7 @@ public class PlayedHand implements HandScorer, PokerHandIdentifier{
 	}
 	
 	public void addChange(ScoreChangeValues change) {
-		System.out.println("Adding change");
+		//System.out.println("Adding change");
 		scoreChanges.add(change);
 	}
 	

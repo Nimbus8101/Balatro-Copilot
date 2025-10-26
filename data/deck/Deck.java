@@ -1,6 +1,9 @@
 package data.deck;
 
+import java.util.BitSet;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import data.card.Card;
@@ -19,12 +22,45 @@ public class Deck implements DeckUtils {
 	public Vector<PlayingCard> drawnCards;
 	public Vector<PlayingCard> discardedCards;
 	
+	public static final int DRAW_MAP = 0;
+	public static final int HAND_MAP = 1;
+	public static final int DISCARD_MAP = 2;
+	private BitSet drawBitmap;
+	private BitSet handBitmap;
+	private BitSet discardBitmap;
+	private Map<PlayingCard, Integer> localIndices = new HashMap<>();
+	private Map<Integer, PlayingCard> indexToCard = new HashMap<>();
+	
 	public Deck(Vector<PlayingCard> cards) {
 		this.cards = cards;
 		drawnCards = new Vector<PlayingCard>(0);
 		discardedCards = new Vector<PlayingCard>(0);
+		
+		rebuildBitmap();
 	}
 	
+	 public void rebuildBitmap() {
+        localIndices = new HashMap<>();
+        drawBitmap = new BitSet(cards.size());
+        handBitmap = new BitSet(cards.size());
+        discardBitmap = new BitSet(cards.size());
+        
+        for (int i = 0; i < cards.size(); i++) {
+            localIndices.put(cards.get(i), i);
+            indexToCard.put(i, cards.get(i));
+            drawBitmap.set(i);
+        }
+        
+        
+    }
+	 
+	 public PlayingCard getCardByIndex(int index) {
+	    return indexToCard.get(index);
+	}
+	 
+	 public BitSet getBitmap(int bitMap) {
+        return (BitSet) drawBitmap.clone();
+    }
 	
 	/**
 	 * Resets the deck to empty
@@ -32,8 +68,9 @@ public class Deck implements DeckUtils {
 	public void resetDeck() {
 		cards.addAll(drawnCards);
 		cards.addAll(discardedCards);
-		drawnCards = new Vector<PlayingCard>(0);
-		discardedCards = new Vector<PlayingCard>(0);
+		drawnCards.clear();
+		discardedCards.clear();
+	    rebuildBitmap();
 	}
 	
 	
@@ -42,6 +79,7 @@ public class Deck implements DeckUtils {
 	 */
 	public void shuffle() {
 		Collections.shuffle(cards);
+		rebuildBitmap();
 	}
 	
 	
@@ -63,6 +101,12 @@ public class Deck implements DeckUtils {
 	 * @return PlayingCard drawn card
 	 */
 	public PlayingCard drawNext() {
+		Integer idx = localIndices.get(cards.get(0));
+        if (idx != null) {
+        	drawBitmap.clear(idx);
+        	handBitmap.set(idx);
+        }
+        
 		return cards.remove(0);
 	}
 	
@@ -73,7 +117,16 @@ public class Deck implements DeckUtils {
 	 * @param numDraw Number of cards to draw
 	 */
 	public void draw(int numDraw) {
-		for(int i = 0; i < numDraw; i++) drawnCards.add(cards.remove(0));
+		for(int i = 0; i < numDraw; i++) {
+			if(!cards.isEmpty()) {
+				Integer idx = localIndices.get(cards.get(0));
+				if (idx != null) {
+		        	drawBitmap.clear(idx);
+		        	handBitmap.set(idx);
+		        }
+		        drawnCards.add(cards.remove(0));
+			}
+		} 
 	}
 	
 	
@@ -117,6 +170,12 @@ public class Deck implements DeckUtils {
 	public int totalCards() {
 		return cards.size() + drawnCards.size() + discardedCards.size();
 	}
+	
+	
+	public void removeCard(PlayingCard c) {
+        Integer index = localIndices.get(c);
+        if (index != null) drawBitmap.clear(index);
+    }
 
 	
 	/**

@@ -125,7 +125,7 @@ public class LeftPanel extends JPanel{
 	public static GridBagConstraints getGBC() {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 0;
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
         gbc.weightx = 0.8;

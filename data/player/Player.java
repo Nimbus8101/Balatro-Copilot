@@ -21,7 +21,7 @@ public class Player {
 	// ============ Player Variables ============ //
 	private static int[] BASE_CHIPS;
 	
-	public static int numDiscards = 1;
+	public static int numDiscards = 3;
 	public static int numHands = 4;
 	public static int money;
 	

@@ -8,6 +8,11 @@ import game.scoring.HandScorer;
 import data.pokerHand.PokerHandIdentifier;
 
 public class PokerHandDeterminationTests {
+	public static void main(String args[]) {
+		runTests();
+	}
+	
+	
 	public static void runTests() {
 		System.out.println("Running Poker Hand Determiner tests...");
 		if(testHighPlayingCard()
@@ -21,7 +26,8 @@ public class PokerHandDeterminationTests {
 			&testFlush() 
 			&testStraightFlush()
 			&testFlushHouse()
-			&testFlushFive())
+			&testFlushFive()
+			&testIncompleteHand())
 		{
 			System.out.println("Poker Hand Determiner tests all passed!");
 		}else {
@@ -29,7 +35,7 @@ public class PokerHandDeterminationTests {
 		}
 		
 	}
-	
+
 	public static boolean testHighPlayingCard() {
 		Vector<PlayingCard> cards = new Vector<PlayingCard>(0);
 		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
@@ -277,5 +283,17 @@ public class PokerHandDeterminationTests {
 		return false;
 	}
 	
-	
+	private static boolean testIncompleteHand() {
+		Vector<PlayingCard> cards = new Vector<PlayingCard>(0);
+		cards.add(new PlayingCard(7, PlayingCard.CLUBS));
+		
+		String handType = PokerHandIdentifier.determineHandType(cards);
+		
+		if(handType.equals(PokerHand.HIGH_CARD)) {
+			System.out.println("   " + PokerHand.HIGH_CARD + " test passed");
+			return true;
+		}
+		System.out.println("   " + PokerHand.HIGH_CARD + " test failed, got " + handType);
+		return false;
+	}
 }

@@ -131,7 +131,7 @@ public interface PokerHandIdentifier {
 	 */
 	public static boolean isFlush(List<PlayingCard> cards) {
 		if(cards.size() < 5) {
-			System.out.println("Less than five cards");
+			//System.out.println("Less than five cards, not a flush");
 			return false;
 		}
 		

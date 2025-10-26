@@ -6,14 +6,19 @@ import data.card.PlayingCard;
 import data.deck.DeckUtils;
 import data.player.Player;
 import game.BlindType;
+import game.GameState;
 import game.scoring.HandScorer;
 import game.scoring.PlayedHand;
 
 import javax.swing.*;
+
+import copilot.Copilot;
+import copilot.deckAnalysis.PokerHandProbabilityTable;
+
 import java.awt.*;
 import java.util.Vector;
 
-public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener, ButtonPanelListener{	
+public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener, ButtonPanelListener, CopilotButtonListener{	
 	int ante = 1;
 	int round = 0;
 	String currBlind = "None";
@@ -28,15 +33,22 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 	AnteSelect anteSelect;
 	JPanel buttonPanel;
 	CopilotPanel copilotPanel;
+	
+	Copilot copilot = new Copilot();
+	GameState gamestate;
+	Player player;
+	
+	private SwingWorker<Object, Void> analysisWorker;
 
     public BalatroUI() {
     	// ===== Player Setup ===== //
-    	Player.initializeDefaultPlayer();
+    	player = new Player();
+    	//Player.initializeDefaultPlayer();
     	Player.addJoker(new JokerCard(Joker.JOKER.getName(), JokerCard.BASE));
     	
     	// ===== UI Setup ===== //
         setTitle("Balatro Clone UI");
-        setSize(1000, 700);
+        //setSize(1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);  // Maximize window
         setUndecorated(false); // Set to true if you want fullscreen with no title bar
@@ -68,12 +80,18 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
     }
     
     public void startGame() {
+    	gamestate = new GameState(player, 0);
+    	
     	pane.removeAll();
         pane.setLayout(new GridBagLayout());
         
+        // ==== COPILOT PANEL ====
+        copilotPanel = new CopilotPanel(this, copilot);
+        pane.add(copilotPanel, CopilotPanel.getGBC());
+        
         // ==== TOP LEFT ABOVE Game Stats: Console Panel ====
-        consolePanel = new ConsolePanel();
-        pane.add(consolePanel, ConsolePanel.getGBC());
+        consolePanel = copilotPanel.copilotMessage;
+        //pane.add(consolePanel, ConsolePanel.getGBC());
         
         // ==== LEFT PANEL (Game Stats) ====
         leftPanel = new LeftPanel(currBlind, 0, Player.getNumHands(), Player.getNumDiscards(), Player.money);
@@ -102,11 +120,6 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
         // ==== BOTTOM PANEL (Action Buttons) ====
         buttonPanel = new ButtonPanel(this);
         pane.add(buttonPanel, ButtonPanel.getGBC());
-        
-        
-        // ==== RIGHT PANEL PLACEHOLDER (Future Content) ====
-        copilotPanel = new CopilotPanel();
-        pane.add(copilotPanel, CopilotPanel.getGBC());
         
         pane.revalidate();
         pane.repaint();
@@ -138,6 +151,7 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 			leftPanel.scoreRequired = (int) (Player.getBaseChips(ante) * BlindType.getMultiplierByName(blindName));
 		}
 		
+		gamestate.minimumScore = leftPanel.scoreRequired;
 		leftPanel.updateLabels();
 		
 		switchHandPanelAnteSelect("HAND");
@@ -309,5 +323,75 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 	public static void main(String[] args) {
         SwingUtilities.invokeLater(BalatroUI::new);
     }
+
+
+	@Override
+	public void analyzeButtonPressed() {
+		// If the button is pressed outside of a blind, perform deck analysis
+		System.out.println(leftPanel.currBlind);
+		if(leftPanel.currBlind.equals(AnteSelect.NONE)) {
+		    copilotPanel.copilotMessage.appendText("Analyzing Deck");
+		    
+		    analysisWorker = new SwingWorker<>() {
+		        @Override
+		        protected Object doInBackground() throws Exception {
+		            // Background work
+		        	PokerHandProbabilityTable table = copilot.analyzeDeck(gamestate.getCurrDeck(), player.getPokerHandTable());
+		            copilotPanel.addTab(table, "Deck Analysis");
+		            return table;
+		        }
+
+		        @Override
+		        protected void done() {
+		        	 try {
+		                 if (isCancelled()) {
+		                     copilotPanel.copilotMessage.appendText("Analysis canceled.");
+		                     return;
+		                 }
+		                 var result = get();
+		                 copilotPanel.copilotMessage.appendText("Analysis complete!");
+		             } catch (Exception e) {
+		                 copilotPanel.copilotMessage.appendText("Error during analysis: " + e.getMessage());
+		                 e.printStackTrace();
+		             }
+		        }
+		    };
+		}else {
+		    copilotPanel.copilotMessage.appendText("Analyzing hand...");
+		    
+			analysisWorker = new SwingWorker<>() {
+		        @Override
+		        protected Object doInBackground() throws Exception {
+		            // Background work
+		            return copilot.analyzeGameState(gamestate);
+		        }
+
+		        @Override
+		        protected void done() {
+		        	 try {
+		                 if (isCancelled()) {
+		                     copilotPanel.copilotMessage.appendText("Analysis canceled.");
+		                     return;
+		                 }
+		                 var result = get();
+		                 copilotPanel.copilotMessage.appendText("Analysis complete!");
+		             } catch (Exception e) {
+		                 copilotPanel.copilotMessage.appendText("Error during analysis: " + e.getMessage());
+		                 e.printStackTrace();
+		             }
+		        }
+		    };
+		}
+
+	    analysisWorker.execute();
+	}
+
+	@Override
+	public void stopAnalysis() {
+		if (analysisWorker != null && !analysisWorker.isDone()) {
+	        analysisWorker.cancel(true); // tries to interrupt the background thread
+	        copilotPanel.copilotMessage.appendText("Stopping analysis...");
+	    }
+	}
 }
 

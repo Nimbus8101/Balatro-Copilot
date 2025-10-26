@@ -1,5 +1,6 @@
 package copilot.utils;
 
+import java.util.List;
 import java.util.Vector;
 
 import data.card.Card;
@@ -42,6 +43,15 @@ public interface CopilotMessage {
 		result += "[Copilot] - Here are the probabilities of obtaining your poker hands: \n";
 		result += probabilityTable + "\n";
 		return result;
+	}
+	
+	
+	public static String printProbabilityTableFromDiscard(List<PlayingCard> hand, int numDiscarded, String probabilityTable) {
+		StringBuilder s = new StringBuilder();
+		s.append("[Copilot] - Given a hand of: ").append(DeckUtils.printCardVector(hand, "")).append(" and ").append(numDiscarded).append(" discard(s)\n");
+		s.append("[Copilot] - Here are the probabilities of obtaining each pokerhand: \n");
+		s.append(probabilityTable).append("\n");
+		return s.toString();
 	}
 	
 	private static String padString(String string, int totalLength) {

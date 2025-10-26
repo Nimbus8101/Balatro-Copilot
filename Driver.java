@@ -8,6 +8,7 @@ import data.card.Card;
 import data.card.PlayingCard;
 import data.deck.Deck;
 import data.deck.DeckBuilder;
+import data.deck.DeckUtils;
 import data.player.DefaultPlayer;
 import data.player.Player;
 import game.GameState;
@@ -20,13 +21,17 @@ public class Driver {
 	public static final int SCAN_DISCARD_COMBINATIONS = 3;
 	public static final int SCAN_DISCARD_COMBINATIONS_BASED_ON_DISCARD_INDEXES = 4;
 	
+	
+	public static final int COMPARE_DECK_ANALYSIS = 10;
+	
 	public static void main(String[] args) {
 		Copilot copilot = new Copilot();
-		int OPTION = SCAN_DISCARD_COMBINATIONS_BASED_ON_DISCARD_INDEXES;
+		int OPTION = ANALYZE_GAME_STATE; //SCAN_DISCARD_COMBINATIONS_BASED_ON_DISCARD_INDEXES;
 		
 		if(OPTION == ANALYZE_GAME_STATE) {
 			Player testPlayer = DefaultPlayer.createDefaultPlayer();
 			GameState game = new GameState(testPlayer, 600);
+						
 			copilot.analyzeGameState(game);
 		}else if(OPTION == COMPARE_DECK_PROBABILITIES) {
 			Player testPlayer = DefaultPlayer.createDefaultPlayer();
@@ -65,6 +70,7 @@ public class Driver {
 			currHand.add(new PlayingCard(6, 'S'));
 			currHand.add(new PlayingCard(8, 'D'));
 			currHand.add(new PlayingCard(9, 'C')); //7
+			currHand.add(new PlayingCard(8, 'D'));
 			
 			game.setCurrHand(currHand);
 			
@@ -82,8 +88,40 @@ public class Driver {
 			int[] indexes = {7};
 			
 			PokerHandProbabilityTable table = p.calculatePokerHandProbabilityBasedOnDiscardIndexes(indexes);
+			//System.out.println(table.printTable());
 			
-			System.out.println(table.printTable());
+			for(int i = 1; i <= 5; i++) {
+				System.out.println("Num Discarded: " + i);
+				p = new PotentialHandsFinder(game);
+				table = p.generateProbabilityTableOfPotentialHands(game, i);
+				System.out.println(table.printTable());
+			}
+			
+		}else {
+			int[] values = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+			char[] suits = {'S', 'H', 'C', 'D'};
+			Deck testDeck = DeckBuilder.generateDeck(values, suits);
+			
+			Player testPlayer = DefaultPlayer.createTestPlayer();
+			TestGameState game = new TestGameState(testPlayer, 600);
+			
+			testDeck.shuffle();
+			testDeck.draw(8);
+			
+			game.setCurrHand(testDeck.drawnCards);
+			System.out.println(DeckUtils.printCardVector(testDeck.drawnCards, null));
+			game.setCurrDeck(testDeck);
+			
+			PotentialHandsFinder p = new PotentialHandsFinder(game);			
+			PokerHandProbabilityTable table = new PokerHandProbabilityTable(testPlayer.getPokerHandTable().getPokerHandNames());
+			
+			for(int i = 1; i <= 5; i++) {
+				System.out.println("Num Discarded: " + i);
+				p = new PotentialHandsFinder(game);
+				table = p.generateProbabilityTableOfPotentialHands(game, i);
+				System.out.println(table.printTable());
+			}
+			
 		}
 
 	}

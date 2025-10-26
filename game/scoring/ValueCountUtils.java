@@ -1,7 +1,11 @@
 package game.scoring;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import data.card.PlayingCard;
 
@@ -13,17 +17,43 @@ import data.card.PlayingCard;
  *
  */
 public interface ValueCountUtils {
+	final Map<Long, List<ValueCount>> cache = new HashMap<>();
+
+	
 	/**
 	 * Counts the values of cards in a List of Card objects
 	 * @param cards
 	 * @return
 	 */
-	public static List<ValueCount> countValues(List<PlayingCard> cards){
-		List<ValueCount> valueCounts = new ArrayList<>(0);
-		for(int i = 0; i < cards.size(); i++) {
-			addCount(valueCounts, cards.get(i).getValue());
+	public static List<ValueCount> countValues(List<PlayingCard> cards) {
+		Long key = generateKeyHash(cards);
+		
+		List<ValueCount> result = cache.get(cards);
+		if(result != null) {
+			return result;
 		}
-		return valueCounts;
+		
+		
+	    int[] counts = new int[15]; // index = value
+	    for (PlayingCard c : cards) counts[c.getValue()]++;
+
+	    result = new ArrayList<>();
+	    for (int v = 0; v < counts.length; v++) {
+	        if (counts[v] > 0)
+	            result.add(new ValueCount(v, counts[v]));
+	    }
+	    
+	    cache.put(key, result);
+	    return result;
+	}
+	
+	public static long generateKeyHash(List<PlayingCard> cards) {
+	    return cards.stream()
+	        .sorted(Comparator
+	            .comparingInt(PlayingCard::getValue)
+	            .thenComparing(PlayingCard::getSuit))
+	        .mapToLong(c -> (c.getValue() * 10L) + c.getSuit())
+	        .reduce(1L, (a, b) -> 31 * a + b);
 	}
 	
 	/**
@@ -151,26 +181,6 @@ public interface ValueCountUtils {
 	 * @param valueCounts
 	 */
 	public static void sortByValue(List<ValueCount> valueCounts) {
-		List<ValueCount> temp = new ArrayList<>(0);
-		
-		//Copies the original array
-		for(int i = 0; i < valueCounts.size(); i++) {
-			temp.add(valueCounts.get(i));
-		}
-		
-		int currIndex = 0;
-		while(temp.size() > 0) {
-			int lowIndex = 0;
-			//Finds the smallest value in the array
-			for(int i = 0; i < temp.size(); i++) {
-				if(temp.get(i).getValue() < temp.get(lowIndex).getValue()) {
-					lowIndex = i;
-				}
-			}
-			
-			//Sets the currIndex to the smallest value found, then moves to the next index
-			valueCounts.set(currIndex, temp.remove(lowIndex));
-			currIndex += 1;
-		}
+	    valueCounts.sort(Comparator.comparingInt(ValueCount::getValue));
 	}
 }

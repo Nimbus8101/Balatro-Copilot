@@ -49,7 +49,7 @@ public class DeckAnalysis {
     }
 	
 	/**
-	 * REcursively finds and scores all hands of length r
+	 * Recursively finds and scores all hands of length r
 	 * @param arr
 	 * @param data
 	 * @param start
@@ -88,6 +88,11 @@ public class DeckAnalysis {
             combinationUtil(arr, data, i+1, end, index+1, r);
         }
     }
+	
+	
+	public PokerHandProbabilityTable getTable() {
+		return probabilityTable;
+	}
 	
 	public String printProbabilityTable() {
 		return probabilityTable.printTable();
