@@ -26,55 +26,73 @@ public interface PlayableHandsFinder {
 	 * @return
 	 */
 	public static PlayedHand findHighestScoringPlayableHand(Vector<PlayingCard> cardsInHand, PokerHandTable pokerHandTable) {
-		// Finds all playable hands
-		Vector<PlayedHand> playableHands = findPlayableHands(cardsInHand);
-		
-		// Scores all hands and keeps track of the highest score
-		double highScore = 0.0;
-		int highScoreIndex = 0;
-		for(int i = 0; i < playableHands.size(); i++) {
-			// Score the hand
-			HandScorer.scoreHand(playableHands.get(i), new Vector<JokerCard>(0), pokerHandTable);
-			
-			// Checks if the score is higher than the current high score, saving it if so
-			if(i == 0) {
-				highScore = playableHands.get(i).getScore();
-			}else if(playableHands.get(i).getScore() > highScore) {
-				highScore = playableHands.get(i).getScore();
-				highScoreIndex = i;
-			}
-		}
-		return playableHands.get(highScoreIndex);
+	    int n = cardsInHand.size();
+	    int r = 5;
+	    if (n < r) return null;
+
+	    double bestScore = Double.NEGATIVE_INFINITY;
+	    PlayedHand bestHand = null;
+
+	    int mask = (1 << r) - 1;
+	    while (mask < (1 << n)) {
+	        Vector<PlayingCard> played = new Vector<>(r);
+	        Vector<PlayingCard> held = new Vector<>(n - r);
+	        for (int i = 0; i < n; i++) {
+	            if ((mask & (1 << i)) != 0)
+	                played.add(cardsInHand.get(i));
+	            else
+	                held.add(cardsInHand.get(i));
+	        }
+
+	        PlayedHand hand = new PlayedHand(played, held);
+	        HandScorer.scoreHand(hand, new Vector<JokerCard>(0), pokerHandTable);
+	        if (hand.getScore() > bestScore) {
+	            bestScore = hand.getScore();
+	            bestHand = hand;
+	        }
+
+	        // Next combination
+	        int c = mask & -mask;
+	        int rmask = mask + c;
+	        mask = (((rmask ^ mask) >>> 2) / c) | rmask;
+	    }
+
+	    return bestHand;
+	}
+
+	
+	public static Vector<PlayedHand> findPlayableHands(Vector<PlayingCard> cardsInHand) {
+	    Vector<PlayedHand> possibleHands = new Vector<>();
+	    int n = cardsInHand.size();
+	    int r = 5;
+
+	    if (n < r) return possibleHands;
+
+	    // Start with first r bits set
+	    int mask = (1 << r) - 1;
+
+	    while (mask < (1 << n)) {
+	        Vector<PlayingCard> played = new Vector<>(r);
+	        Vector<PlayingCard> held = new Vector<>(n - r);
+
+	        for (int i = 0; i < n; i++) {
+	            if ((mask & (1 << i)) != 0)
+	                played.add(cardsInHand.get(i));
+	            else
+	                held.add(cardsInHand.get(i));
+	        }
+
+	        possibleHands.add(new PlayedHand(played, held));
+
+	        // Generate next combination (Gosper’s hack)
+	        int c = mask & -mask;
+	        int rmask = mask + c;
+	        mask = (((rmask ^ mask) >>> 2) / c) | rmask;
+	    }
+
+	    return possibleHands;
 	}
 	
-	
-	/**
-	 * Finds the playable hands from the cards in hand
-	 * @param cardsInHand cardsInHand
-	 * @return vector of PlayedHand representing all the possible playable hands
-	 */
-	public static Vector<PlayedHand> findPlayableHands(Vector<PlayingCard> cardsInHand){
-		//FIXME i would like a similar function which finds all the potential hands from a hand of HAND_SIZE but only counts the highest scoring hand
-		Combination combination = new Combination();
-		boolean DEBUG = false;
-		
-		//FIXME the initial solution to find playable hands is to try every combination of 5.
-		Vector<Vector<Integer>> indexCombinations = combination.generateAllIndexCombinations(cardsInHand.size(), 5);
-		
-		if(DEBUG) {
-			System.out.println("indexCombinations = ");
-			for(int i = 0 ; i < indexCombinations.size(); i++) {
-				Vector<Integer> indexCombinationVector = indexCombinations.get(i);
-				
-				for(int j = 0; j < indexCombinationVector.size(); j++) {
-					System.out.print(indexCombinationVector.get(j) + " ");
-				}
-				System.out.println();
-			}
-		}
-		
-		return convertIndexCombinationsToPlayedHands(indexCombinations, cardsInHand);
-	}
 	
 	/** 
 	 * Converts the indexCombinations and Card vectors into a "possibleHands" vector, to be scored later

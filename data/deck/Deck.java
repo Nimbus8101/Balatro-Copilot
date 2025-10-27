@@ -40,6 +40,7 @@ public class Deck implements DeckUtils {
 	}
 	
 	 public void rebuildBitmap() {
+		System.out.println("[DEBUG] deck hash: " + System.identityHashCode(this));
         localIndices = new HashMap<>();
         drawBitmap = new BitSet(cards.size());
         handBitmap = new BitSet(cards.size());

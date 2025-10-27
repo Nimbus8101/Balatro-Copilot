@@ -21,13 +21,13 @@ public class Player {
 	// ============ Player Variables ============ //
 	private static int[] BASE_CHIPS;
 	
-	public static int numDiscards = 3;
-	public static int numHands = 4;
-	public static int money;
+	public int numDiscards = 3;
+	public int numHands = 4;
+	public int money;
 	
-	public static Deck deck;
-	public static PokerHandTable pokerHandTable;
-	public static List<JokerCard> jokers;
+	public Deck deck;
+	public PokerHandTable pokerHandTable;
+	public List<JokerCard> jokers;
 	
 	
 	/**
@@ -47,9 +47,9 @@ public class Player {
 	 * @param jokers
 	 */
 	public Player(Deck deck, PokerHandTable pokerHandTable, Vector<JokerCard> jokers) {
-		Player.deck = deck;
-		Player.pokerHandTable = pokerHandTable;
-		Player.jokers = jokers;
+		this.deck = deck;
+		this.pokerHandTable = pokerHandTable;
+		this.jokers = jokers;
 		BASE_CHIPS = DefaultPlayer.defaultChips();
 	}
 	
@@ -57,7 +57,7 @@ public class Player {
 	/**
 	 * Method for setting the variables to those of a Default Player
 	 */
-	public static void initializeDefaultPlayer() {
+	public void initializeDefaultPlayer() {
 		deck = DeckBuilder.buildDeck(DeckBuilder.DEFAULT_DECK);
 		pokerHandTable = new PokerHandTable(DefaultPlayer.createDefaultPokerHandVector());
 		BASE_CHIPS = DefaultPlayer.defaultChips();
@@ -66,39 +66,39 @@ public class Player {
 	
 	
 	// ==================== Utility Functions ==================== //
-	public static void shuffleDeck() {
+	public void shuffleDeck() {
 		deck.shuffle();
 	}
 	
 	
 	// ==================== Adders and Removers ==================== //
-	public static void addJoker(JokerCard joker) {
+	public void addJoker(JokerCard joker) {
 		jokers.add(joker);
 	}
 	
 	
 	// ==================== Getters and Setters ==================== //
-	public static PokerHandTable getPokerHandTable() {
+	public PokerHandTable getPokerHandTable() {
 		return pokerHandTable;
 	}
 	
-	public static Deck getDeck() {
+	public Deck getDeck() {
 		return deck;
 	}
 	
-	public static int getNumDiscards() {
+	public int getNumDiscards() {
 		return numDiscards;
 	}
 
-	public static int getBaseChips(int index) {
+	public int getBaseChips(int index) {
 		return BASE_CHIPS[index];
 	}
 
-	public static int getNumHands() {
+	public int getNumHands() {
 		return numHands;
 	}
 	
-	public static List<Card> getJokersAsCards(){
+	public List<Card> getJokersAsCards(){
 		List<Card> newJokers = new ArrayList<>(0);
 		
 		for(JokerCard joker : jokers) {
@@ -108,7 +108,7 @@ public class Player {
 		return newJokers;
 	}
 	
-	public static List<JokerCard> getJokersAsJokers(){
+	public List<JokerCard> getJokersAsJokers(){
 		return jokers;
 	}
 }

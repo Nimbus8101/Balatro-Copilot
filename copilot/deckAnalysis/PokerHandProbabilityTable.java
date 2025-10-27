@@ -24,6 +24,7 @@ public class PokerHandProbabilityTable {
 		for(int i = 0; i < pokerHandNames.size(); i++) {
 			probabilityTable.add(new PokerHandProbability(pokerHandNames.get(i)));
 		}
+		name = "";
 	}
 	
 	public void addScore(String handName, double score){

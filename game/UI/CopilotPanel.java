@@ -64,16 +64,15 @@ public class CopilotPanel extends JPanel{
 	
 	
 	public void resetTabs() {
-		
+		tabs.removeAll();
 	}
 	
 	public void addTab(PokerHandProbabilityTable table, String name) {
-		PokerHandProbabilityTableUI p = new PokerHandProbabilityTableUI(name);
-		p.setTable(table);
+		PokerHandProbabilityTableUI p = new PokerHandProbabilityTableUI(table);
 		
 		probabilityTables.add(p);
 				
-		System.out.println("in addTab()");
+		//System.out.println("in addTab()");
 		
 		tabs.addTab(name, p);
 		

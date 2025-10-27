@@ -22,6 +22,7 @@ import copilot.handAnalysis.PotentialHandsFinder;
 import data.deck.Deck;
 import data.deck.DeckBuilder;
 import data.player.Player;
+import data.pokerHand.PokerHandTable;
 import game.GameState;
 
 public class PokerHandProbabilityTableUI extends JPanel{
@@ -82,14 +83,35 @@ public class PokerHandProbabilityTableUI extends JPanel{
 		//System.out.println(table.printTable());
 	}
 	
+	public PokerHandProbabilityTableUI(PokerHandProbabilityTable table) {
+		setTable(table);
+		
+		JTable dataTable = new JTable(rows, columnNames);
+		add(new JScrollPane(dataTable));
+		
+		TableColumn column = null;
+		for(int i = 0; i < 6; i++) {
+			column = dataTable.getColumnModel().getColumn(i);
+			if(i == 0) {
+				column.setPreferredWidth(100);
+			}else {
+				column.setPreferredWidth(25);
+			}
+		}
+		
+		//System.out.println(table.printTable());
+	}
+	
 	
 	public void setTable(PokerHandProbabilityTable newTable) {
 		table = newTable;
 		
-		System.out.println("HERE - -\n" + newTable.printTable());
+		System.out.println("TableUI [setTable()] - \n" + newTable.printTable());
 		
 		Vector<PokerHandProbability> data = table.getPokerHandVector();
-		for(int i = 0; i < data.size() - 1; i++) {
+		//System.out.println(data.size());
+		for(int i = 0; i < data.size(); i++) {
+			//System.out.println("Looping - " + data.get(i).getName());
 			rows[i] = generateRowFromData(data.get(i), table.sumTotalCount());
 		}
 	}
@@ -106,6 +128,7 @@ public class PokerHandProbabilityTableUI extends JPanel{
 		row[4] = String.format("%.2f", p.getHighScore());
 		row[5] = String.format("%.2f", p.getLowScore());
 		
+		//System.out.println(row[0]);
 		return row;
 	}
 }

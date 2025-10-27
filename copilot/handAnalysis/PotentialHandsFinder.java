@@ -2,7 +2,9 @@ package copilot.handAnalysis;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import copilot.deckAnalysis.PokerHandProbabilityTable;
@@ -42,64 +44,87 @@ import game.scoring.PlayedHand;
  */
 public class PotentialHandsFinder {	
     public static final boolean DEBUG = true;
-    private List<PlayingCard> currHand;
-    private List<PlayingCard> currDeck;
-    private List<PlayingCard> partialHand;
+
     private Deck deck;
     private int numDiscarded = 1;
-    
-    private PokerHandProbabilityTable probabilityTable;
-    private PokerHandTable pokerHandTable;
 
-    
     public PotentialHandsFinder(GameState gameState) {
         // Get the deck and current hand as Lists
-        currDeck = new ArrayList<>(gameState.getCurrDeck().cards());
-        currHand = new ArrayList<>(gameState.getCurrHand());
         deck = gameState.getCurrDeck();
-
-        // Pulls the poker hand table from the player variables
-        pokerHandTable = Player.getPokerHandTable();
-
-        // Creates a blank poker hand probability table from the pokerHandTable
-        probabilityTable = new PokerHandProbabilityTable(pokerHandTable.getPokerHandNames());
     }
-    
-    
+
     /**
      * Generates the probability table using BitSet-based combinations
+     * Treats selected cards as DISCARDED
      */
     public PokerHandProbabilityTable generateProbabilityTableOfPotentialHands(GameState gameState, int discarded) {
+    	deck = gameState.getCurrDeck();
         this.numDiscarded = discarded;
-        int keepCount = currHand.size() - numDiscarded;
+        int keepCount = deck.drawnCards.size() - numDiscarded;
+        deck.rebuildBitmap();
 
         if (DEBUG) {
+    		System.out.println("[DEBUG] - deck hash: " + System.identityHashCode(deck));
+        	System.out.println("[DEBUG] - Deck (" + deck.cards.size() + ")");
             System.out.println("[DEBUG] - numDiscarded: " + numDiscarded);
             System.out.println("[DEBUG] - keepCount: " + keepCount);
         }
 
-        BitSet handBits = new BitSet(currHand.size());
-        for (int i = 0; i < currHand.size(); i++) handBits.set(i);
+        // Create a new probability table for this analysis
+        PokerHandTable pokerHandTable = gameState.getPlayer().getPokerHandTable();
+        PokerHandProbabilityTable probabilityTable = new PokerHandProbabilityTable(pokerHandTable.getPokerHandNames());
 
-        // Generate all subsets of handBits with exactly keepCount bits set
-        generateKeepCombinations(handBits, keepCount);
+        BitSet handBits = new BitSet(deck.drawnCards.size());
+        BitSet keptBits = new BitSet(deck.drawnCards.size());
+        for (int i = 0; i < deck.drawnCards.size(); i++) {
+            handBits.set(i);
+            if (!deck.drawnCards.get(i).isSelected) {  // Treat selected as discarded
+                keptBits.set(i);
+            }
+        }
+
+        // Generate combinations that INCLUDE the non-selected (kept) cards
+        generateKeepCombinations(handBits, keptBits, keepCount, probabilityTable, pokerHandTable);
 
         return probabilityTable;
     }
 
     /**
-     * Iterates through all combinations of "keepCount" cards from the current hand
+     * Iterates through all combinations of "keepCount" cards that INCLUDE heldBits
      */
-    private void generateKeepCombinations(BitSet handBits, int keepCount) {
-        int n = currHand.size();
-        int limit = 1 << n;  // up to 2^n combinations
+    private void generateKeepCombinations(BitSet handBits, BitSet heldBits, int keepCount, PokerHandProbabilityTable probabilityTable, PokerHandTable pokerHandTable) {
+        int n = deck.drawnCards.size();
+        int heldCount = heldBits.cardinality();
+        int neededExtra = keepCount - heldCount;
 
+        if (neededExtra < 0) {
+            System.err.println("[WARN] Too many cards held: " + heldCount + " > keepCount " + keepCount);
+            return;
+        }
+
+        // Collect indices of unheld cards
+        List<Integer> unheldIndices = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (!heldBits.get(i)) {
+                unheldIndices.add(i);
+            }
+        }
+
+        int limit = 1 << unheldIndices.size();
         for (int mask = 0; mask < limit; mask++) {
-            if (Integer.bitCount(mask) == keepCount) {
+            if (Integer.bitCount(mask) == neededExtra) {
                 List<PlayingCard> partialHand = new ArrayList<>();
-                for (int i = 0; i < n; i++) {
-                    if ((mask & (1 << i)) != 0)
-                        partialHand.add(currHand.get(i));
+
+                // Always include all held cards
+                for (int i = heldBits.nextSetBit(0); i >= 0; i = heldBits.nextSetBit(i + 1)) {
+                    partialHand.add(deck.drawnCards.get(i));
+                }
+
+                // Add selected unheld cards based on mask
+                for (int j = 0; j < unheldIndices.size(); j++) {
+                    if ((mask & (1 << j)) != 0) {
+                        partialHand.add(deck.drawnCards.get(unheldIndices.get(j)));
+                    }
                 }
 
                 if (DEBUG) {
@@ -108,7 +133,7 @@ public class PotentialHandsFinder {
                     System.out.println();
                 }
 
-                generateDrawCombinations(partialHand);
+                generateDrawCombinations(partialHand, probabilityTable, pokerHandTable);
             }
         }
     }
@@ -116,18 +141,27 @@ public class PotentialHandsFinder {
     /**
      * Generates all possible draw combinations using the Deck bitmaps
      */
-    private void generateDrawCombinations(List<PlayingCard> partialHand) {
+    private void generateDrawCombinations(List<PlayingCard> partialHand, PokerHandProbabilityTable probabilityTable, PokerHandTable pokerHandTable) {
         BitSet available = deck.getBitmap(Deck.DRAW_MAP);
-        int n = available.length();
         List<Integer> availableIndices = new ArrayList<>();
 
         for (int i = available.nextSetBit(0); i >= 0; i = available.nextSetBit(i + 1)) {
             availableIndices.add(i);
         }
+        
+        if (DEBUG) {
+            System.out.println("[DEBUG] availableIndices.size(): " + availableIndices.size());
+            System.out.println("[DEBUG] numDiscarded: " + numDiscarded);
+            if (availableIndices.size() < numDiscarded) {
+                System.err.println("[ERROR] Not enough available cards to draw " + numDiscarded + "!");
+            }
+        }
 
-        int limit = 1 << availableIndices.size();
-        for (int mask = 0; mask < limit; mask++) {
-            if (Integer.bitCount(mask) == numDiscarded) {
+        int numHands = 0;
+        int handsGenerated = 0;
+        Long limit = 1L << availableIndices.size();
+        for (long mask = 0; mask < limit; mask++) {
+            if (Long.bitCount(mask) == numDiscarded) {
                 List<PlayingCard> drawn = new ArrayList<>();
                 for (int j = 0; j < availableIndices.size(); j++) {
                     if ((mask & (1 << j)) != 0)
@@ -136,17 +170,23 @@ public class PotentialHandsFinder {
 
                 // Combine the kept + drawn cards
                 List<PlayingCard> combination = new ArrayList<>(partialHand);
+                System.out.print(".");
+                
                 combination.addAll(drawn);
 
-                addPlayedHandsToProbabilityTable(PlayableHandsFinder.findPlayableHands(new Vector<>(combination)));
+                addPlayedHandsToProbabilityTable(PlayableHandsFinder.findPlayableHands(new Vector<>(combination)), probabilityTable, pokerHandTable);
+                numHands++;
             }
         }
+        
+        System.out.println(numHands);
+        System.out.println(handsGenerated);
     }
 
     /**
      * Scores the hands and adds the highest-scoring one to the table
      */
-    private void addPlayedHandsToProbabilityTable(Vector<PlayedHand> hands) {
+    private int addPlayedHandsToProbabilityTable(Vector<PlayedHand> hands, PokerHandProbabilityTable probabilityTable, PokerHandTable pokerHandTable) {
         double max = HandScorer.scoreHand(hands.get(0), new Vector<JokerCard>(0), pokerHandTable);
         PlayedHand bestHand = hands.get(0);
 
@@ -159,7 +199,9 @@ public class PotentialHandsFinder {
         }
 
         probabilityTable.addScore(bestHand.getHandType(), bestHand.getScore());
+        return hands.size();
     }
+}
     
     
     /**
@@ -300,7 +342,7 @@ public class PotentialHandsFinder {
 	 * to calculate all the possible hands that could be drawn into and scores it, which is stored in the probability table
 	 * @param indexes int[] representing the indexes in the currHand that were discarded
 	 * @return PokerHandProbabilityTable with data from the calculation
-	 */
+	 
 	public PokerHandProbabilityTable calculatePokerHandProbabilityBasedOnDiscardIndexes(int[] indexes) {
 		probabilityTable = new PokerHandProbabilityTable(pokerHandTable.getPokerHandNames());
 		
@@ -350,7 +392,7 @@ public class PotentialHandsFinder {
 	 * Method for finding all the possible hands from a discard given a specific game state
 	 * @param gameState GameState
 	 * @return Vector<PlayedHand> representing the possible hands (assuming a hand will not be played
-	 */
+	 
 	public static Vector<PlayedHand> findPotentialHands(GameState gameState){
 		if(DEBUG) System.out.print("[DEBUG] - in findPotentialHands() function");
 		
@@ -370,7 +412,7 @@ public class PotentialHandsFinder {
 	 * Generates the possible discard combinations from a given hand
 	 * @param cardsInHand Vector<PlayingCard> The cards in hand
 	 * @return Vector<Vector<Integer>> List of indexes for the discards
-	 */
+	 
 	private static Vector<Vector<Integer>> generateDiscardCombinations(Vector<PlayingCard> cardsInHand) {
 		if(DEBUG) System.out.print("[DEBUG] - in genereateDiscardCombinations() function");
 		Combination combination = new Combination();
@@ -392,7 +434,7 @@ public class PotentialHandsFinder {
 	 * @param indexCombinations Vector<Vector<Integer>> List of discard index combinations
 	 * @param cardsInHand Vector<PlayingCard> Cards in hand
 	 * @return Vector<Vector<PlayingCard>> Partial hands generated
-	 */
+	 
 	private static Vector<Vector<PlayingCard>> convertDiscardCombinationsToPartialHands(Vector<Vector<Integer>> indexCombinations, Vector<PlayingCard> cardsInHand){
 		if(DEBUG) System.out.print("[DEBUG] - in convertDiscardCombinationsToPartialHands() function\n");
 		Vector<Vector<PlayingCard>> partialHands = new Vector<Vector<PlayingCard>>(0);  //This vector represents possible partial hands, and are missing the drawn cards
@@ -413,7 +455,7 @@ public class PotentialHandsFinder {
 	 * @param partialHands Vector<Vector<PlayingCard>> incomplete hands of cards
 	 * @param cardsInDeck Vector<PlayingCard> the cards in the deck
 	 * @return Vector<PlayedHand> List of complete hands that were generated
-	 */
+	 
 	private static Vector<PlayedHand> generatePlayedHands(Vector<Vector<PlayingCard>> partialHands, Vector<PlayingCard> cardsInDeck){
 		if(DEBUG) System.out.print("[DEBUG] - In generatePlayedHands() function \n");
 		Vector<PlayedHand> potentialHands = new Vector<PlayedHand>(0);
@@ -443,7 +485,7 @@ public class PotentialHandsFinder {
 	 * @param cardsInDeck Vector<PlayingCard> cards in the deck
 	 * @param numDraw int Number of cards to draw
 	 * @return Vector<Vector<PlayingCard>> combination of drawn cards
-	 */
+	 
 	private static Vector<Vector<PlayingCard>> generateDrawCombinations(Vector<PlayingCard> cardsInDeck, int numDraw){
 		if(DEBUG) System.out.print("[DEBUG] - In generateDrawCombinations() function \n	  numDraw: " + numDraw);
 		
@@ -464,3 +506,4 @@ public class PotentialHandsFinder {
 		return combination.findAllCombinations(cardsInDeck, numDraw);
 	}
 }
+*/

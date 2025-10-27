@@ -44,7 +44,7 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
     	// ===== Player Setup ===== //
     	player = new Player();
     	//Player.initializeDefaultPlayer();
-    	Player.addJoker(new JokerCard(Joker.JOKER.getName(), JokerCard.BASE));
+    	player.addJoker(new JokerCard(Joker.JOKER.getName(), JokerCard.BASE));
     	
     	// ===== UI Setup ===== //
         setTitle("Balatro Clone UI");
@@ -94,13 +94,13 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
         //pane.add(consolePanel, ConsolePanel.getGBC());
         
         // ==== LEFT PANEL (Game Stats) ====
-        leftPanel = new LeftPanel(currBlind, 0, Player.getNumHands(), Player.getNumDiscards(), Player.money);
+        leftPanel = new LeftPanel(currBlind, 0, player.getNumHands(), player.getNumDiscards(), player.money);
         pane.add(leftPanel, LeftPanel.getGBC());
 
         
         // ==== TOP LEFT: Joker Panel ====
         jokerPanel = new JokerPanel();
-        jokerPanel.setCardVector(Player.getJokersAsCards());
+        jokerPanel.setCardVector(player.getJokersAsCards());
         pane.add(jokerPanel, JokerPanel.getGBC());
 
         
@@ -110,7 +110,7 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 
 
         // ==== CENTER PANEL (Ante Select and Hand Cards) ====
-        anteSelect = new AnteSelect(this, Player.getBaseChips(ante));
+        anteSelect = new AnteSelect(this, player.getBaseChips(ante));
         pane.add(anteSelect, AnteSelect.getGBC());
         //playArea = anteSelect;
         //playArea.setBorder(BorderFactory.createTitledBorder("Ante Select"));
@@ -144,11 +144,11 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 		
 		leftPanel.currBlind = blindName;
 		if(blindName.equals("Small Blind")) {
-			leftPanel.scoreRequired = Player.getBaseChips(ante);
+			leftPanel.scoreRequired = player.getBaseChips(ante);
 		}else if(blindName.equals("Big Blind")){
-			leftPanel.scoreRequired = (int) (Player.getBaseChips(ante) * 1.5);
+			leftPanel.scoreRequired = (int) (player.getBaseChips(ante) * 1.5);
 		}else {
-			leftPanel.scoreRequired = (int) (Player.getBaseChips(ante) * BlindType.getMultiplierByName(blindName));
+			leftPanel.scoreRequired = (int) (player.getBaseChips(ante) * BlindType.getMultiplierByName(blindName));
 		}
 		
 		gamestate.minimumScore = leftPanel.scoreRequired;
@@ -165,18 +165,18 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 	}
 
 	public void startBlind() {
-		Player.deck.shuffle();
-		Player.deck.draw(8);
-		DeckUtils.sortCardVector(Player.deck.drawnCards, DeckUtils.SORT_RANK);
-		handPanel.deck = Player.deck;
+		player.deck.shuffle();
+		player.deck.draw(8);
+		DeckUtils.sortCardVector(player.deck.drawnCards, DeckUtils.SORT_RANK);
+		handPanel.deck = player.deck;
 		
-		handPanel.setBorderTitle("Your Hand: " + Player.deck.size() + " / " + Player.deck.totalCards());
+		handPanel.setBorderTitle("Your Hand: " + player.deck.size() + " / " + player.deck.totalCards());
 	}
 	
 	public void updateGameStatsPanel() {
 		leftPanel.currBlind = currBlind;
-		leftPanel.numHands = Player.numHands;
-		leftPanel.numDiscards = Player.numDiscards;
+		leftPanel.numHands = player.numHands;
+		leftPanel.numDiscards = player.numDiscards;
 	}
 
 	@Override
@@ -193,14 +193,14 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 		Vector<PlayingCard> selectedCards = new Vector<PlayingCard>(0);
 		Vector<PlayingCard> heldCards = new Vector<PlayingCard>(0);
 		
-		for(int i = 0; i < Player.deck.drawnCards.size(); i++) {
-			if(Player.deck.drawnCards.get(i).isSelected) {
-				Player.deck.drawnCards.get(i).isSelected = false;
-				selectedCards.add(Player.deck.drawnCards.get(i));
-				Player.deck.drawnCards.remove(i);
+		for(int i = 0; i < player.deck.drawnCards.size(); i++) {
+			if(player.deck.drawnCards.get(i).isSelected) {
+				player.deck.drawnCards.get(i).isSelected = false;
+				selectedCards.add(player.deck.drawnCards.get(i));
+				player.deck.drawnCards.remove(i);
 				i--;
 			}else {
-				heldCards.add(Player.deck.drawnCards.get(i));
+				heldCards.add(player.deck.drawnCards.get(i));
 			}
 		}
 		
@@ -215,17 +215,17 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 		}
 				
 		PlayedHand playedHand = new PlayedHand(selectedCards, heldCards);
-		HandScorer.scoreHand(playedHand, Player.getJokersAsJokers(), Player.getPokerHandTable());
+		HandScorer.scoreHand(playedHand, player.getJokersAsJokers(), player.getPokerHandTable());
 		
 		consolePanel.appendText(playedHand.printChanges());
 		consolePanel.appendText("Final Score: " + playedHand.score());
 		
-		Player.deck.discardedCards.addAll(selectedCards);
+		player.deck.discardedCards.addAll(selectedCards);
 		handPanel.numSelected = 0;
-		Player.deck.drawTo(8);
-		DeckUtils.sortCardVector(Player.deck.drawnCards, DeckUtils.SORT_RANK);
+		player.deck.drawTo(8);
+		DeckUtils.sortCardVector(player.deck.drawnCards, DeckUtils.SORT_RANK);
 		
-		handPanel.setBorderTitle("Your Hand: " + Player.deck.size() + " / " + Player.deck.totalCards());
+		handPanel.setBorderTitle("Your Hand: " + player.deck.size() + " / " + player.deck.totalCards());
 		handPanel.rebuildLayeredPane();
 		
 		leftPanel.useHand(playedHand.getScore());
@@ -247,20 +247,20 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 		if(!currBlind.equals("Big Blind") && !currBlind.equals("Small Blind")) {
 			// If the current blind is not small or big, then it must be the Boss Blind. In that case, we need to generate a new set of blinds
 			ante += 1;
-			anteSelect = new AnteSelect(this, Player.getBaseChips(ante));
+			anteSelect = new AnteSelect(this, player.getBaseChips(ante));
 		}
 		
 		currBlind = "None";
-		leftPanel.updateInfo(currBlind, 0, 0.0, Player.getNumHands(), Player.getNumDiscards(), Player.money);
+		leftPanel.updateInfo(currBlind, 0, 0.0, player.getNumHands(), player.getNumDiscards(), player.money);
 		switchHandPanelAnteSelect("ANTE");
 		resetDeck();
 	}
 	
 	public void resetDeck() {
-		for(int i = 0; i < Player.deck.drawnCards.size(); i++) {
-			Player.deck.drawnCards.get(i).isSelected = false;	
+		for(int i = 0; i < player.deck.drawnCards.size(); i++) {
+			player.deck.drawnCards.get(i).isSelected = false;	
 		}
-		Player.deck.resetDeck();
+		player.deck.resetDeck();
 	}
 
 	@Override
@@ -274,11 +274,11 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 		
 		// Pulls the selected cards
 		Vector<PlayingCard> selectedCards = new Vector<PlayingCard>(0);
-		for(int i = 0; i < Player.deck.drawnCards.size(); i++) {
-			if(Player.deck.drawnCards.get(i).isSelected) {
-				Player.deck.drawnCards.get(i).isSelected = false;
-				selectedCards.add(Player.deck.drawnCards.get(i));
-				Player.deck.drawnCards.remove(i);
+		for(int i = 0; i < player.deck.drawnCards.size(); i++) {
+			if(player.deck.drawnCards.get(i).isSelected) {
+				player.deck.drawnCards.get(i).isSelected = false;
+				selectedCards.add(player.deck.drawnCards.get(i));
+				player.deck.drawnCards.remove(i);
 				i--;
 			}
 		}
@@ -295,13 +295,13 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 		}
 		
 		// Replenishes the player's hand
-		Player.deck.discardedCards.addAll(selectedCards);
+		player.deck.discardedCards.addAll(selectedCards);
 		handPanel.numSelected = 0;
-		Player.deck.drawTo(8);
-		DeckUtils.sortCardVector(Player.deck.drawnCards, DeckUtils.SORT_RANK);
+		player.deck.drawTo(8);
+		DeckUtils.sortCardVector(player.deck.drawnCards, DeckUtils.SORT_RANK);
 		
 		// Updates some information
-		handPanel.setBorderTitle("Your Hand: " + Player.deck.size() + " / " + Player.deck.totalCards());
+		handPanel.setBorderTitle("Your Hand: " + player.deck.size() + " / " + player.deck.totalCards());
 		handPanel.rebuildLayeredPane();
 		leftPanel.useDiscard();
 	}
@@ -309,14 +309,14 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 	@Override
 	public void sortByRankPressed() {
 		if(leftPanel.currBlind.equals("None")) return;
-		DeckUtils.sortCardVector(Player.deck.drawnCards, DeckUtils.SORT_RANK);
+		DeckUtils.sortCardVector(player.deck.drawnCards, DeckUtils.SORT_RANK);
 		handPanel.rebuildLayeredPane();
 	}
 	
 	@Override
 	public void sortBySuitPressed() {
 		if(leftPanel.currBlind.equals("None")) return;
-		DeckUtils.sortCardVector(Player.deck.drawnCards, DeckUtils.SORT_SUIT);
+		DeckUtils.sortCardVector(player.deck.drawnCards, DeckUtils.SORT_SUIT);
 		handPanel.rebuildLayeredPane();
 	}
 	
@@ -328,6 +328,7 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 	@Override
 	public void analyzeButtonPressed() {
 		// If the button is pressed outside of a blind, perform deck analysis
+		copilotPanel.resetTabs();
 		System.out.println(leftPanel.currBlind);
 		if(leftPanel.currBlind.equals(AnteSelect.NONE)) {
 		    copilotPanel.copilotMessage.appendText("Analyzing Deck");
@@ -348,7 +349,6 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 		                     copilotPanel.copilotMessage.appendText("Analysis canceled.");
 		                     return;
 		                 }
-		                 var result = get();
 		                 copilotPanel.copilotMessage.appendText("Analysis complete!");
 		             } catch (Exception e) {
 		                 copilotPanel.copilotMessage.appendText("Error during analysis: " + e.getMessage());
@@ -362,8 +362,8 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 			analysisWorker = new SwingWorker<>() {
 		        @Override
 		        protected Object doInBackground() throws Exception {
-		            // Background work
-		            return copilot.analyzeGameState(gamestate);
+		            // Background work		        	
+		            return copilot.analyzeGameState(gamestate, handPanel.numSelected);
 		        }
 
 		        @Override
@@ -373,7 +373,6 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 		                     copilotPanel.copilotMessage.appendText("Analysis canceled.");
 		                     return;
 		                 }
-		                 var result = get();
 		                 copilotPanel.copilotMessage.appendText("Analysis complete!");
 		             } catch (Exception e) {
 		                 copilotPanel.copilotMessage.appendText("Error during analysis: " + e.getMessage());
@@ -382,7 +381,7 @@ public class BalatroUI extends JFrame implements HandScorer, AnteSelectListener,
 		        }
 		    };
 		}
-
+		
 	    analysisWorker.execute();
 	}
 
