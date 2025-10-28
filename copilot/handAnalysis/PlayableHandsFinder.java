@@ -26,6 +26,7 @@ public interface PlayableHandsFinder {
 	 * @return
 	 */
 	public static PlayedHand findHighestScoringPlayableHand(Vector<PlayingCard> cardsInHand, PokerHandTable pokerHandTable) {
+		System.out.print("-");
 	    int n = cardsInHand.size();
 	    int r = 5;
 	    if (n < r) return null;
@@ -46,6 +47,7 @@ public interface PlayableHandsFinder {
 
 	        PlayedHand hand = new PlayedHand(played, held);
 	        HandScorer.scoreHand(hand, new Vector<JokerCard>(0), pokerHandTable);
+	        
 	        if (hand.getScore() > bestScore) {
 	            bestScore = hand.getScore();
 	            bestHand = hand;
@@ -55,6 +57,7 @@ public interface PlayableHandsFinder {
 	        int c = mask & -mask;
 	        int rmask = mask + c;
 	        mask = (((rmask ^ mask) >>> 2) / c) | rmask;
+	        System.out.print("*");
 	    }
 
 	    return bestHand;

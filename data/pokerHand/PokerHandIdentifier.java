@@ -40,8 +40,8 @@ public interface PokerHandIdentifier {
 		String pokerHand = PokerHand.HIGH_CARD;
 		
 		// Counts the number of each type of card, then sorts the array
-		List<ValueCount> valueCounts = ValueCountUtils.countValues(cards);
-		ValueCountUtils.sortByValue(valueCounts);
+		int[] valueCounts = ValueCountUtils.countValues(cards);
+		//ValueCountUtils.sortByValue(valueCounts);
 		
 		if(DEBUG) {
 			System.out.print("\nCards: ");
@@ -50,8 +50,10 @@ public interface PokerHandIdentifier {
 			}
 			System.out.println();
 			System.out.println("Value Counts: ");
-			for(int i = 0; i < valueCounts.size(); i++) {
-				System.out.print(valueCounts.get(i).getValue() + ", " + valueCounts.get(i).getCount() + "  ");
+			for(int i = 0; i < valueCounts.length; i++) {
+				if(valueCounts[i] > 0) {
+					System.out.print(i + ", " + valueCounts[i] + "  ");
+				}
 			}
 			System.out.println();
 		}

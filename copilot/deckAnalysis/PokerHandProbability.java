@@ -37,16 +37,31 @@ public class PokerHandProbability {
 		return handCount;
 	}
 	
+	public void setCount(int count) {
+		handCount += count;
+	}
+	
 	public double getHighScore() {
 		return highestScore;
+	}
+	
+	public void setHighScore(double newScore) {
+		highestScore = newScore;
 	}
 	
 	public double getLowScore() {
 		return lowestScore;
 	}
+	public void setLowScore(double newScore) {
+		lowestScore = newScore;
+	}
 	
 	public double getAverageScore() {
 		return averageScore;
+	}
+	
+	public void combineAvg(double newAvg, int newCount) {		
+		averageScore = ((averageScore * handCount) + (newAvg * newCount)) / (handCount + newCount);
 	}
 	
 	

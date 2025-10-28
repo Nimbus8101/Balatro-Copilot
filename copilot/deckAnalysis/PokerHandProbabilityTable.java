@@ -2,6 +2,8 @@ package copilot.deckAnalysis;
 
 import java.util.Vector;
 
+import javax.sound.midi.SysexMessage;
+
 
 /**
  * Class which stores PokerHand information
@@ -15,28 +17,28 @@ import java.util.Vector;
  *
  */
 public class PokerHandProbabilityTable {
-	private Vector<PokerHandProbability> probabilityTable;
+	private PokerHandProbability[] probabilityTable;
 	int totalCount = 0;
 	public String name;
 	
 	public PokerHandProbabilityTable(Vector<String> pokerHandNames){
-		probabilityTable = new Vector<PokerHandProbability>(0);
+		probabilityTable = new PokerHandProbability[15];
 		for(int i = 0; i < pokerHandNames.size(); i++) {
-			probabilityTable.add(new PokerHandProbability(pokerHandNames.get(i)));
+			probabilityTable[i] = new PokerHandProbability(pokerHandNames.get(i));
 		}
 		name = "";
 	}
 	
 	public void addScore(String handName, double score){
-		for(int i = 0; i < probabilityTable.size(); i++) {
-			if(probabilityTable.get(i).getName().equals(handName)) {
-				probabilityTable.get(i).addScore(score);
+		for(int i = 0; i < probabilityTable.length; i++) {
+			if(probabilityTable[i].getName().equals(handName)) {
+				probabilityTable[i].addScore(score);
 				return;
 			}
 		}
 	}
 	
-	public Vector<PokerHandProbability> getPokerHandVector() {
+	public PokerHandProbability[] getPokerHandArray() {
 		return probabilityTable;
 	}
 	
@@ -46,8 +48,8 @@ public class PokerHandProbabilityTable {
 	
 	public int sumTotalCount() {
 		int sum = 0;
-		for(int i = 0; i < probabilityTable.size(); i++) {
-			sum += probabilityTable.get(i).getCount();
+		for(int i = 0; i < probabilityTable.length; i++) {
+			sum += probabilityTable[i].getCount();
 		}
 		totalCount = sum;
 		return sum;
@@ -73,8 +75,8 @@ public class PokerHandProbabilityTable {
 		result.append("|------------------------------Probability Table-------------------------------|\n");
 		result.append("|   Poker Hand   |   Count   |    x.x%    | Avg Score | High Score | Low Score |\n");
 		result.append("|------------------------------------------------------------------------------|\n");
-		for(int i = 0; i < probabilityTable.size(); i++) {
-			PokerHandProbability p = probabilityTable.get(i);
+		for(int i = 0; i < probabilityTable.length; i++) {
+			PokerHandProbability p = probabilityTable[i];
 			result.append("|").append(padString(p.getName(), 16));
 			
 			String percentage = String.format("%.6f", 100 * (double) p.getCount() / (double) sum);
@@ -120,5 +122,19 @@ public class PokerHandProbabilityTable {
 			result += " ";
 		}
 		return result;
+	}
+
+	public void merge(PokerHandProbabilityTable localResult) {
+		PokerHandProbability[] localTable = localResult.getPokerHandArray();
+		for(int i = 0; i < localTable.length; i++) {
+			if(!probabilityTable[i].getName().equals(localTable[i].getName())) {
+				System.out.println("[ERROR] - PokerhandProbabilityTable.merge() - Table Names in mismatched order, can't combine the two");
+			}
+			// Takes the higher high, lower low, combines the averages, and updates the handCount
+			if(probabilityTable[i].getHighScore() < localTable[i].getHighScore()) probabilityTable[i].setHighScore(localTable[i].getHighScore());
+			if(probabilityTable[i].getLowScore() > localTable[i].getLowScore()) probabilityTable[i].setLowScore(localTable[i].getLowScore());
+			probabilityTable[i].combineAvg(localTable[i].getAverageScore(), localTable[i].getCount());
+			probabilityTable[i].setCount(probabilityTable[i].getCount() + localTable[i].getCount());
+		}
 	}
 }

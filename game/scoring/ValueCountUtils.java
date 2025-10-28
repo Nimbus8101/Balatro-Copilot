@@ -1,14 +1,15 @@
 package game.scoring;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import data.card.PlayingCard;
-
 
 /**
  * Utility class with methods regarding the ValueCount class
@@ -17,7 +18,12 @@ import data.card.PlayingCard;
  *
  */
 public interface ValueCountUtils {
-	final Map<Long, List<ValueCount>> cache = new HashMap<>();
+	static final Map<Long, int[]> cache =
+		    Collections.synchronizedMap(new LinkedHashMap<>(10000, 0.75f, true) {
+		        protected boolean removeEldestEntry(Map.Entry<Long, int[]> eldest) {
+		            return size() > 10000; // keep 10k entries max
+		        }
+		    });
 
 	
 	/**
@@ -25,35 +31,35 @@ public interface ValueCountUtils {
 	 * @param cards
 	 * @return
 	 */
-	public static List<ValueCount> countValues(List<PlayingCard> cards) {
+	public static int[] countValues(List<PlayingCard> cards) {
 		Long key = generateKeyHash(cards);
 		
-		List<ValueCount> result = cache.get(cards);
+		int[] result = cache.get(key);
 		if(result != null) {
-			return result;
+			 return result.clone();
 		}
 		
-		
-	    int[] counts = new int[15]; // index = value
-	    for (PlayingCard c : cards) counts[c.getValue()]++;
+	    result = new int[15]; // index = value
+	    for (PlayingCard c : cards) result[c.getValue()]++;
 
+	    /**
 	    result = new ArrayList<>();
 	    for (int v = 0; v < counts.length; v++) {
 	        if (counts[v] > 0)
 	            result.add(new ValueCount(v, counts[v]));
 	    }
-	    
+	    */
 	    cache.put(key, result);
 	    return result;
 	}
 	
 	public static long generateKeyHash(List<PlayingCard> cards) {
-	    return cards.stream()
-	        .sorted(Comparator
-	            .comparingInt(PlayingCard::getValue)
-	            .thenComparing(PlayingCard::getSuit))
-	        .mapToLong(c -> (c.getValue() * 10L) + c.getSuit())
-	        .reduce(1L, (a, b) -> 31 * a + b);
+	    long h = 1L;
+	    for (int i = 0; i < cards.size(); i++) {
+	        PlayingCard c = cards.get(i);
+	        h = 31 * h + ((c.getValue() * 10L) + c.getSuit());
+	    }
+	    return h;
 	}
 	
 	/**
@@ -77,9 +83,9 @@ public interface ValueCountUtils {
 	 * @param valueCounts
 	 * @return
 	 */
-	public static boolean hasMatches(List<ValueCount> valueCounts) {
-		for(int i = 0; i < valueCounts.size(); i++) {
-			if(valueCounts.get(i).getCount() > 1) {
+	public static boolean hasMatches(int[] valueCounts) {
+		for(int i = 0; i < valueCounts.length - 1; i++) {
+			if(valueCounts[i] > 1) {
 				return true;
 			}
 		}
@@ -92,9 +98,9 @@ public interface ValueCountUtils {
 	 * @param valueCounts
 	 * @return
 	 */
-	public static boolean hasMoreThanThreeMatches(List<ValueCount> valueCounts) {
-		for(int i = 0; i < valueCounts.size(); i++) {
-			if(valueCounts.get(i).getCount() > 2) {
+	public static boolean hasMoreThanThreeMatches(int[] valueCounts) {
+		for(int i = 0; i < valueCounts.length; i++) {
+			if(valueCounts[i] > 2) {
 				return true;
 			}
 		}
@@ -106,11 +112,11 @@ public interface ValueCountUtils {
 	 * @param valueCounts
 	 * @return
 	 */
-	public static int highestCount(List<ValueCount> valueCounts) {
-		int high = valueCounts.get(0).getCount();
-		for(int i = 1; i < valueCounts.size(); i++) {
-			if(valueCounts.get(i).getCount() > high) {
-				high = valueCounts.get(i).getCount();
+	public static int highestCount(int[] valueCounts) {
+		int high = valueCounts[0];
+		for(int i = 1; i < valueCounts.length; i++) {
+			if(valueCounts[i] > high) {
+				high = valueCounts[i];
 			}
 		}
 		return high;
@@ -121,10 +127,10 @@ public interface ValueCountUtils {
 	 * @param valueCounts
 	 * @return
 	 */
-	public static int countPairs(List<ValueCount> valueCounts) {
+	public static int countPairs(int[] valueCounts) {
 		int pairCount = 0;
-		for(int i = 0; i < valueCounts.size(); i++) {
-			if(valueCounts.get(i).getCount() == 2) {
+		for(int i = 0; i < valueCounts.length; i++) {
+			if(valueCounts[i] == 2) {
 				pairCount += 1;
 			}
 		}
@@ -138,10 +144,13 @@ public interface ValueCountUtils {
 	 * @param valueCounts
 	 * @return
 	 */
-	public static boolean hasStraight(List<ValueCount> valueCounts) {
-		sortByValue(valueCounts);
-		
-		if(valueCounts.size() < 5) {
+	public static boolean hasStraight(int[] valueCounts) {
+		int numVals = 0;
+		for(int value : valueCounts) {
+			numVals += value;
+		}
+	
+		if(numVals < 5) {
 			return false;
 		}
 		
@@ -149,12 +158,17 @@ public interface ValueCountUtils {
 			return true;
 		}
 		
-		for(int i = 0; i < valueCounts.size() - 1; i++) {
-			if(valueCounts.get(i + 1).getValue() != valueCounts.get(i).getValue() + 1) {
-				return false;
-			}
+		// Loops through the array until it reaches an index with a value of 1
+		// All the following values must be 1, otherwise it is not a straight
+		int consecutive = 0;
+		for (int i = 0; i < valueCounts.length; i++) {
+		    if (valueCounts[i] > 0) {
+		        if (++consecutive == 5) return true;
+		    } else {
+		        consecutive = 0;
+		    }
 		}
-		return true;
+		return false;
 	}
 	
 	
@@ -163,13 +177,13 @@ public interface ValueCountUtils {
 	 * @param valueCounts
 	 * @return
 	 */
-	public static boolean hasRoyalStraight(List<ValueCount> valueCounts) {
+	public static boolean hasRoyalStraight(int[] valueCounts) {
 		//FIXME might need to change this logic for the Shortcut Joker
-		if(valueCounts.get(0).getValue() == PlayingCard.TEN &&
-		   valueCounts.get(1).getValue() == PlayingCard.JACK &&
-		   valueCounts.get(2).getValue() == PlayingCard.QUEEN &&
-		   valueCounts.get(3).getValue() == PlayingCard.KING &&
-		   valueCounts.get(4).getValue() == PlayingCard.ACE){
+		if (valueCounts[PlayingCard.TEN - 1] == 1 &&
+			valueCounts[PlayingCard.JACK - 1] == 1 &&
+			valueCounts[PlayingCard.QUEEN - 1] == 1 &&
+			valueCounts[PlayingCard.KING - 1] == 1 &&
+			valueCounts[PlayingCard.ACE - 1] == 1){
 			return true;
 		}
 		return false;

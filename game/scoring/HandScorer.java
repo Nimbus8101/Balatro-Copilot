@@ -2,7 +2,9 @@ package game.scoring;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 import data.card.Card;
 import data.card.Joker;
@@ -15,6 +17,7 @@ import data.pokerHand.PokerHandTable;
 
 public interface HandScorer extends ValueCountUtils{
 	static final List<JokerCard> NO_JOKERS = List.of();
+
 	
 	/**
 	 * Function to score a hand of 5
@@ -71,17 +74,22 @@ public interface HandScorer extends ValueCountUtils{
 		switch(card.getEdition()) {
 		case PlayingCard.BONUS:
 			change.addChips(30);
+			break;
 		case PlayingCard.MULT:
-			change.addMult(4);;
+			change.addMult(4);
+			break;
 		}
 		
 		switch(card.getEnhancement()) {
 		case PlayingCard.FOIL:
 			change.addChips(50);
+			break;
 		case PlayingCard.HOLOGRAPHIC:
 			change.addMult(10);
+			break;
 		case PlayingCard.POLYCHROME:
 			change.addMultiplier(1.5);
+			break;
 		}
 		
 		// FIXME: Any other chip or mult additions (such as for joker abilities, like greedy joker or hiker)
@@ -135,14 +143,17 @@ public interface HandScorer extends ValueCountUtils{
 	 * @return List<PlayingCard> of matching cards
 	 */
 	public static List<PlayingCard> pullMatches(List<PlayingCard> cards, int numMatches) {
-	    List<ValueCount> counts = ValueCountUtils.countValues(cards);
-	    int targetValue = -1;
-	    for (ValueCount vc : counts) {
-	        if (vc.getCount() == numMatches) {
-	            targetValue = vc.getValue();
+		int[] counts = new int[15];
+		int targetValue = -1;
+		for (PlayingCard c : cards) {
+			counts[c.getValue()]++;
+			
+			if(counts[c.getValue()] == numMatches) {
+	    		targetValue = c.getValue();
 	            break;
-	        }
-	    }
+	    	}
+		}
+	    
 	    if (targetValue == -1) return cards; // fallback
 
 	    List<PlayingCard> matches = new ArrayList<>(numMatches);

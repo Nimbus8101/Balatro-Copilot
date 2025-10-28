@@ -18,7 +18,10 @@ public class PokerHandTable {
 	}
 	
 	public PokerHandTable(Vector<PokerHand> pokerHands) {
-		this.pokerHands = pokerHands;
+		this.pokerHands = new Vector<PokerHand>(pokerHands.size());
+		for(PokerHand pokerHand : pokerHands) {
+			this.pokerHands.add(pokerHand);
+		}
 	}
 	
 	public PokerHand getPokerHand(String pokerHandName) {
@@ -36,6 +39,10 @@ public class PokerHandTable {
 			names.add(pokerHands.get(i).getName());
 		}
 		return names;
+	}
+	
+	public Vector<PokerHand> getPokerHandVector(){
+		return pokerHands;
 	}
 	
 	public String printPokerHandTable() {
